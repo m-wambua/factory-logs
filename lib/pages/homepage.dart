@@ -1,7 +1,7 @@
-import 'package:collector/pages/process_1.dart';
-import 'package:collector/pages/process_2.dart';
-import 'package:collector/pages/process_3.dart';
-import 'package:collector/pages/process_4.dart';
+import 'package:collector/pages/process_1/process_1.dart';
+import 'package:collector/pages/process_2/process_2.dart';
+import 'package:collector/pages/process_3/process_3.dart';
+import 'package:collector/pages/process_4/process_4.dart';
 import 'package:flutter/material.dart';
 class LandingPage extends StatefulWidget {
   @override
