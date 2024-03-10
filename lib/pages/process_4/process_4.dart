@@ -14,6 +14,8 @@ class Process4Page extends StatefulWidget {
 class _Process4PageState extends State<Process4Page> {
   bool _productionSelected = false;
   DateTime? saveButtonClickTime;
+  bool _eventfulShift = false;
+  String? _eventDescription;
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +141,44 @@ class _Process4PageState extends State<Process4Page> {
                               borderRadius: BorderRadius.circular(10.0)),
                           filled: true,
                           fillColor: Colors.grey[200]),
-                    )
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            saveButtonClickTime = DateTime.now();
+                          });
+                        },
+                        child: Text('Save Current Values')),
+                    if (saveButtonClickTime != null)
+                      Text('The data was saved at${saveButtonClickTime}'),
+
+                    SizedBox(
+                      height: 30,
+                    ),
+                    CheckboxListTile(
+                        title: Text('Was the shift eventful?'),
+                        value: _eventfulShift,
+                        onChanged: (value) {
+                          setState(() {
+                            _eventfulShift = value!;
+                          });
+                        }),
+                    //TextFormField for event description if shift was eventful
+                    if (_eventfulShift)
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Describe the event....',
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _eventDescription = value;
+                          });
+                        },
+                      )
                   ],
                 ),
             ],
