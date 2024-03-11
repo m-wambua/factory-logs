@@ -6,7 +6,7 @@ class SubProcess2Page1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subprocess 2'),
+        title: Text('MCC MOTORS'),
       ),
      body: SingleChildScrollView(
         child: Padding(
@@ -14,10 +14,12 @@ class SubProcess2Page1 extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
+            Text('FEEDER MOTORS CURRENT'),
+            SizedBox(height: 10,),
             DataTable(columns: [
-              DataColumn(label: Text('Parameter')),
-              DataColumn(label: Text('Value 1')),
-              DataColumn(label: Text('Value 2')),
+              DataColumn(label: Text('FEEDER MOTORS CURRENT')),
+              DataColumn(label: Text('RATED')),
+              DataColumn(label: Text('DRAWN')),
               DataColumn(label: Text('Remarks'))
               
 
@@ -25,8 +27,8 @@ class SubProcess2Page1 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('UNCOILER BLOWER MOTOR')),
+                DataCell(Text('6.0')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
@@ -35,34 +37,99 @@ class SubProcess2Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('BRIDDLE 1 #A BLOWER')),
+                DataCell(Text('2.8')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('BRIDLE 1#B BLOWER')),
+                DataCell(Text('6.0')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('BRIDDLE 2#A BLOWER MOTOR')),
+                DataCell(Text('6.1')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('BRIDDLE 2#B BLOWER MOTOR')),
+                DataCell(Text('2.8')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
+
+              // Add rows or data entry
+              DataRow(cells: [
+                DataCell(Text('RECOILER MOTOR BLOWER')),
+                DataCell(Text('6.0')),
+                DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
+              // Add rows or data entry
+              DataRow(cells: [
+                DataCell(Text('FLATTENER MOTOR')),
+                DataCell(Text('20.5')),
+                DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
+              // Add rows or data entry
+              DataRow(cells: [
+                DataCell(Text('REC LUB MOTOR')),
+                DataCell(Text('3.4')),
+                DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
+              // Add rows or data entry
+              DataRow(cells: [
+                DataCell(Text('HYD P PACK WRK & STBY')),
+                DataCell(Text('40.0')),
+                DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
+              // Add rows or data entry
+              DataRow(cells: [
+                DataCell(Text('HYDR. RECIRCULATIONS')),
+                DataCell(Text('3.4')),
+                DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
+              // Add rows or data entry
+              DataRow(cells: [
+                DataCell(Text('WELDER MOTOR')),
+                DataCell(Text('5.37/3.45')),
+                DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
+              // Add rows or data entry
+              DataRow(cells: [
+                DataCell(Text('SCRAP BALLER MOTOR')),
+                DataCell(Text('39.5')),
+                DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
+              // Add rows or data entry
+              DataRow(cells: [
+                DataCell(Text('UNC. LUB MOTOR')),
+                DataCell(Text('3.4')),
+                DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
 
             ]),
             SizedBox(

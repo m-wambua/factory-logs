@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class SubProcess3Page1 extends StatelessWidget {
+class SubProcess7Page1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CRANES'),
+        title: Text('Currents'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -15,18 +15,15 @@ class SubProcess3Page1 extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
             DataTable(columns: [
-              DataColumn(label: Text('DRIVE/MOTOR')),
-              DataColumn(label: Text('RATED')),
-              DataColumn(label: Text('DRAWN')),
+              DataColumn(label: Text('Parameter')),
+              DataColumn(label: Text('Value 1')),
+              DataColumn(label: Text('Value 2')),
               DataColumn(label: Text('Remarks'))
-              
-
-
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('L.T MOTOR')),
-               DataCell(Text('4.3')),
+                DataCell(Text('Parameter 1')),
+                DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
@@ -35,20 +32,19 @@ class SubProcess3Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('C.T MOTOR')),
-               DataCell(Text('2.1')),
+                DataCell(Text('Parameter 1')),
+                DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('HOIST MOTOR')),
-                DataCell(Text('38/18')),
+                DataCell(Text('Parameter 1')),
+                DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-              /*
 // Add rows or data entry
               DataRow(cells: [
                 DataCell(Text('Parameter 1')),
@@ -64,8 +60,6 @@ class SubProcess3Page1 extends StatelessWidget {
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-              */
-
             ]),
             SizedBox(
               height: 20,

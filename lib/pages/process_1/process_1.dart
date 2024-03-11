@@ -1,3 +1,4 @@
+import 'package:collector/pages/process_1/subprocess_7.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/process_1/subprocess_1.dart';
 import 'package:collector/pages/process_1/subprocess_2.dart';
@@ -21,7 +22,7 @@ class _Process1PageState extends State<Process1Page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Process 1'),
+        title: Text('Trimming Cum Tension Leveler Line'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -67,7 +68,7 @@ class _Process1PageState extends State<Process1Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 1'),
+                      child: Text('Drives'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -79,7 +80,7 @@ class _Process1PageState extends State<Process1Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 2'),
+                      child: Text('CC Motores'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -91,7 +92,7 @@ class _Process1PageState extends State<Process1Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 3'),
+                      child: Text('Cranes'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -103,7 +104,7 @@ class _Process1PageState extends State<Process1Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 4'),
+                      child: Text('TLL Positions (MM)'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -115,7 +116,7 @@ class _Process1PageState extends State<Process1Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 5'),
+                      child: Text('TLL Crowning Position (MM)'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -127,11 +128,29 @@ class _Process1PageState extends State<Process1Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 6'),
+                      child: Text('Tensions'),
                     ),
                     SizedBox(
                       height: 100,
                     ),
+
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SubProcess7Page1(),
+                          ),
+                        );
+                      },
+                      child: Text('Currents'),
+                    ),
+                    SizedBox(
+                      height: 100,
+                    ),
+
+                    
                     Text(
                         'ODS Occurence During Shift (Delay please indicate time)'),
                     TextFormField(

@@ -15,9 +15,9 @@ class SubProcess1Page1 extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
             DataTable(columns: [
-              DataColumn(label: Text('Parameter')),
-              DataColumn(label: Text('Value 1')),
-              DataColumn(label: Text('Value 2')),
+              DataColumn(label: Text('Drive Motor Current')),
+              DataColumn(label: Text('Rated')),
+              DataColumn(label: Text('Drawn')),
               DataColumn(label: Text('Remarks'))
               
 
@@ -25,8 +25,8 @@ class SubProcess1Page1 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('UNCOILER')),
+                DataCell(Text('351')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
@@ -35,31 +35,38 @@ class SubProcess1Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('BRIDDLE 1A')),
+                DataCell(Text('191')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('BRIDDLE 1B')),
+                DataCell(Text('375')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('BRIDDLE 2A')),
+                DataCell(Text('375')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(Text('BRIDDLE 2B')),
+                DataCell(Text('191')),
                 DataCell(TextField()),
+                DataCell(TextField())
+              ]),
+
+              DataRow(cells: [
+                DataCell(Text('UNCOLIER')),
+                DataCell(Text('351')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
