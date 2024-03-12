@@ -15,17 +15,17 @@ class SubProcess6Page1 extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
             DataTable(columns: [
-              DataColumn(label: Text('Parameter')),
-              DataColumn(label: Text('Value 1')),
-              DataColumn(label: Text('Value 2')),
-              DataColumn(label: Text('Remarks'))
+              DataColumn(label: Text('TENSIONS')),
+              DataColumn(label: Text('TIMING 1')),
+              DataColumn(label: Text('TIMING 2')),
+              DataColumn(label: Text('TIMING 3'))
               
 
 
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(Text('TLL')),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -35,7 +35,7 @@ class SubProcess6Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(Text('RECOILER')),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -43,7 +43,7 @@ class SubProcess6Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(Text('UNCOILER')),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -57,12 +57,14 @@ class SubProcess6Page1 extends StatelessWidget {
               ]),
 
               // Add rows or data entry
+              /*
               DataRow(cells: [
                 DataCell(Text('Parameter 1')),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
+              */
 
             ]),
             SizedBox(

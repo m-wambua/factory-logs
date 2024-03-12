@@ -21,7 +21,7 @@ class _Process2PageState extends State<Process2Page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Process 1'),
+        title: Text('COLOR COATING LINE'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -67,7 +67,7 @@ class _Process2PageState extends State<Process2Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 1'),
+                      child: Text('DRIVES'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -79,7 +79,7 @@ class _Process2PageState extends State<Process2Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 2'),
+                      child: Text('MCC MOTORS'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -91,7 +91,7 @@ class _Process2PageState extends State<Process2Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 3'),
+                      child: Text('CRANES'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -103,7 +103,7 @@ class _Process2PageState extends State<Process2Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 4'),
+                      child: Text('TENSIONS'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -115,7 +115,7 @@ class _Process2PageState extends State<Process2Page> {
                           ),
                         );
                       },
-                      child: Text('Subprocess 5'),
+                      child: Text('SPEEDS'),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(

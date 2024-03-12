@@ -6,7 +6,7 @@ class SubProcess2Page2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subprocess 2'),
+        title: Text('MCC PROCESS'),
       ),
       body: SingleChildScrollView(
         child: Padding(

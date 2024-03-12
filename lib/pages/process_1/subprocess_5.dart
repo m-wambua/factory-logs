@@ -6,7 +6,7 @@ class SubProcess5Page1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subprocess 5'),
+        title: Text('TLL CROWNING'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -15,9 +15,9 @@ class SubProcess5Page1 extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
             DataTable(columns: [
-              DataColumn(label: Text('Parameter')),
-              DataColumn(label: Text('Value 1')),
-              DataColumn(label: Text('Value 2')),
+              DataColumn(label: Text('READINGS')),
+              DataColumn(label: Text('RATED')),
+              DataColumn(label: Text('DRAWN')),
               DataColumn(label: Text('Remarks'))
               
 
@@ -25,8 +25,8 @@ class SubProcess5Page1 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('1')),
+                DataCell(Text(' ')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
@@ -35,35 +35,36 @@ class SubProcess5Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('2')),
+                DataCell(Text(' ')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('3')),
+                DataCell(Text(' ')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
-                DataCell(TextField()),
+                DataCell(Text('4')),
+                DataCell(Text(' ')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               // Add rows or data entry
+              /*
               DataRow(cells: [
                 DataCell(Text('Parameter 1')),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-
+              */
             ]),
             SizedBox(
               height: 20,
