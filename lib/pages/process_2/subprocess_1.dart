@@ -25,7 +25,11 @@ class SubProcess1Page2 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('UNCOILER')),
+                DataCell(
+                  TextButton(child: Text('UNCOILER'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -35,7 +39,11 @@ class SubProcess1Page2 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('bRIDDLE ROLL 1')),
+                DataCell(
+                  TextButton(child: Text('BRIDDLE ROLL 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -43,7 +51,11 @@ class SubProcess1Page2 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('BRIDDLE ROLL 2')),
+                DataCell(
+                  TextButton(child: Text('BRIDDLE ROLL 2'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -58,84 +70,132 @@ class SubProcess1Page2 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('BRIDDLE 3')),
+                DataCell(
+                  TextButton(child: Text('BRIDDLE 3'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('BRIDDLE 4 ROLL 1')),
+                DataCell(
+                  TextButton(child: Text('BRIDDLE 4 ROLL 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('BRIDDLE 4 ROLL2')),
+                DataCell(
+                  TextButton(child: Text('BRIDDLE 4 ROLL2'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('RECOILER')),
+                DataCell(
+                  TextButton(child:Text('RECOILER') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('TOP PICK-UP ROLL')),
+                DataCell(
+                  TextButton(child: Text('TOP PICK-UP ROLL'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('TOP APPLICATOR ROLL')),
+                DataCell(
+                  TextButton(child:Text('TOP APPLICATOR ROLL') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('BOTTOM PICK-UP ROLL')),
+                DataCell(
+                  TextButton(child: Text('BOTTOM PICK-UP ROLL'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('BOTTOM APPLICATOR ROLL')),
+                DataCell(
+                  TextButton(child:Text('BOTTOM APPLICATOR ROLL') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('OVEN SECTION A BLOWERS')),
+                DataCell(
+                  TextButton(child: Text('OVEN SECTION A BLOWERS'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('OVEN SECTION B BLOWERS')),
+                DataCell(
+                  TextButton(child:Text('OVEN SECTION B BLOWERS') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('OVEN SECTION C BLOWERS')),
+                DataCell(
+                  TextButton(child: Text('OVEN SECTION C BLOWERS'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('FUME EXHAUST FAN')),
+                DataCell(
+                  TextButton(child:Text('FUME EXHAUST FAN') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('RATED')),
                 DataCell(TextField()),
                 DataCell(TextField())

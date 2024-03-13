@@ -25,7 +25,11 @@ class SubProcess1Page1 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('UNCOILER')),
+                DataCell(
+                  TextButton(child: Text('UNCOILER'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('351')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -35,7 +39,11 @@ class SubProcess1Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('BRIDDLE 1A')),
+                DataCell(
+                  TextButton(child:Text('BRIDDLE 1A') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('191')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -43,14 +51,22 @@ class SubProcess1Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('BRIDDLE 1B')),
+                DataCell(
+                  TextButton(child:Text('BRIDDLE 1B') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('375')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('BRIDDLE 2A')),
+                DataCell(
+                  TextButton(child:Text('BRIDDLE 2A') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('375')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -58,14 +74,22 @@ class SubProcess1Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('BRIDDLE 2B')),
+                DataCell(
+                  TextButton(child: Text('BRIDDLE 2B'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('191')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 
               DataRow(cells: [
-                DataCell(Text('UNCOLIER')),
+                DataCell(
+                  TextButton(child:Text('UNCOLIER') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('351')),
                 DataCell(TextField()),
                 DataCell(TextField())

@@ -25,7 +25,11 @@ class SubProcess3Page3 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -35,35 +39,48 @@ class SubProcess3Page3 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-
               // Add rows or data entry
-              DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+            DataRow(cells: [
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 // Add rows or data entry
-              DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+             DataRow(cells: [
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-
               // Add rows or data entry
-              DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+             DataRow(cells: [
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-
             ]),
             SizedBox(
               height: 20,

@@ -25,7 +25,11 @@ class SubProcess3Page1 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('L.T MOTOR')),
+                DataCell(
+                  TextButton(child: Text('L.T MOTOR'),onPressed: () {
+                    
+                  },)
+                  ),
                DataCell(Text('4.3')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -35,7 +39,9 @@ class SubProcess3Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('C.T MOTOR')),
+                DataCell(
+                  TextButton(child:Text('C.T MOTOR') ,onPressed:(){},)
+                  ),
                DataCell(Text('2.1')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -43,7 +49,9 @@ class SubProcess3Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('HOIST MOTOR')),
+                DataCell(
+                  TextButton(child: Text('HOIST MOTOR'),onPressed: (){},)
+                  ),
                 DataCell(Text('38/18')),
                 DataCell(TextField()),
                 DataCell(TextField())

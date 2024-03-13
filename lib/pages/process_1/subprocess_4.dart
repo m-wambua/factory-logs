@@ -26,13 +26,21 @@ class SubProcess4Page1 extends StatelessWidget {
               // Add rows or data entry
 
               DataRow(cells: [
-                DataCell(Text('TPR')),
+                DataCell(
+                  TextButton(child: Text('TPR'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('  ')),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
               DataRow(cells: [
-                DataCell(Text('S.T.R')),
+                DataCell(
+                  TextButton(child: Text('S.T.R'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('  ')),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -42,7 +50,11 @@ class SubProcess4Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('LRP')),
+                DataCell(
+                  TextButton(child:Text('LRP') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(Text('  ')),
                 DataCell(TextField()),
                 DataCell(TextField())

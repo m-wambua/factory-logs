@@ -25,45 +25,61 @@ class SubProcess3Page2 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-
               //Add more rows as needed
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 // Add rows or data entry
-              DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+             DataRow(cells: [
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(
+                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
-
             ]),
             SizedBox(
               height: 20,

@@ -25,7 +25,11 @@ class SubProcess6Page1 extends StatelessWidget {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('TLL')),
+                DataCell(
+                  TextButton(child:Text('TLL') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -35,7 +39,11 @@ class SubProcess6Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('RECOILER')),
+                DataCell(
+                  TextButton(child:Text('RECOILER') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
@@ -43,14 +51,22 @@ class SubProcess6Page1 extends StatelessWidget {
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('UNCOILER')),
+                DataCell(
+                  TextButton(child:Text('UNCOILER') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
               ]),
 // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('Parameter 1')),
+                DataCell(
+                  TextButton(child:Text('Parameter 1') ,onPressed: () {
+                    
+                  },)
+                  ),
                 DataCell(TextField()),
                 DataCell(TextField()),
                 DataCell(TextField())
