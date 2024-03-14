@@ -2,6 +2,17 @@ import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subpro
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+class SavedValues {
+  String uncoiler = '';
+  String briddle1A = '';
+  String briddle1B = '';
+  String briddle2A = '';
+  String briddle2B = '';
+  String recoiler = '';
+}
+
+SavedValues savedValues = SavedValues();
+
 class SubProcess1Page1 extends StatefulWidget {
   @override
   State<SubProcess1Page1> createState() => _SubProcess1Page1State();
@@ -19,12 +30,20 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
   TextEditingController _briddle2BController = TextEditingController();
 
   TextEditingController _recoilerController = TextEditingController();
-  bool get wantKeepAlive => true;
 
   @override
-  Widget build(BuildContext context) {
-    
+  void initState() {
+    super.initState();
+    //Intialize text field with saved values
+    _uncoilerController.text = savedValues.uncoiler;
+    _briddle1AController.text = savedValues.briddle1A;
+    _briddle1BController.text = savedValues.briddle1B;
+    _briddle2AController.text = savedValues.briddle2A;
+    _briddle2BController.text = savedValues.briddle2B;
+    _recoilerController.text = savedValues.recoiler;
+  }
 
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Subprocess 1'),
@@ -133,14 +152,14 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
               onPressed: () {
                 // Update placeholders with entered values
 
-                setState(() {
-                  _uncoilerController.text = _uncoilerController.text.trim();
-                  _briddle1AController.text = _briddle1AController.text.trim();
-                  _briddle1BController.text = _briddle1BController.text.trim();
-                  _briddle2AController.text = _briddle2AController.text.trim();
-                  _briddle2BController.text = _briddle2BController.text.trim();
-                  _recoilerController.text = _recoilerController.text.trim();
-                });
+                //Update saved values with values from the text field
+                savedValues.uncoiler = _uncoilerController.text.trim();
+                savedValues.briddle1A = _briddle1AController.text.trim();
+                savedValues.briddle1B = _briddle1BController.text.trim();
+                savedValues.briddle2A = _briddle2AController.text.trim();
+                savedValues.briddle2B = _briddle2BController.text.trim();
+                savedValues.recoiler = _recoilerController.text.trim();
+                // Show notification or perform any other action
               },
               child: Text('Save as Draft'),
             ),
