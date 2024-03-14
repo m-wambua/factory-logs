@@ -1,9 +1,9 @@
-import 'package:collector/pages/process_2/subprocess_1.dart';
-import 'package:collector/pages/process_2/subprocess_2.dart';
-import 'package:collector/pages/process_2/subprocess_3.dart';
-import 'package:collector/pages/process_2/subprocess_4.dart';
-import 'package:collector/pages/process_2/subprocess_5.dart';
-import 'package:collector/pages/process_2/subprocess_6.dart';
+import 'package:collector/pages/process_2/subprocess_1/subprocess_1.dart';
+import 'package:collector/pages/process_2/subprocess_2/subprocess_2.dart';
+import 'package:collector/pages/process_2/subprocess_3/subprocess_3.dart';
+import 'package:collector/pages/process_2/subprocess_4/subprocess_4.dart';
+import 'package:collector/pages/process_2/subprocess_5/subprocess_5.dart';
+import 'package:collector/pages/process_2/subprocess_6/subprocess_6.dart';
 import 'package:flutter/material.dart';
 
 class Process2Page extends StatefulWidget {
