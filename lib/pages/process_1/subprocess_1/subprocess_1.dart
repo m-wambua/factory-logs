@@ -1,4 +1,9 @@
 import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_1_details_page1.dart';
+import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_2_details_page1.dart';
+import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_3_details_page1.dart';
+import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_4_details_page1.dart';
+import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_5_details_page1.dart';
+import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_6_details_page1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -84,7 +89,12 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
               DataRow(cells: [
                 DataCell(TextButton(
                   child: Text('BRIDDLE 1A'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SubProcess1Page1Details2()));
+                  },
                 )),
                 DataCell(Text('191')),
                 DataCell(TextField(
@@ -97,7 +107,12 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
               DataRow(cells: [
                 DataCell(TextButton(
                   child: Text('BRIDDLE 1B'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SubProcess1Page1Details3()));
+                  },
                 )),
                 DataCell(Text('375')),
                 DataCell(TextField(
@@ -109,7 +124,12 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
               DataRow(cells: [
                 DataCell(TextButton(
                   child: Text('BRIDDLE 2A'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SubProcess1Page1Details4()));
+                  },
                 )),
                 DataCell(Text('375')),
                 DataCell(TextField(
@@ -122,7 +142,12 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
               DataRow(cells: [
                 DataCell(TextButton(
                   child: Text('BRIDDLE 2B'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SubProcess1Page1Details5()));
+                  },
                 )),
                 DataCell(Text('191')),
                 DataCell(TextField(
@@ -134,7 +159,12 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
               DataRow(cells: [
                 DataCell(TextButton(
                   child: Text('RECOLIER'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SubProcess1Page1Details6()));
+                  },
                 )),
                 DataCell(Text('351')),
                 DataCell(TextField(

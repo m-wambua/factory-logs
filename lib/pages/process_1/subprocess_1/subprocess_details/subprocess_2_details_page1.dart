@@ -1,3 +1,7 @@
+import 'package:collector/pages/history/historypage.dart';
+import 'package:collector/pages/manuals/manuelspage.dart';
+import 'package:collector/pages/parameters/parameterspage.dart';
+import 'package:collector/pages/trends/trendspage.dart';
 import 'package:flutter/material.dart';
 
 class SubProcess1Page1Details2 extends StatelessWidget {
@@ -5,11 +9,45 @@ class SubProcess1Page1Details2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('UNCOILER'),
+        title: Text('BRIDDLE 1A'),
       ),
 
-      body: Center(
-        child: Text('This is the Uncolier Details page'),
+      body: Column(
+        children: [
+
+TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/history', arguments: 'BRIDDLE 1A');
+              },
+              child: Text('History')),
+          SizedBox(
+            height: 40,
+          ),
+          TextButton(
+              onPressed: () {
+               
+                Navigator.pushNamed(context, '/trends', arguments: 'BRIDDLE 1A');
+              },
+              child: Text('Trends')),
+          SizedBox(
+            height: 40,
+          ),
+          TextButton(
+              onPressed: () {
+                
+                Navigator.pushNamed(context, '/manuals', arguments: 'BRIDDLE 1A');
+              },
+              child: Text('Manuals')),
+          SizedBox(
+            height: 40,
+          ),
+          TextButton(
+              onPressed: () {
+                
+                Navigator.pushNamed(context, '/parameters', arguments: 'BRIDDLE 1A');
+              },
+              child: Text('Parameters')),        ],
+        
       ),
     );
   }

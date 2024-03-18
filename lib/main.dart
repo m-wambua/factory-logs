@@ -1,4 +1,8 @@
+import 'package:collector/pages/history/historypage.dart';
 import 'package:collector/pages/homepage.dart';
+import 'package:collector/pages/manuals/manuelspage.dart';
+import 'package:collector/pages/parameters/parameterspage.dart';
+import 'package:collector/pages/trends/trendspage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,6 +16,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
+      routes: {
+        '/history':(context)=>HistoryPage(),
+        '/trends':(context) => TrendsPage(),
+        '/manuals':(context)=>ManualsPage(),
+        '/parameters':(context)=>ParameterPage(),
+      },
       title: 'Flutter Demo',
       theme: ThemeData(
         

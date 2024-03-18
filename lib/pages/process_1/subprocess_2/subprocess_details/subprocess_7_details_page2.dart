@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class SubProcess1Page2Details1_2 extends StatelessWidget {
-  @override
+class SubProcess1Page2Details7_2 extends StatelessWidget {
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('UNCOILER BLOWER'),
+        title: Text('RECOILER LUBE MOTOR'),
       ),
       body: Column(
         children: [
           TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/history', arguments: 'UNCOILER BLOWER');
+                Navigator.pushNamed(context, '/history', arguments: 'RECOILER LUBE MOTOR');
               },
               child: Text('History')),
           SizedBox(
@@ -20,7 +20,7 @@ class SubProcess1Page2Details1_2 extends StatelessWidget {
           TextButton(
               onPressed: () {
                
-                Navigator.pushNamed(context, '/trends', arguments: 'UNCOILER BLOWER');
+                Navigator.pushNamed(context, '/trends', arguments: 'RECOILER LUBE MOTOR');
               },
               child: Text('Trends')),
           SizedBox(
@@ -29,7 +29,7 @@ class SubProcess1Page2Details1_2 extends StatelessWidget {
           TextButton(
               onPressed: () {
                 
-                Navigator.pushNamed(context, '/manuals', arguments: 'UNCOILER BLOWER');
+                Navigator.pushNamed(context, '/manuals', arguments: 'RECOILER LUBE MOTOR');
               },
               child: Text('Manuals')),
           SizedBox(
@@ -38,12 +38,10 @@ class SubProcess1Page2Details1_2 extends StatelessWidget {
           TextButton(
               onPressed: () {
                 
-                Navigator.pushNamed(context, '/parameters', arguments: 'UNCOILER BLOWER');
+                Navigator.pushNamed(context, '/parameters', arguments: 'RECOILER LUBE MOTOR');
               },
-              child: Text('Parameters')),
-        ],
+              child: Text('Parameters')),       ],
       ),
     );
   }
 }
-
