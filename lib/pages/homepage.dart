@@ -1,8 +1,10 @@
+import 'package:collector/pages/login_page.dart';
+import 'package:flutter/material.dart';
 import 'package:collector/pages/process_1/process_1.dart';
 import 'package:collector/pages/process_2/process_2.dart';
 import 'package:collector/pages/process_3/process_3.dart';
 import 'package:collector/pages/process_4/process_4.dart';
-import 'package:flutter/material.dart';
+
 class LandingPage extends StatefulWidget {
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -29,25 +31,30 @@ class _LandingPageState extends State<LandingPage> {
           children: _buildNavigationItems(),
         ),
       ),
-      body: Navigator(
-        onGenerateRoute: (settings) {
-          return MaterialPageRoute(builder: (context) {
-            switch (settings.name) {
-              case '/':
-                return Placeholder(); // Home page
-              case 'Process 1':
-                return Process1Page();
-              case 'Process 2':
-                return Process2Page();
-              case 'Process 3':
-                return Process3Page();
-              case 'Process 4':
-                return Process4Page();
-              default:
-                throw Exception('Invalid route: ${settings.name}');
-            }
-          });
-        },
+      body: Stack(
+        children: [
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(builder: (context) {
+                switch (settings.name) {
+                  case '/':
+                    return LoginPage(); // Home page
+                  case 'Process 1':
+                    return Process1Page();
+                  case 'Process 2':
+                    return Process2Page();
+                  case 'Process 3':
+                    return Process3Page();
+                  case 'Process 4':
+                    return Process4Page();
+                  default:
+                    throw Exception('Invalid route: ${settings.name}');
+                }
+              });
+            },
+          ),
+          //LoginPage(), // Display LoginPage on top of the LandingPage
+        ],
       ),
     );
   }
@@ -68,38 +75,37 @@ class _LandingPageState extends State<LandingPage> {
     }).toList();
   }
 
- void _handleButtonPressed(String label) {
-  setState(() {
-    _buttonStates[label] = !_buttonStates[label]!;
-  });
-  switch (label) {
-    case 'Process 1':
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Process1Page()),
-      );
-      break;
-    case 'Process 2':
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Process2Page()),
-      );
-      break;
-    case 'Process 3':
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Process3Page()),
-      );
-      break;
-    case 'Process 4':
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Process4Page()),
-      );
-      break;
-    default:
-      throw Exception('Invalid route: $label');
+  void _handleButtonPressed(String label) {
+    setState(() {
+      _buttonStates[label] = !_buttonStates[label]!;
+    });
+    switch (label) {
+      case 'Process 1':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Process1Page()),
+        );
+        break;
+      case 'Process 2':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Process2Page()),
+        );
+        break;
+      case 'Process 3':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Process3Page()),
+        );
+        break;
+      case 'Process 4':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Process4Page()),
+        );
+        break;
+      default:
+        throw Exception('Invalid route: $label');
+    }
   }
-}
-
 }
