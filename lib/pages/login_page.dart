@@ -1,3 +1,5 @@
+import 'package:collector/pages/logout_page.dart';
+import 'package:collector/pages/personel.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,15 +11,9 @@ class _LoginPageState extends State<LoginPage> {
   String _selectedShift = 'A';
   String _selectedHandoverPerson = 'Operator';
   List<String> _shifts = ['A', 'B', 'C', 'G'];
-  List<String> _handoverPersons = [
-    'Operator',
-    'Person 1',
-    'Person 2',
-    'Person 3',
-    'Person 4',
-    'Person 5',
-    'Person 6'
-  ];
+  List<String> _handoverPersons = PersonnelDataSource.personnel.map((person) => person.name).toList();
+
+
   List<String> _teamMembers = [];
 
   @override
@@ -91,9 +87,22 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        TextFormField();
+                        _showLoginDialog(context);
                       },
-                      child: Text('Login'))
+                      child: Text('Login')),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LogoutPage(
+                                    currentUser: _selectedHandoverPerson)));
+
+                      },
+                      child: Text('Logout Page'))
                 ],
               ),
           ],
@@ -151,40 +160,46 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
-/*
-   _showLoginDialog(context: context, builder: (BuildContext context)
-  
-  {
-    return AlertDialog(
-      title: Text('Please Sign in'),
-      actions: <Widget>[
-        TextFormField(
-          decoration: InputDecoration(
-            label: 'Username'
-          ),
-          keyboardType: TextInputType.text,
-          
-        ),
 
-        SizedBox( height: 20,),
-        TextFormField(decoration: InputDecoration(labelText: 'Password'),
-        keyboardType: TextInputType.visiblePassword,
-        obscureText: true,
-        ),
-         ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, _teamMembers);
-              },
-              child: Text('OK'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),)
-
-      ],
-    )
-  })
-  */
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Please Sign in'),
+            content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                    ),
+                    keyboardType: TextInputType.text,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Password'),
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: true,
+                  )
+                ]),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel')),
+              ElevatedButton(
+                onPressed: () {
+                  //Handle Login Logic here
+                },
+                child: Text('Ok'),
+              )
+            ],
+          );
+        });
+  }
 }

@@ -6,7 +6,11 @@ import 'package:collector/pages/trends/trendspage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    
+  
+    
+    const MyApp());
 }
 
 class MyApp extends StatelessWidget {
