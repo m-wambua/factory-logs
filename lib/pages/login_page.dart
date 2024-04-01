@@ -85,14 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 30,
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        _showLoginDialog(context);
-                      },
-                      child: Text('Login')),
-                  SizedBox(
-                    height: 20,
-                  ),
+                 
                   ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -161,45 +154,5 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _showLoginDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Please Sign in'),
-            content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                    ),
-                    keyboardType: TextInputType.text,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Password'),
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                  )
-                ]),
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel')),
-              ElevatedButton(
-                onPressed: () {
-                  //Handle Login Logic here
-                },
-                child: Text('Ok'),
-              )
-            ],
-          );
-        });
-  }
+  
 }

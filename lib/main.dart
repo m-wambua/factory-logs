@@ -3,6 +3,7 @@ import 'package:collector/pages/homepage.dart';
 import 'package:collector/pages/manuals/manuelspage.dart';
 import 'package:collector/pages/parameters/parameterspage.dart';
 import 'package:collector/pages/trends/trendspage.dart';
+import 'package:collector/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home:  LandingPage(),
+      home:  WelcomePage(),
     );
   }
 }
