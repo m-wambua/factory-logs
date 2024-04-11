@@ -31,3 +31,27 @@ class PersonnelDataSource {
     Person(name: 'Operator', email: ''),
   ];
 }
+
+class User {
+  final String username;
+  final String password;
+  User({required this.username, required this.password});
+}
+
+class UserDatabase {
+  static List<User> _users = [
+    User(username: 'user 1', password: 'password1'),
+  ];
+
+  static User? getUserByUsername(String username) {
+    return _users.firstWhere(
+      (user) => user.username == username,
+       // Specify the return type as User?
+    );
+  }
+
+  static bool verifyCredentials(String username, String password) {
+    User? user = getUserByUsername(username);
+    return user != null && user.password == password;
+  }
+}

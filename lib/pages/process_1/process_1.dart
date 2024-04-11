@@ -1,6 +1,9 @@
 import 'package:collector/pages/process_1/subprocess_1/subprocess_1_np.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_2_np.dart';
 import 'package:collector/pages/process_1/subprocess_3/subprocess_3_np.dart';
+import 'package:collector/pages/process_1/subprocess_4/subprocess_4_np.dart';
+import 'package:collector/pages/process_1/subprocess_5/subprocess_5_np.dart';
+import 'package:collector/pages/process_1/subprocess_6/subprocess_6_np.dart';
 import 'package:collector/pages/process_1/subprocess_7/subprocess_7.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_1.dart';
@@ -249,7 +252,7 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess4Page1(),
+                            builder: (context) => SubProcess4Page1_NP(),
                           ),
                         );
                       },
@@ -261,7 +264,7 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess5Page1(),
+                            builder: (context) => SubProcess5Page1_NP(),
                           ),
                         );
                       },
@@ -273,7 +276,7 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess6Page1(),
+                            builder: (context) => SubProcess6Page1_NP(),
                           ),
                         );
                       },

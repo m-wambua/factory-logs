@@ -1,35 +1,12 @@
+import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_4_details_page2.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_1_details_page4.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_2_details_page4.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_3_details_page4.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class SavedValues {
-  String tpr = '';
-  String str = '';
-  String lrp = '';
-}
-
-SavedValues savedValues = SavedValues();
-
-class SubProcess4Page1 extends StatefulWidget {
+class SubProcess4Page1_NP extends StatelessWidget {
   @override
-  State<SubProcess4Page1> createState() => _SubProcess4Page1State();
-}
-
-class _SubProcess4Page1State extends State<SubProcess4Page1> {
-  TextEditingController _trpController = TextEditingController();
-  TextEditingController _strController = TextEditingController();
-  TextEditingController _lrpController = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-    // Intialize text field with saved values
-    _trpController.text = savedValues.tpr;
-    _strController.text = savedValues.str;
-    _lrpController.text = savedValues.lrp;
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -43,9 +20,6 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
             //Table for data entry specific to subprocess 1
             DataTable(columns: [
               DataColumn(label: Text('MOTOR')),
-              DataColumn(label: Text('RATED')),
-              DataColumn(label: Text('DRAWN')),
-              DataColumn(label: Text('Remarks'))
             ], rows: [
               // Add rows or data entry
 
@@ -60,11 +34,6 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
                                 SubProcess1Page4Details1_4()));
                   },
                 )),
-                DataCell(Text('  ')),
-                DataCell(TextField(
-                  controller: _trpController,
-                )),
-                DataCell(TextField())
               ]),
               DataRow(cells: [
                 DataCell(TextButton(
@@ -77,11 +46,6 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
                                 SubProcess1Page4Details2_4()));
                   },
                 )),
-                DataCell(Text('  ')),
-                DataCell(TextField(
-                  controller: _strController,
-                )),
-                DataCell(TextField())
               ]),
 
               //Add more rows as needed
@@ -98,11 +62,6 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
                                 SubProcess1Page4Details3_4()));
                   },
                 )),
-                DataCell(Text('  ')),
-                DataCell(TextField(
-                  controller: _lrpController,
-                )),
-                DataCell(TextField())
               ]),
 
               // Add rows or data entry
@@ -134,14 +93,6 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
               height: 20,
             ),
             // Add buttons for additonal functionality
-
-            ElevatedButton(
-                onPressed: () {
-                  savedValues.tpr = _trpController.text.trim();
-                  savedValues.lrp = _lrpController.text.trim();
-                  savedValues.str = _strController.text.trim();
-                },
-                child: Text('Saved as Draft')),
           ]),
         ),
       ),

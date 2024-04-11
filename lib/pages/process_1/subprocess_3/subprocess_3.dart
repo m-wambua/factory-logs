@@ -103,7 +103,7 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
                 )),
                 DataCell(Text('38/18')),
                 DataCell(TextField(
-                  controller: _ctmotorController,
+                  controller: _hoistmotorController,
                 )),
                 DataCell(TextField())
               ]),

@@ -1,4 +1,6 @@
 import 'package:collector/pages/login_page.dart';
+import 'package:collector/pages/logout_page.dart';
+import 'package:collector/pages/personel.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/process_1/process_1.dart';
 import 'package:collector/pages/process_2/process_2.dart';
@@ -6,6 +8,8 @@ import 'package:collector/pages/process_3/process_3.dart';
 import 'package:collector/pages/process_4/process_4.dart';
 
 class LandingPage extends StatefulWidget {
+  final String username;
+  const LandingPage({Key? key, required this.username}) : super(key: key);
   @override
   _LandingPageState createState() => _LandingPageState();
 }
@@ -17,6 +21,7 @@ class _LandingPageState extends State<LandingPage> {
     'Process 2': false,
     'Process 3': false,
     'Process 4': false,
+    'Logout':false,
   };
 
   @override
@@ -38,7 +43,7 @@ class _LandingPageState extends State<LandingPage> {
               return MaterialPageRoute(builder: (context) {
                 switch (settings.name) {
                   case '/':
-                    return LoginPage(); // Home page
+                    return Placeholder(); // Home page
                   case 'Process 1':
                     return Process1Page();
                   case 'Process 2':
@@ -47,6 +52,9 @@ class _LandingPageState extends State<LandingPage> {
                     return Process3Page();
                   case 'Process 4':
                     return Process4Page();
+                  case 'Log Out':
+                    return LogoutPage(currentUser: widget.username);
+
                   default:
                     throw Exception('Invalid route: ${settings.name}');
                 }
@@ -104,6 +112,13 @@ class _LandingPageState extends State<LandingPage> {
           MaterialPageRoute(builder: (context) => Process4Page()),
         );
         break;
+
+      case 'Logout':
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    LogoutPage(currentUser: widget.username)));
       default:
         throw Exception('Invalid route: $label');
     }

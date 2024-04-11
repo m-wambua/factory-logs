@@ -1,3 +1,4 @@
+import 'package:collector/pages/homepage.dart';
 import 'package:collector/pages/logout_page.dart';
 import 'package:collector/pages/personel.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,8 @@ class _LoginPageState extends State<LoginPage> {
   String _selectedShift = 'A';
   String _selectedHandoverPerson = 'Operator';
   List<String> _shifts = ['A', 'B', 'C', 'G'];
-  List<String> _handoverPersons = PersonnelDataSource.personnel.map((person) => person.name).toList();
-
+  List<String> _handoverPersons =
+      PersonnelDataSource.personnel.map((person) => person.name).toList();
 
   List<String> _teamMembers = [];
 
@@ -85,7 +86,18 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 30,
                   ),
-                 
+                  ElevatedButton(
+                    onPressed: () {
+                      // Check if the user is logged in
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LandingPage(
+                                  username: _selectedHandoverPerson)));
+                    },
+                    child: Text('Begin logs'),
+                  ),
+                  SizedBox(height: 20),
                   ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -93,7 +105,6 @@ class _LoginPageState extends State<LoginPage> {
                             MaterialPageRoute(
                                 builder: (context) => LogoutPage(
                                     currentUser: _selectedHandoverPerson)));
-
                       },
                       child: Text('Logout Page'))
                 ],
@@ -154,5 +165,75 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  
+  void _showLoginDialog(BuildContext context) {
+    String username = '';
+    String password = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Please Sign in'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                ),
+                keyboardType: TextInputType.text,
+                onChanged: (value) {
+                  username = value;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Password'),
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: true,
+                onChanged: (value) {
+                  password = value;
+                },
+              )
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _login(context, username, password);
+              },
+              child: Text('Ok'),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _login(BuildContext context, String username, String password) {
+    bool isAuthenticated = UserDatabase.verifyCredentials(username, password);
+
+    if (isAuthenticated) {
+      // Navigate to the landing page
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LandingPage(username: username)));
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Invalid username or password.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SubProcess1Page2Details5 extends StatelessWidget {
+class SubProcess1Page5Details5_5 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
