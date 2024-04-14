@@ -1,5 +1,7 @@
 import 'package:collector/pages/login_page.dart';
 import 'package:collector/pages/logout_page.dart';
+import 'package:collector/pages/models/notification.dart';
+import 'package:collector/pages/notificationpage.dart';
 import 'package:collector/pages/personel.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/process_1/process_1.dart';
@@ -14,6 +16,30 @@ class LandingPage extends StatefulWidget {
   _LandingPageState createState() => _LandingPageState();
 }
 
+// a list of notification example
+List<NotificationModel> _sampleNotifications = [
+  NotificationModel(
+    title: 'Notification 1',
+    description: 'Description of Notification 1',
+    timestamp: DateTime.now(),
+    isRead: false,
+    type: NotificationType.MaintenanceUpdate
+  ),
+  NotificationModel(
+    title: 'Notification 2',
+    description: 'Description of Notification 2',
+    timestamp: DateTime.now(),
+    isRead: false,
+    type: NotificationType.LogsCollected
+  ),
+  // Add more sample notifications as needed
+];
+
+int getNotificationCount() {
+  //Assuming
+  return _sampleNotifications.length;
+}
+
 class _LandingPageState extends State<LandingPage> {
   String _selectedProcess = '';
   Map<String, bool> _buttonStates = {
@@ -21,14 +47,57 @@ class _LandingPageState extends State<LandingPage> {
     'Process 2': false,
     'Process 3': false,
     'Process 4': false,
-    'Logout':false,
+    'Logout': false,
   };
 
   @override
   Widget build(BuildContext context) {
+    int notificationCount=getNotificationCount();
     return Scaffold(
       appBar: AppBar(
         title: Text('Factory Processes'),
+        actions: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.home)),
+          SizedBox(
+            width: 15,
+          ),
+          Stack(children: [
+
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationsPage(
+                              notifications: _sampleNotifications,
+                            )));
+              },
+              icon: Icon(Icons.notifications)),
+              if (notificationCount>0)
+              Positioned(
+                right: 5,
+                top: 5,
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius:BorderRadius.circular(10),
+
+                  ),
+                  constraints: BoxConstraints(minWidth: 10,
+                  minHeight: 10),
+                  child: (Text(
+                    notificationCount.toString(),style: TextStyle(color: Colors.white,fontSize: 12),
+                    textAlign: TextAlign.center,
+                  )),
+                ))
+          ],),
+          
+          SizedBox(
+            width: 15,
+          ),
+          IconButton(onPressed: () {}, icon: Icon(Icons.list)),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
