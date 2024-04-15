@@ -48,22 +48,19 @@ class SubProcess6Page1_NP extends StatelessWidget {
                     
                   },)
                   ),
-                DataCell(TextField()),
-                DataCell(TextField()),
-                DataCell(TextField())
+               
               ]),
 // Add rows or data entry
+/*
               DataRow(cells: [
                 DataCell(
                   TextButton(child:Text('Parameter 1') ,onPressed: () {
                     
                   },)
                   ),
-                DataCell(TextField()),
-                DataCell(TextField()),
-                DataCell(TextField())
+                
               ]),
-
+*/
               // Add rows or data entry
               /*
               DataRow(cells: [
