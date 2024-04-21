@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SubProcess6Page1_NP extends StatelessWidget {
+  const SubProcess6Page1_NP({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tensions'),
+        title: const Text('Tensions'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -14,7 +15,7 @@ class SubProcess6Page1_NP extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('TENSIONS')),
               
 
@@ -23,7 +24,7 @@ class SubProcess6Page1_NP extends StatelessWidget {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(
-                  TextButton(child:Text('TLL') ,onPressed: () {
+                  TextButton(child:const Text('TLL') ,onPressed: () {
                     
                   },)
                   ),
@@ -35,7 +36,7 @@ class SubProcess6Page1_NP extends StatelessWidget {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(
-                  TextButton(child:Text('RECOILER') ,onPressed: () {
+                  TextButton(child:const Text('RECOILER') ,onPressed: () {
                     
                   },)
                   ),
@@ -44,7 +45,7 @@ class SubProcess6Page1_NP extends StatelessWidget {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(
-                  TextButton(child:Text('UNCOILER') ,onPressed: () {
+                  TextButton(child:const Text('UNCOILER') ,onPressed: () {
                     
                   },)
                   ),
@@ -72,7 +73,7 @@ class SubProcess6Page1_NP extends StatelessWidget {
               */
 
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             // Add buttons for additonal functionality

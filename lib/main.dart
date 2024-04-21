@@ -1,5 +1,4 @@
 import 'package:collector/pages/history/historypage.dart';
-import 'package:collector/pages/homepage.dart';
 import 'package:collector/pages/manuals/manuelspage.dart';
 import 'package:collector/pages/parameters/parameterspage.dart';
 import 'package:collector/pages/trends/trendspage.dart';
@@ -23,10 +22,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
 
       routes: {
-        '/history':(context)=>HistoryPage(),
-        '/trends':(context) => TrendsPage(),
-        '/manuals':(context)=>ManualsPage(),
-        '/parameters':(context)=>ParameterPage(),
+        '/history':(context)=>const HistoryPage(),
+        '/trends':(context) => const TrendsPage(),
+        '/manuals':(context)=> ManualsPage(),
+        '/parameters':(context)=>const ParameterPage(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -51,7 +50,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home:  WelcomePage(),
+      home:  const WelcomePage(),
     );
   }
 }

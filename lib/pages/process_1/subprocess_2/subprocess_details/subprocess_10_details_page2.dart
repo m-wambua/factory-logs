@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SubProcess1Page2Details10_2 extends StatelessWidget {
+  const SubProcess1Page2Details10_2({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('wELDER MOTOR'),
+        title: const Text('wELDER MOTOR'),
       ),
       body: Column(
         children: [
@@ -13,8 +15,8 @@ class SubProcess1Page2Details10_2 extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/history', arguments: 'WELDER MOTOR');
               },
-              child: Text('History')),
-          SizedBox(
+              child: const Text('History')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -22,8 +24,8 @@ class SubProcess1Page2Details10_2 extends StatelessWidget {
                
                 Navigator.pushNamed(context, '/trends', arguments: 'WELDER MOTOR');
               },
-              child: Text('Trends')),
-          SizedBox(
+              child: const Text('Trends')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -31,8 +33,8 @@ class SubProcess1Page2Details10_2 extends StatelessWidget {
                 
                 Navigator.pushNamed(context, '/manuals', arguments: 'WELDER MOTOR');
               },
-              child: Text('Manuals')),
-          SizedBox(
+              child: const Text('Manuals')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -40,7 +42,7 @@ class SubProcess1Page2Details10_2 extends StatelessWidget {
                 
                 Navigator.pushNamed(context, '/parameters', arguments: 'WELDER MOTOR');
               },
-              child: Text('Parameters')),       ],
+              child: const Text('Parameters')),       ],
       ),
     );
   }

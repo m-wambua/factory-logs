@@ -5,7 +5,6 @@ import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subpro
 import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_5_details_page1.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_6_details_page1.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SavedValues {
   String uncoiler = '';
@@ -19,22 +18,24 @@ class SavedValues {
 SavedValues savedValues = SavedValues();
 
 class SubProcess1Page1 extends StatefulWidget {
+  const SubProcess1Page1({super.key});
+
   @override
   State<SubProcess1Page1> createState() => _SubProcess1Page1State();
 }
 
 class _SubProcess1Page1State extends State<SubProcess1Page1> {
-  TextEditingController _uncoilerController = TextEditingController();
+  final TextEditingController _uncoilerController = TextEditingController();
 
-  TextEditingController _briddle1AController = TextEditingController();
+  final TextEditingController _briddle1AController = TextEditingController();
 
-  TextEditingController _briddle1BController = TextEditingController();
+  final TextEditingController _briddle1BController = TextEditingController();
 
-  TextEditingController _briddle2AController = TextEditingController();
+  final TextEditingController _briddle2AController = TextEditingController();
 
-  TextEditingController _briddle2BController = TextEditingController();
+  final TextEditingController _briddle2BController = TextEditingController();
 
-  TextEditingController _recoilerController = TextEditingController();
+  final TextEditingController _recoilerController = TextEditingController();
 
   @override
   void initState() {
@@ -48,10 +49,11 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
     _recoilerController.text = savedValues.recoiler;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subprocess 1'),
+        title: const Text('Subprocess 1'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -59,7 +61,7 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('Drive Motor Current')),
               DataColumn(label: Text('Rated')),
               DataColumn(label: Text('Drawn')),
@@ -68,19 +70,19 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('UNCOILER'),
+                  child: const Text('UNCOILER'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1Details1()));
+                            builder: (context) => const SubProcess1Page1Details1()));
                   },
                 )),
-                DataCell(Text('351')),
+                const DataCell(Text('351')),
                 DataCell(TextField(
                   controller: _uncoilerController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               //Add more rows as needed
@@ -88,92 +90,92 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('BRIDDLE 1A'),
+                  child: const Text('BRIDDLE 1A'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1Details2()));
+                            builder: (context) => const SubProcess1Page1Details2()));
                   },
                 )),
-                DataCell(Text('191')),
+                const DataCell(Text('191')),
                 DataCell(TextField(
                   controller: _briddle1AController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('BRIDDLE 1B'),
+                  child: const Text('BRIDDLE 1B'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1Details3()));
+                            builder: (context) => const SubProcess1Page1Details3()));
                   },
                 )),
-                DataCell(Text('375')),
+                const DataCell(Text('375')),
                 DataCell(TextField(
                   controller: _briddle1BController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('BRIDDLE 2A'),
+                  child: const Text('BRIDDLE 2A'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1Details4()));
+                            builder: (context) => const SubProcess1Page1Details4()));
                   },
                 )),
-                DataCell(Text('375')),
+                const DataCell(Text('375')),
                 DataCell(TextField(
                   controller: _briddle2AController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('BRIDDLE 2B'),
+                  child: const Text('BRIDDLE 2B'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1Details5()));
+                            builder: (context) => const SubProcess1Page1Details5()));
                   },
                 )),
-                DataCell(Text('191')),
+                const DataCell(Text('191')),
                 DataCell(TextField(
                   controller: _briddle2BController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('RECOLIER'),
+                  child: const Text('RECOLIER'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1Details6()));
+                            builder: (context) => const SubProcess1Page1Details6()));
                   },
                 )),
-                DataCell(Text('351')),
+                const DataCell(Text('351')),
                 DataCell(TextField(
                   controller: _recoilerController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
 
@@ -191,7 +193,7 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
                 savedValues.recoiler = _recoilerController.text.trim();
                 // Show notification or perform any other action
               },
-              child: Text('Save as Draft'),
+              child: const Text('Save as Draft'),
             ),
           ]),
         ),

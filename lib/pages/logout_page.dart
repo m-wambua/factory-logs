@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class LogoutPage extends StatefulWidget {
   final String currentUser;
 
-  LogoutPage({required this.currentUser});
+  const LogoutPage({super.key, required this.currentUser});
 
   @override
   _LogoutPageState createState() => _LogoutPageState();
@@ -12,13 +12,13 @@ class LogoutPage extends StatefulWidget {
 
 class _LogoutPageState extends State<LogoutPage> {
   String _selectedPerson = '';
-  TextEditingController _handoverController = TextEditingController();
+  final TextEditingController _handoverController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Logout / Handover'),
+        title: const Text('Logout / Handover'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,9 +27,9 @@ class _LogoutPageState extends State<LogoutPage> {
           children: [
             Text(
               'Logged in as: ${widget.currentUser}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             /*
             TextField(
               controller: _handoverController,
@@ -45,7 +45,7 @@ class _LogoutPageState extends State<LogoutPage> {
             ),
             */
 DropdownButtonFormField<Person>(
-  decoration: InputDecoration(
+  decoration: const InputDecoration(
     labelText: 'Handover to',
     border: OutlineInputBorder(),
   ),
@@ -59,12 +59,12 @@ DropdownButtonFormField<Person>(
       });
     }),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 _confirmHandover();
               },
-              child: Text('Confirm Handover'),
+              child: const Text('Confirm Handover'),
             ),
           ],
         ),
@@ -79,14 +79,14 @@ DropdownButtonFormField<Person>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Confirm Handover'),
+            title: const Text('Confirm Handover'),
             content: Text('Are you sure you want to handover to $_selectedPerson?'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -99,7 +99,7 @@ DropdownButtonFormField<Person>(
                   // Show success message
                   _showHandoverSuccess();
                 },
-                child: Text('Confirm'),
+                child: const Text('Confirm'),
               ),
             ],
           );
@@ -108,7 +108,7 @@ DropdownButtonFormField<Person>(
     } else {
       // Show error message if no person selected
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter the person you want to handover to.'),
           duration: Duration(seconds: 2),
         ),
@@ -121,14 +121,14 @@ DropdownButtonFormField<Person>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Handover Successful'),
+          title: const Text('Handover Successful'),
           content: Text('You have successfully handed over to $_selectedPerson.'),
           actions: [
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );

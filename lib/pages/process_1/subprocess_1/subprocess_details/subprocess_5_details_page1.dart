@@ -1,15 +1,13 @@
-import 'package:collector/pages/history/historypage.dart';
-import 'package:collector/pages/manuals/manuelspage.dart';
-import 'package:collector/pages/parameters/parameterspage.dart';
-import 'package:collector/pages/trends/trendspage.dart';
 import 'package:flutter/material.dart';
 
 class SubProcess1Page1Details5 extends StatelessWidget {
+  const SubProcess1Page1Details5({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('BRIDDLE 2B'),
+        title: const Text('BRIDDLE 2B'),
       ),
 
       body: Column(
@@ -18,8 +16,8 @@ TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/history', arguments: 'BRIDDLE 2B');
               },
-              child: Text('History')),
-          SizedBox(
+              child: const Text('History')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -27,8 +25,8 @@ TextButton(
                
                 Navigator.pushNamed(context, '/trends', arguments: 'BRIDDLE 2B');
               },
-              child: Text('Trends')),
-          SizedBox(
+              child: const Text('Trends')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -36,8 +34,8 @@ TextButton(
                 
                 Navigator.pushNamed(context, '/manuals', arguments: 'BRIDDLE 2B');
               },
-              child: Text('Manuals')),
-          SizedBox(
+              child: const Text('Manuals')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -45,7 +43,7 @@ TextButton(
                 
                 Navigator.pushNamed(context, '/parameters', arguments: 'BRIDDLE 2B');
               },
-              child: Text('Parameters')),        ],
+              child: const Text('Parameters')),        ],
         
       ),
     );

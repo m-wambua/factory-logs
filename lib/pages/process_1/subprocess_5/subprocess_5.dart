@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SavedValues {
   String pos_1 = '';
@@ -11,15 +10,17 @@ class SavedValues {
 SavedValues savedValues = SavedValues();
 
 class SubProcess5Page1 extends StatefulWidget {
+  const SubProcess5Page1({super.key});
+
   @override
   State<SubProcess5Page1> createState() => _SubProcess5Page1State();
 }
 
 class _SubProcess5Page1State extends State<SubProcess5Page1> {
-  TextEditingController _pos_1Controller = TextEditingController();
-  TextEditingController _pos_2Controller = TextEditingController();
-  TextEditingController _pos_3Controller = TextEditingController();
-  TextEditingController _pos_4Controller = TextEditingController();
+  final TextEditingController _pos_1Controller = TextEditingController();
+  final TextEditingController _pos_2Controller = TextEditingController();
+  final TextEditingController _pos_3Controller = TextEditingController();
+  final TextEditingController _pos_4Controller = TextEditingController();
   //TextEditingController _pos_5Controller = TextEditingController();
 
   @override
@@ -31,11 +32,12 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
     _pos_4Controller.text = savedValues.pos_4;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: TextButton(
-          child: Text('TLL CROWNING'),
+          child: const Text('TLL CROWNING'),
           onPressed: () {},
         ),
       ),
@@ -45,7 +47,7 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('READINGS')),
               DataColumn(label: Text('RATED')),
               DataColumn(label: Text('DRAWN')),
@@ -53,43 +55,43 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
             ], rows: [
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('1')),
-                DataCell(Text(' ')),
+                const DataCell(Text('1')),
+                const DataCell(Text(' ')),
                 DataCell(TextField(
                   controller: _pos_1Controller,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               //Add more rows as needed
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('2')),
-                DataCell(Text(' ')),
+                const DataCell(Text('2')),
+                const DataCell(Text(' ')),
                 DataCell(TextField(
                   controller: _pos_2Controller,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('3')),
-                DataCell(Text(' ')),
+                const DataCell(Text('3')),
+                const DataCell(Text(' ')),
                 DataCell(TextField(
                   controller: _pos_3Controller,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 // Add rows or data entry
               DataRow(cells: [
-                DataCell(Text('4')),
-                DataCell(Text(' ')),
+                const DataCell(Text('4')),
+                const DataCell(Text(' ')),
                 DataCell(TextField(
                   controller: _pos_4Controller,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               // Add rows or data entry
@@ -102,7 +104,7 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
               ]),
               */
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             // Add buttons for additonal functionality
@@ -113,7 +115,7 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
                   savedValues.pos_3 = _pos_3Controller.text.trim();
                   savedValues.pos_4 = _pos_4Controller.text.trim();
                 },
-                child: Text('Saved as Draft'))
+                child: const Text('Saved as Draft'))
           ]),
         ),
       ),

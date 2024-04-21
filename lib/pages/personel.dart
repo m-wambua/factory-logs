@@ -8,7 +8,7 @@ class Person {
 }
 
 class PeopleProvider extends ChangeNotifier {
-  List<Person> _people = [];
+  final List<Person> _people = [];
   List<Person> get people => _people;
 
   void addPerson(Person person) {
@@ -39,7 +39,7 @@ class User {
 }
 
 class UserDatabase {
-  static List<User> _users = [
+  static final List<User> _users = [
     User(username: 'user 1', password: 'password1'),
   ];
 

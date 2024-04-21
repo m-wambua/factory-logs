@@ -2,7 +2,6 @@ import 'package:collector/pages/process_1/subprocess_3/subprocess_details/subpro
 import 'package:collector/pages/process_1/subprocess_3/subprocess_details/subprocess_2_details_page3.dart';
 import 'package:collector/pages/process_1/subprocess_3/subprocess_details/subprocess_3_details_page3.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SavedValues {
   String ltmotor = '';
@@ -13,16 +12,18 @@ class SavedValues {
 SavedValues savedValues = SavedValues();
 
 class SubProcess3Page1 extends StatefulWidget {
+  const SubProcess3Page1({super.key});
+
   @override
   State<SubProcess3Page1> createState() => _SubProcess3Page1State();
 }
 
 class _SubProcess3Page1State extends State<SubProcess3Page1> {
-  TextEditingController _ltmotorController = TextEditingController();
+  final TextEditingController _ltmotorController = TextEditingController();
 
-  TextEditingController _ctmotorController = TextEditingController();
+  final TextEditingController _ctmotorController = TextEditingController();
 
-  TextEditingController _hoistmotorController = TextEditingController();
+  final TextEditingController _hoistmotorController = TextEditingController();
 
   @override
   void initState() {
@@ -32,10 +33,11 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
     _hoistmotorController.text = savedValues.hoistmotor;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CRANES'),
+        title: const Text('CRANES'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -43,7 +45,7 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('DRIVE/MOTOR')),
               DataColumn(label: Text('RATED')),
               DataColumn(label: Text('DRAWN')),
@@ -52,20 +54,20 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('L.T MOTOR'),
+                  child: const Text('L.T MOTOR'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SubProcess1Page2Details1_3()));
+                                const SubProcess1Page2Details1_3()));
                   },
                 )),
-                DataCell(Text('4.3')),
+                const DataCell(Text('4.3')),
                 DataCell(TextField(
                   controller: _ltmotorController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               //Add more rows as needed
@@ -73,39 +75,39 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('C.T MOTOR'),
+                  child: const Text('C.T MOTOR'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (contenxt) =>
-                                SubProcess1Page2Details2_3()));
+                                const SubProcess1Page2Details2_3()));
                   },
                 )),
-                DataCell(Text('2.1')),
+                const DataCell(Text('2.1')),
                 DataCell(TextField(
                   controller: _ctmotorController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('HOIST MOTOR'),
+                  child: const Text('HOIST MOTOR'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SubProcess1Page2Details3_3()));
+                                const SubProcess1Page2Details3_3()));
                   },
                 )),
-                DataCell(Text('38/18')),
+                const DataCell(Text('38/18')),
                 DataCell(TextField(
                   controller: _hoistmotorController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
               /*
 // Add rows or data entry
@@ -125,7 +127,7 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
               ]),
               */
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
 
@@ -135,7 +137,7 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
                   savedValues.ctmotor = _ctmotorController.text.trim();
                   savedValues.hoistmotor = _hoistmotorController.text.trim();
                 },
-                child: Text('Save as Draft'))
+                child: const Text('Save as Draft'))
             // Add buttons for additonal functionality
           ]),
         ),

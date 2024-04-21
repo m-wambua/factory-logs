@@ -2,7 +2,7 @@ import 'package:collector/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+  const WelcomePage({super.key});
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
@@ -19,7 +19,7 @@ class _WelcomePageState extends State<WelcomePage> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             'Hello! Welcome to the CSL Data Logging Platform',
             textAlign: TextAlign.center,
           ),
@@ -30,7 +30,7 @@ class _WelcomePageState extends State<WelcomePage> {
               onPressed: () {
                 _showLoginDialog(context);
               },
-              child: Text('Sign in'))
+              child: const Text('Sign in'))
         ],
       )),
     );
@@ -41,22 +41,22 @@ class _WelcomePageState extends State<WelcomePage> {
         context: context,
         builder: (BuildContext contex) {
           return AlertDialog(
-            title: Text('Please Sign in'),
+            title: const Text('Please Sign in'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Username',
                   ),
                   keyboardType: TextInputType.name,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(labelText: 'Password'),
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                 )
@@ -67,13 +67,13 @@ class _WelcomePageState extends State<WelcomePage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Cancel')),
+                  child: const Text('Cancel')),
               ElevatedButton(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginPage()));
+                        MaterialPageRoute(builder: (context) => const LoginPage()));
                   },
-                  child: Text('Ok'))
+                  child: const Text('Ok'))
             ],
           );
         });

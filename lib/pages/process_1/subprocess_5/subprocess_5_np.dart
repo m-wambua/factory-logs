@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SubProcess5Page1_NP extends StatelessWidget {
+  const SubProcess5Page1_NP({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: 
-        TextButton(child:Text('TLL CROWNING') ,onPressed: (){
+        TextButton(child:const Text('TLL CROWNING') ,onPressed: (){
 
           
         },)
@@ -19,13 +20,13 @@ class SubProcess5Page1_NP extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('READINGS')),
               
               
 
 
-            ], rows: [
+            ], rows: const [
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(Text('1')),
@@ -57,7 +58,7 @@ class SubProcess5Page1_NP extends StatelessWidget {
               ]),
               */
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             // Add buttons for additonal functionality

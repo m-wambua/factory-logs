@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SubProcess1Page2Details3_6 extends StatelessWidget {
+  const SubProcess1Page2Details3_6({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('UNCOILER'),
+        title: const Text('UNCOILER'),
       ),
 
       body: Column(
@@ -15,8 +17,8 @@ class SubProcess1Page2Details3_6 extends StatelessWidget {
                   Navigator.pushNamed(context, '/history',
                       arguments: 'TLL Crownings');
                 },
-                child: Text('History')),
-            SizedBox(
+                child: const Text('History')),
+            const SizedBox(
               height: 40,
             ),
             TextButton(
@@ -24,8 +26,8 @@ class SubProcess1Page2Details3_6 extends StatelessWidget {
                   Navigator.pushNamed(context, '/trends',
                       arguments: 'TLL Crownings');
                 },
-                child: Text('Trend')),
-            SizedBox(
+                child: const Text('Trend')),
+            const SizedBox(
               height: 40,
             ),
             TextButton(
@@ -33,8 +35,8 @@ class SubProcess1Page2Details3_6 extends StatelessWidget {
                   Navigator.pushNamed(context, '/manuals',
                       arguments: 'TLL Crownings');
                 },
-                child: Text('Manuals')),
-            SizedBox(
+                child: const Text('Manuals')),
+            const SizedBox(
               height: 40,
             ),
             TextButton(
@@ -43,7 +45,7 @@ class SubProcess1Page2Details3_6 extends StatelessWidget {
                       arguments: 'TLL Crownings');
 
                 },
-                child: Text('Parameters'))
+                child: const Text('Parameters'))
           ],
         ));
 

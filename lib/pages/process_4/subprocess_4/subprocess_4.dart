@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SubProcess4Page4 extends StatelessWidget {
+  const SubProcess4Page4({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subprocess 4'),
+        title: const Text('Subprocess 4'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -14,7 +15,7 @@ class SubProcess4Page4 extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('Parameter')),
               DataColumn(label: Text('Value 1')),
               DataColumn(label: Text('Value 2')),
@@ -26,62 +27,62 @@ class SubProcess4Page4 extends StatelessWidget {
               // Add rows or data entry
              DataRow(cells: [
                 DataCell(
-                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                  TextButton(child: const Text('Parameter 1'),onPressed: () {
                     
                   },)
                   ),
-                DataCell(TextField()),
-                DataCell(TextField()),
-                DataCell(TextField())
+                const DataCell(TextField()),
+                const DataCell(TextField()),
+                const DataCell(TextField())
               ]),
               //Add more rows as needed
 
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(
-                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                  TextButton(child: const Text('Parameter 1'),onPressed: () {
                     
                   },)
                   ),
-                DataCell(TextField()),
-                DataCell(TextField()),
-                DataCell(TextField())
+                const DataCell(TextField()),
+                const DataCell(TextField()),
+                const DataCell(TextField())
               ]),
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(
-                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                  TextButton(child: const Text('Parameter 1'),onPressed: () {
                     
                   },)
                   ),
-                DataCell(TextField()),
-                DataCell(TextField()),
-                DataCell(TextField())
+                const DataCell(TextField()),
+                const DataCell(TextField()),
+                const DataCell(TextField())
               ]),
 // Add rows or data entry
              DataRow(cells: [
                 DataCell(
-                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                  TextButton(child: const Text('Parameter 1'),onPressed: () {
                     
                   },)
                   ),
-                DataCell(TextField()),
-                DataCell(TextField()),
-                DataCell(TextField())
+                const DataCell(TextField()),
+                const DataCell(TextField()),
+                const DataCell(TextField())
               ]),
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(
-                  TextButton(child: Text('Parameter 1'),onPressed: () {
+                  TextButton(child: const Text('Parameter 1'),onPressed: () {
                     
                   },)
                   ),
-                DataCell(TextField()),
-                DataCell(TextField()),
-                DataCell(TextField())
+                const DataCell(TextField()),
+                const DataCell(TextField()),
+                const DataCell(TextField())
               ]),
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             // Add buttons for additonal functionality

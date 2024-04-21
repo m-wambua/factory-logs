@@ -15,6 +15,8 @@ import 'package:collector/pages/process_1/subprocess_5/subprocess_5.dart';
 import 'package:collector/pages/process_1/subprocess_6/subprocess_6.dart';
 
 class Process1Page extends StatefulWidget {
+  const Process1Page({super.key});
+
   @override
   _Process1PageState createState() => _Process1PageState();
 }
@@ -29,11 +31,11 @@ class _Process1PageState extends State<Process1Page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trimming Cum Tension Leveler Line'),
+        title: const Text('Trimming Cum Tension Leveler Line'),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               // Radio buttons for production selection
@@ -48,7 +50,7 @@ class _Process1PageState extends State<Process1Page> {
                       });
                     },
                   ),
-                  Text('Production'),
+                  const Text('Production'),
                   Radio(
                     value: false,
                     groupValue: _productionSelected,
@@ -58,12 +60,12 @@ class _Process1PageState extends State<Process1Page> {
                       });
                     },
                   ),
-                  Text('No Production'),
+                  const Text('No Production'),
 
                   //TextField(maxLines: 40,),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Display subprocess buttons only if production was selected
               if (_productionSelected)
                 Column(
@@ -73,94 +75,94 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1(),
+                            builder: (context) => const SubProcess1Page1(),
                           ),
                         );
                       },
-                      child: Text('Drives'),
+                      child: const Text('Drives'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess2Page1(),
+                            builder: (context) => const SubProcess2Page1(),
                           ),
                         );
                       },
-                      child: Text('CC Motores'),
+                      child: const Text('MCC Motors'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess3Page1(),
+                            builder: (context) => const SubProcess3Page1(),
                           ),
                         );
                       },
-                      child: Text('Cranes'),
+                      child: const Text('Cranes'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess4Page1(),
+                            builder: (context) => const SubProcess4Page1(),
                           ),
                         );
                       },
-                      child: Text('TLL Positions (MM)'),
+                      child: const Text('TLL Positions (MM)'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess5Page1(),
+                            builder: (context) => const SubProcess5Page1(),
                           ),
                         );
                       },
-                      child: Text('TLL Crowning Position (MM)'),
+                      child: const Text('TLL Crowning Position (MM)'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess6Page1(),
+                            builder: (context) => const SubProcess6Page1(),
                           ),
                         );
                       },
-                      child: Text('Tensions'),
+                      child: const Text('Tensions'),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 100,
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess7Page1(),
+                            builder: (context) => const SubProcess7Page1(),
                           ),
                         );
                       },
-                      child: Text('Currents'),
+                      child: const Text('Currents'),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 100,
                     ),
 
                     
-                    Text(
+                    const Text(
                         'ODS Occurence During Shift (Delay please indicate time)'),
                     TextFormField(
                       maxLines: 20,
@@ -170,7 +172,7 @@ class _Process1PageState extends State<Process1Page> {
                           filled: true,
                           fillColor: Colors.grey[200]),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     ElevatedButton(
@@ -179,15 +181,15 @@ class _Process1PageState extends State<Process1Page> {
                             saveButtonClickTime = DateTime.now();
                           });
                         },
-                        child: Text('Save Current Values')),
+                        child: const Text('Save Current Values')),
                     if (saveButtonClickTime != null)
-                      Text('The data was saved at${saveButtonClickTime}'),
+                      Text('The data was saved at$saveButtonClickTime'),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     CheckboxListTile(
-                      title: Text('Was the shift eventful?'),
+                      title: const Text('Was the shift eventful?'),
                         value: _eventfulShift,
                         onChanged: (value) {
                           setState(() {
@@ -197,7 +199,7 @@ class _Process1PageState extends State<Process1Page> {
                     //TextFormField for event description if shift was eventful
                     if (_eventfulShift)
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Describe the event....',
                           border: OutlineInputBorder(),
                         ),
@@ -217,94 +219,94 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1_Np(),
+                            builder: (context) => const SubProcess1Page1_Np(),
                           ),
                         );
                       },
-                      child: Text('Drives'),
+                      child: const Text('Drives'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess2Page1_Np(),
+                            builder: (context) => const SubProcess2Page1_Np(),
                           ),
                         );
                       },
-                      child: Text('CC Motores'),
+                      child: const Text('CC Motores'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess3Page1_NP(),
+                            builder: (context) => const SubProcess3Page1_NP(),
                           ),
                         );
                       },
-                      child: Text('Cranes'),
+                      child: const Text('Cranes'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess4Page1_NP(),
+                            builder: (context) => const SubProcess4Page1_NP(),
                           ),
                         );
                       },
-                      child: Text('TLL Positions (MM)'),
+                      child: const Text('TLL Positions (MM)'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess5Page1_NP(),
+                            builder: (context) => const SubProcess5Page1_NP(),
                           ),
                         );
                       },
-                      child: Text('TLL Crowning Position (MM)'),
+                      child: const Text('TLL Crowning Position (MM)'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess6Page1_NP(),
+                            builder: (context) => const SubProcess6Page1_NP(),
                           ),
                         );
                       },
-                      child: Text('Tensions'),
+                      child: const Text('Tensions'),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 100,
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess7Page1_NP(),
+                            builder: (context) => const SubProcess7Page1_NP(),
                           ),
                         );
                       },
-                      child: Text('Currents'),
+                      child: const Text('Currents'),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 100,
                     ),
 
                     
-                    Text(
+                    const Text(
                         'ODS Occurence During Shift (Delay please indicate time)'),
                     TextFormField(
                       maxLines: 20,
@@ -314,7 +316,7 @@ class _Process1PageState extends State<Process1Page> {
                           filled: true,
                           fillColor: Colors.grey[200]),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     ElevatedButton(
@@ -323,15 +325,15 @@ class _Process1PageState extends State<Process1Page> {
                             saveButtonClickTime = DateTime.now();
                           });
                         },
-                        child: Text('Save Current Values')),
+                        child: const Text('Save Current Values')),
                     if (saveButtonClickTime != null)
-                      Text('The data was saved at${saveButtonClickTime}'),
+                      Text('The data was saved at$saveButtonClickTime'),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     CheckboxListTile(
-                      title: Text('Was the shift eventful?'),
+                      title: const Text('Was the shift eventful?'),
                         value: _eventfulShift,
                         onChanged: (value) {
                           setState(() {
@@ -341,7 +343,7 @@ class _Process1PageState extends State<Process1Page> {
                     //TextFormField for event description if shift was eventful
                     if (_eventfulShift)
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Describe the event....',
                           border: OutlineInputBorder(),
                         ),

@@ -1,8 +1,6 @@
-import 'package:collector/pages/login_page.dart';
 import 'package:collector/pages/logout_page.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/notificationpage.dart';
-import 'package:collector/pages/personel.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/process_1/process_1.dart';
 import 'package:collector/pages/process_2/process_2.dart';
@@ -11,7 +9,7 @@ import 'package:collector/pages/process_4/process_4.dart';
 
 class LandingPage extends StatefulWidget {
   final String username;
-  const LandingPage({Key? key, required this.username}) : super(key: key);
+  const LandingPage({super.key, required this.username});
   @override
   _LandingPageState createState() => _LandingPageState();
 }
@@ -42,7 +40,7 @@ int getNotificationCount() {
 
 class _LandingPageState extends State<LandingPage> {
   String _selectedProcess = '';
-  Map<String, bool> _buttonStates = {
+  final Map<String, bool> _buttonStates = {
     'Process 1': false,
     'Process 2': false,
     'Process 3': false,
@@ -55,10 +53,10 @@ class _LandingPageState extends State<LandingPage> {
     int notificationCount=getNotificationCount();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Factory Processes'),
+        title: const Text('Factory Processes'),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.home)),
-          SizedBox(
+          IconButton(onPressed: () {}, icon: const Icon(Icons.home)),
+          const SizedBox(
             width: 15,
           ),
           Stack(children: [
@@ -72,31 +70,31 @@ class _LandingPageState extends State<LandingPage> {
                               notifications: _sampleNotifications,
                             )));
               },
-              icon: Icon(Icons.notifications)),
+              icon: const Icon(Icons.notifications)),
               if (notificationCount>0)
               Positioned(
                 right: 5,
                 top: 5,
                 child: Container(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: Colors.red,
                     borderRadius:BorderRadius.circular(10),
 
                   ),
-                  constraints: BoxConstraints(minWidth: 10,
+                  constraints: const BoxConstraints(minWidth: 10,
                   minHeight: 10),
                   child: (Text(
-                    notificationCount.toString(),style: TextStyle(color: Colors.white,fontSize: 12),
+                    notificationCount.toString(),style: const TextStyle(color: Colors.white,fontSize: 12),
                     textAlign: TextAlign.center,
                   )),
                 ))
           ],),
           
-          SizedBox(
+          const SizedBox(
             width: 15,
           ),
-          IconButton(onPressed: () {}, icon: Icon(Icons.list)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.list)),
         ],
       ),
       drawer: Drawer(
@@ -112,15 +110,15 @@ class _LandingPageState extends State<LandingPage> {
               return MaterialPageRoute(builder: (context) {
                 switch (settings.name) {
                   case '/':
-                    return Placeholder(); // Home page
+                    return const Placeholder(); // Home page
                   case 'Process 1':
-                    return Process1Page();
+                    return const Process1Page();
                   case 'Process 2':
-                    return Process2Page();
+                    return const Process2Page();
                   case 'Process 3':
-                    return Process3Page();
+                    return const Process3Page();
                   case 'Process 4':
-                    return Process4Page();
+                    return const Process4Page();
                   case 'Log Out':
                     return LogoutPage(currentUser: widget.username);
 
@@ -160,25 +158,25 @@ class _LandingPageState extends State<LandingPage> {
       case 'Process 1':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Process1Page()),
+          MaterialPageRoute(builder: (context) => const Process1Page()),
         );
         break;
       case 'Process 2':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Process2Page()),
+          MaterialPageRoute(builder: (context) => const Process2Page()),
         );
         break;
       case 'Process 3':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Process3Page()),
+          MaterialPageRoute(builder: (context) => const Process3Page()),
         );
         break;
       case 'Process 4':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Process4Page()),
+          MaterialPageRoute(builder: (context) => const Process4Page()),
         );
         break;
 

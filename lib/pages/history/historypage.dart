@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HistoryPage extends StatelessWidget {
+  const HistoryPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     //Retriev the arguments passed
@@ -18,9 +20,9 @@ class HistoryPage extends StatelessWidget {
           //Display scrollable Excel-like table
           //Implement subpages for failure and maintenance
 
-          TextButton(onPressed: (){}, child: Text('Failure History')),
-          SizedBox(height: 30,),
-          TextButton(onPressed: (){}, child: Text('Maintenance History')),
+          TextButton(onPressed: (){}, child: const Text('Failure History')),
+          const SizedBox(height: 30,),
+          TextButton(onPressed: (){}, child: const Text('Maintenance History')),
         ],
       )),
     );

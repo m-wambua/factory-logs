@@ -7,6 +7,8 @@ import 'package:collector/pages/process_4/subprocess_6/subprocess_6.dart';
 import 'package:flutter/material.dart';
 
 class Process4Page extends StatefulWidget {
+  const Process4Page({super.key});
+
   @override
   State<Process4Page> createState() => _Process4PageState();
 }
@@ -21,11 +23,11 @@ class _Process4PageState extends State<Process4Page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Process 1'),
+        title: const Text('Process 1'),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
               // Radio buttons for production selection
@@ -40,7 +42,7 @@ class _Process4PageState extends State<Process4Page> {
                       });
                     },
                   ),
-                  Text('Production'),
+                  const Text('Production'),
                   Radio(
                     value: false,
                     groupValue: _productionSelected,
@@ -50,10 +52,10 @@ class _Process4PageState extends State<Process4Page> {
                       });
                     },
                   ),
-                  Text('No Production'),
+                  const Text('No Production'),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Display subprocess buttons only if production was selected
               if (_productionSelected)
                 Column(
@@ -63,76 +65,76 @@ class _Process4PageState extends State<Process4Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess1Page4(),
+                            builder: (context) => const SubProcess1Page4(),
                           ),
                         );
                       },
-                      child: Text('Subprocess 1'),
+                      child: const Text('Subprocess 1'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess2Page4(),
+                            builder: (context) => const SubProcess2Page4(),
                           ),
                         );
                       },
-                      child: Text('Subprocess 2'),
+                      child: const Text('Subprocess 2'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess3Page4(),
+                            builder: (context) => const SubProcess3Page4(),
                           ),
                         );
                       },
-                      child: Text('Subprocess 3'),
+                      child: const Text('Subprocess 3'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess4Page4(),
+                            builder: (context) => const SubProcess4Page4(),
                           ),
                         );
                       },
-                      child: Text('Subprocess 4'),
+                      child: const Text('Subprocess 4'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess5Page4(),
+                            builder: (context) => const SubProcess5Page4(),
                           ),
                         );
                       },
-                      child: Text('Subprocess 5'),
+                      child: const Text('Subprocess 5'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SubProcess6Page4(),
+                            builder: (context) => const SubProcess6Page4(),
                           ),
                         );
                       },
-                      child: Text('Subprocess 6'),
+                      child: const Text('Subprocess 6'),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 100,
                     ),
-                    Text(
+                    const Text(
                         'ODS Occurence During Shift (Delay please indicate time)'),
                     TextFormField(
                       maxLines: 20,
@@ -142,7 +144,7 @@ class _Process4PageState extends State<Process4Page> {
                           filled: true,
                           fillColor: Colors.grey[200]),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     ElevatedButton(
@@ -151,15 +153,15 @@ class _Process4PageState extends State<Process4Page> {
                             saveButtonClickTime = DateTime.now();
                           });
                         },
-                        child: Text('Save Current Values')),
+                        child: const Text('Save Current Values')),
                     if (saveButtonClickTime != null)
-                      Text('The data was saved at${saveButtonClickTime}'),
+                      Text('The data was saved at$saveButtonClickTime'),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     CheckboxListTile(
-                        title: Text('Was the shift eventful?'),
+                        title: const Text('Was the shift eventful?'),
                         value: _eventfulShift,
                         onChanged: (value) {
                           setState(() {
@@ -169,7 +171,7 @@ class _Process4PageState extends State<Process4Page> {
                     //TextFormField for event description if shift was eventful
                     if (_eventfulShift)
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Describe the event....',
                           border: OutlineInputBorder(),
                         ),

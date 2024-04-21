@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SubProcess1Page2Details9_2 extends StatelessWidget {
+  const SubProcess1Page2Details9_2({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('HYDRAULIC RECIRCULATION'),
+        title: const Text('HYDRAULIC RECIRCULATION'),
       ),
       body: Column(
         children: [
@@ -13,8 +15,8 @@ class SubProcess1Page2Details9_2 extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/history', arguments: 'HYDRAULIC RECIRCULATION');
               },
-              child: Text('History')),
-          SizedBox(
+              child: const Text('History')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -22,8 +24,8 @@ class SubProcess1Page2Details9_2 extends StatelessWidget {
                
                 Navigator.pushNamed(context, '/trends', arguments: 'HYDRAULIC RECIRCULATION');
               },
-              child: Text('Trends')),
-          SizedBox(
+              child: const Text('Trends')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -31,8 +33,8 @@ class SubProcess1Page2Details9_2 extends StatelessWidget {
                 
                 Navigator.pushNamed(context, '/manuals', arguments: 'HYDRAULIC RECIRCULATION');
               },
-              child: Text('Manuals')),
-          SizedBox(
+              child: const Text('Manuals')),
+          const SizedBox(
             height: 40,
           ),
           TextButton(
@@ -40,7 +42,7 @@ class SubProcess1Page2Details9_2 extends StatelessWidget {
                 
                 Navigator.pushNamed(context, '/parameters', arguments: 'HYDRAULIC RECIRCULATION');
               },
-              child: Text('Parameters')),       ],
+              child: const Text('Parameters')),       ],
       ),
     );
   }

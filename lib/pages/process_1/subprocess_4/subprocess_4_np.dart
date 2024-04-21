@@ -1,16 +1,16 @@
-import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_4_details_page2.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_1_details_page4.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_2_details_page4.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_3_details_page4.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SubProcess4Page1_NP extends StatelessWidget {
+  const SubProcess4Page1_NP({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TLL POSITIONS [MM]'),
+        title: const Text('TLL POSITIONS [MM]'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -18,32 +18,32 @@ class SubProcess4Page1_NP extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('MOTOR')),
             ], rows: [
               // Add rows or data entry
 
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('TPR'),
+                  child: const Text('TPR'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SubProcess1Page4Details1_4()));
+                                const SubProcess1Page4Details1_4()));
                   },
                 )),
               ]),
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('S.T.R'),
+                  child: const Text('S.T.R'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SubProcess1Page4Details2_4()));
+                                const SubProcess1Page4Details2_4()));
                   },
                 )),
               ]),
@@ -53,13 +53,13 @@ class SubProcess4Page1_NP extends StatelessWidget {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('LRP'),
+                  child: const Text('LRP'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SubProcess1Page4Details3_4()));
+                                const SubProcess1Page4Details3_4()));
                   },
                 )),
               ]),
@@ -89,7 +89,7 @@ class SubProcess4Page1_NP extends StatelessWidget {
               ]),
               */
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             // Add buttons for additonal functionality

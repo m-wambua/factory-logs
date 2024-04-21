@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class TrendsPage extends StatelessWidget {
+  const TrendsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     //Retrieve the arguments passes
@@ -12,7 +13,7 @@ class TrendsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Trends for $subprocess'),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           children: [
             //Display line graph with past values

@@ -4,6 +4,8 @@ import 'package:collector/pages/personel.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -11,8 +13,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _selectedShift = 'A';
   String _selectedHandoverPerson = 'Operator';
-  List<String> _shifts = ['A', 'B', 'C', 'G'];
-  List<String> _handoverPersons =
+  final List<String> _shifts = ['A', 'B', 'C', 'G'];
+  final List<String> _handoverPersons =
       PersonnelDataSource.personnel.map((person) => person.name).toList();
 
   List<String> _teamMembers = [];
@@ -21,14 +23,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Select Shift:'),
+            const Text('Select Shift:'),
             DropdownButton<String>(
               value: _selectedShift,
               onChanged: (String? newValue) {
@@ -44,12 +46,12 @@ class _LoginPageState extends State<LoginPage> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_selectedShift.isNotEmpty && _selectedShift != 'G')
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Select Handover Person:'),
+                  const Text('Select Handover Person:'),
                   DropdownButton<String>(
                     value: _selectedHandoverPerson,
                     onChanged: (newValue) {
@@ -64,8 +66,8 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     }).toList(),
                   ),
-                  SizedBox(height: 20),
-                  Text('Select Team Members:'),
+                  const SizedBox(height: 20),
+                  const Text('Select Team Members:'),
                   Wrap(
                     spacing: 8.0,
                     children: _teamMembers.map((member) {
@@ -81,9 +83,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   ElevatedButton(
                     onPressed: _selectTeamMembers,
-                    child: Text('Select Team Members'),
+                    child: const Text('Select Team Members'),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   ElevatedButton(
@@ -95,9 +97,9 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (context) => LandingPage(
                                   username: _selectedHandoverPerson)));
                     },
-                    child: Text('Begin logs'),
+                    child: const Text('Begin logs'),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -106,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => LogoutPage(
                                     currentUser: _selectedHandoverPerson)));
                       },
-                      child: Text('Logout Page'))
+                      child: const Text('Logout Page'))
                 ],
               ),
           ],
@@ -120,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Team Members'),
+          title: const Text('Select Team Members'),
           content: SingleChildScrollView(
             child: Column(
               children: _handoverPersons.map((person) {
@@ -145,13 +147,13 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.pop(context, _teamMembers);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -173,13 +175,13 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Please Sign in'),
+          title: const Text('Please Sign in'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Username',
                 ),
                 keyboardType: TextInputType.text,
@@ -187,9 +189,9 @@ class _LoginPageState extends State<LoginPage> {
                   username = value;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
                 onChanged: (value) {
@@ -203,13 +205,13 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
                 _login(context, username, password);
               },
-              child: Text('Ok'),
+              child: const Text('Ok'),
             )
           ],
         );
@@ -229,7 +231,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Invalid username or password.'),
           duration: Duration(seconds: 2),
         ),

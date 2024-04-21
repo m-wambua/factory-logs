@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SavedValues {
   String uncoilertm1 = '';
@@ -48,52 +47,54 @@ class SavedValues {
 SavedValues savedValues = SavedValues();
 
 class SubProcess7Page1 extends StatefulWidget {
+  const SubProcess7Page1({super.key});
+
   @override
   State<SubProcess7Page1> createState() => _SubProcess7Page1State();
 }
 
 class _SubProcess7Page1State extends State<SubProcess7Page1> {
-  TextEditingController _uncoilertm1Controller = TextEditingController();
-  TextEditingController _uncoilertm2Controller = TextEditingController();
-  TextEditingController _uncoilertm3Controller = TextEditingController();
-  TextEditingController _uncoilertm4Controller = TextEditingController();
-  TextEditingController _uncoilertm5Controller = TextEditingController();
-  TextEditingController _uncoilertm6Controller = TextEditingController();
+  final TextEditingController _uncoilertm1Controller = TextEditingController();
+  final TextEditingController _uncoilertm2Controller = TextEditingController();
+  final TextEditingController _uncoilertm3Controller = TextEditingController();
+  final TextEditingController _uncoilertm4Controller = TextEditingController();
+  final TextEditingController _uncoilertm5Controller = TextEditingController();
+  final TextEditingController _uncoilertm6Controller = TextEditingController();
 
-  TextEditingController _briddle1atm1Controller = TextEditingController();
-  TextEditingController _briddle1atm2Controller = TextEditingController();
-  TextEditingController _briddle1atm3Controller = TextEditingController();
-  TextEditingController _briddle1atm4Controller = TextEditingController();
-  TextEditingController _briddle1atm5Controller = TextEditingController();
-  TextEditingController _briddle1atm6Controller = TextEditingController();
+  final TextEditingController _briddle1atm1Controller = TextEditingController();
+  final TextEditingController _briddle1atm2Controller = TextEditingController();
+  final TextEditingController _briddle1atm3Controller = TextEditingController();
+  final TextEditingController _briddle1atm4Controller = TextEditingController();
+  final TextEditingController _briddle1atm5Controller = TextEditingController();
+  final TextEditingController _briddle1atm6Controller = TextEditingController();
 
-  TextEditingController _briddle1btm1Controller = TextEditingController();
-  TextEditingController _briddle1btm2Controller = TextEditingController();
-  TextEditingController _briddle1btm3Controller = TextEditingController();
-  TextEditingController _briddle1btm4Controller = TextEditingController();
-  TextEditingController _briddle1btm5Controller = TextEditingController();
-  TextEditingController _briddle1btm6Controller = TextEditingController();
+  final TextEditingController _briddle1btm1Controller = TextEditingController();
+  final TextEditingController _briddle1btm2Controller = TextEditingController();
+  final TextEditingController _briddle1btm3Controller = TextEditingController();
+  final TextEditingController _briddle1btm4Controller = TextEditingController();
+  final TextEditingController _briddle1btm5Controller = TextEditingController();
+  final TextEditingController _briddle1btm6Controller = TextEditingController();
 
-  TextEditingController _briddle2atm1Controller = TextEditingController();
-  TextEditingController _briddle2atm2Controller = TextEditingController();
-  TextEditingController _briddle2atm3Controller = TextEditingController();
-  TextEditingController _briddle2atm4Controller = TextEditingController();
-  TextEditingController _briddle2atm5Controller = TextEditingController();
-  TextEditingController _briddle2atm6Controller = TextEditingController();
+  final TextEditingController _briddle2atm1Controller = TextEditingController();
+  final TextEditingController _briddle2atm2Controller = TextEditingController();
+  final TextEditingController _briddle2atm3Controller = TextEditingController();
+  final TextEditingController _briddle2atm4Controller = TextEditingController();
+  final TextEditingController _briddle2atm5Controller = TextEditingController();
+  final TextEditingController _briddle2atm6Controller = TextEditingController();
 
-  TextEditingController _briddle2btm1Controller = TextEditingController();
-  TextEditingController _briddle2btm2Controller = TextEditingController();
-  TextEditingController _briddle2btm3Controller = TextEditingController();
-  TextEditingController _briddle2btm4Controller = TextEditingController();
-  TextEditingController _briddle2btm5Controller = TextEditingController();
-  TextEditingController _briddle2btm6Controller = TextEditingController();
+  final TextEditingController _briddle2btm1Controller = TextEditingController();
+  final TextEditingController _briddle2btm2Controller = TextEditingController();
+  final TextEditingController _briddle2btm3Controller = TextEditingController();
+  final TextEditingController _briddle2btm4Controller = TextEditingController();
+  final TextEditingController _briddle2btm5Controller = TextEditingController();
+  final TextEditingController _briddle2btm6Controller = TextEditingController();
 
-  TextEditingController _recoilertm1Controller = TextEditingController();
-  TextEditingController _recoilertm2Controller = TextEditingController();
-  TextEditingController _recoilertm3Controller = TextEditingController();
-  TextEditingController _recoilertm4Controller = TextEditingController();
-  TextEditingController _recoilertm5Controller = TextEditingController();
-  TextEditingController _recoilertm6Controller = TextEditingController();
+  final TextEditingController _recoilertm1Controller = TextEditingController();
+  final TextEditingController _recoilertm2Controller = TextEditingController();
+  final TextEditingController _recoilertm3Controller = TextEditingController();
+  final TextEditingController _recoilertm4Controller = TextEditingController();
+  final TextEditingController _recoilertm5Controller = TextEditingController();
+  final TextEditingController _recoilertm6Controller = TextEditingController();
 
   @override
   void initState() {
@@ -141,10 +142,11 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
     _recoilertm6Controller.text = savedValues.recoilertm6;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Currents'),
+        title: const Text('Currents'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -152,7 +154,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('Parameter')),
               DataColumn(label: Text('Time 1')),
               DataColumn(label: Text('Time 2')),
@@ -164,7 +166,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('UNCOILER'),
+                  child: const Text('UNCOILER'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -192,7 +194,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('BRIDDLE 1A'),
+                  child: const Text('BRIDDLE 1A'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -218,7 +220,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('BRIDDLE 1B'),
+                  child: const Text('BRIDDLE 1B'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -241,7 +243,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
 // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('BRIDDLE 2A'),
+                  child: const Text('BRIDDLE 2A'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -266,7 +268,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
 
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('BRIDDLE 2B'),
+                  child: const Text('BRIDDLE 2B'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -291,7 +293,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
 
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('RECOILER'),
+                  child: const Text('RECOILER'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -314,7 +316,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
                 ))
               ]),
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton(
@@ -390,7 +392,7 @@ class _SubProcess7Page1State extends State<SubProcess7Page1> {
                   savedValues.recoilertm5 = _recoilertm5Controller.text.trim();
                   savedValues.recoilertm6 = _recoilertm6Controller.text.trim();
                 },
-                child: Text('Save as Draft'))
+                child: const Text('Save as Draft'))
             // Add buttons for additonal functionality
           ]),
         ),

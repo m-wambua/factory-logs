@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SavedValues {
   String tll_tension_tm1 = '';
@@ -16,20 +15,22 @@ class SavedValues {
 SavedValues savedValues = SavedValues();
 
 class SubProcess6Page1 extends StatefulWidget {
+  const SubProcess6Page1({super.key});
+
   @override
   State<SubProcess6Page1> createState() => _SubProcess6Page1State();
 }
 
 class _SubProcess6Page1State extends State<SubProcess6Page1> {
-  TextEditingController _tllTensionControllertm1 = TextEditingController();
-  TextEditingController _tllTensionControllertm2 = TextEditingController();
-  TextEditingController _tllTensionControllertm3 = TextEditingController();
-  TextEditingController _uncoilerTensionControllertm1 = TextEditingController();
-  TextEditingController _uncoilerTensionControllertm2 = TextEditingController();
-  TextEditingController _uncoilerTensionControllertm3 = TextEditingController();
-  TextEditingController _recoilerTensionControllertm1 = TextEditingController();
-  TextEditingController _recoilerTensionControllertm2 = TextEditingController();
-  TextEditingController _recoilerTensionControllertm3 = TextEditingController();
+  final TextEditingController _tllTensionControllertm1 = TextEditingController();
+  final TextEditingController _tllTensionControllertm2 = TextEditingController();
+  final TextEditingController _tllTensionControllertm3 = TextEditingController();
+  final TextEditingController _uncoilerTensionControllertm1 = TextEditingController();
+  final TextEditingController _uncoilerTensionControllertm2 = TextEditingController();
+  final TextEditingController _uncoilerTensionControllertm3 = TextEditingController();
+  final TextEditingController _recoilerTensionControllertm1 = TextEditingController();
+  final TextEditingController _recoilerTensionControllertm2 = TextEditingController();
+  final TextEditingController _recoilerTensionControllertm3 = TextEditingController();
 
   @override
   void initState() {
@@ -45,10 +46,11 @@ class _SubProcess6Page1State extends State<SubProcess6Page1> {
     _uncoilerTensionControllertm3.text = savedValues.uncoiler_tensiontm3;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tensions'),
+        title: const Text('Tensions'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -56,7 +58,7 @@ class _SubProcess6Page1State extends State<SubProcess6Page1> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('TENSIONS')),
               DataColumn(label: Text('TIMING 1')),
               DataColumn(label: Text('TIMING 2')),
@@ -65,7 +67,7 @@ class _SubProcess6Page1State extends State<SubProcess6Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('TLL'),
+                  child: const Text('TLL'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -84,7 +86,7 @@ class _SubProcess6Page1State extends State<SubProcess6Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('RECOILER'),
+                  child: const Text('RECOILER'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -101,7 +103,7 @@ class _SubProcess6Page1State extends State<SubProcess6Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('UNCOILER'),
+                  child: const Text('UNCOILER'),
                   onPressed: () {},
                 )),
                 DataCell(TextField(
@@ -117,12 +119,12 @@ class _SubProcess6Page1State extends State<SubProcess6Page1> {
 // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('Parameter 1'),
+                  child: const Text('Parameter 1'),
                   onPressed: () {},
                 )),
-                DataCell(TextField()),
-                DataCell(TextField()),
-                DataCell(TextField())
+                const DataCell(TextField()),
+                const DataCell(TextField()),
+                const DataCell(TextField())
               ]),
 
               // Add rows or data entry
@@ -135,7 +137,7 @@ class _SubProcess6Page1State extends State<SubProcess6Page1> {
               ]),
               */
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton(
@@ -153,7 +155,7 @@ class _SubProcess6Page1State extends State<SubProcess6Page1> {
                             savedValues.recoiler_tensiontm3 =
                       _recoilerTensionControllertm3.text.trim();
                 },
-                child: Text('Saved as Draft'))
+                child: const Text('Saved as Draft'))
             // Add buttons for additonal functionality
           ]),
         ),

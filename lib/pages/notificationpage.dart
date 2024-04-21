@@ -80,8 +80,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
 class NotificationsPage extends StatefulWidget {
   final List<NotificationModel> notifications;
-  const NotificationsPage({Key? key, required this.notifications})
-      : super(key: key);
+  const NotificationsPage({super.key, required this.notifications});
 
   @override
   State<NotificationsPage> createState() => _NotificationsPageState();
@@ -92,13 +91,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: const Text('Notifications'),
         actions: [
           IconButton(
             onPressed: () {
               _showDeleteAllConfirmationDialog(context);
             },
-            icon: Icon(Icons.delete_forever),
+            icon: const Icon(Icons.delete_forever),
           )
         ],
       ),
@@ -123,7 +122,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 ? Colors.blue
                 : null, // turn blue for seen notifications
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Text(notification.title),
@@ -138,7 +137,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         });
       },
       trailing: IconButton(
-        icon: Icon(Icons.delete),
+        icon: const Icon(Icons.delete),
         onPressed: () {
           _showDeleteConfirmationDialog(context, notification);
         },
@@ -152,21 +151,21 @@ class _NotificationsPageState extends State<NotificationsPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete Notification'),
-            content: Text('Are you sure you want to delete this notification?'),
+            title: const Text('Delete Notification'),
+            content: const Text('Are you sure you want to delete this notification?'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () {
                   _deleteNotification(
-                      context, notification as NotificationModel);
+                      context, notification);
                 },
-                child: Text('Delete'),
+                child: const Text('Delete'),
               )
             ],
           );
@@ -203,14 +202,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete All Notifications'),
-            content: Text('Are you sure you want to delete all notifications?'),
+            title: const Text('Delete All Notifications'),
+            content: const Text('Are you sure you want to delete all notifications?'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                   onPressed: () {
@@ -221,7 +220,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     // close the confirmation dialog
                     Navigator.pop(context);
                   },
-                  child: Text('Delete All'))
+                  child: const Text('Delete All'))
             ],
           );
         });
@@ -232,20 +231,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Delete All Notifications'),
-          content: Text('Are you sure you want to delete all notifications?'),
+          title: const Text('Delete All Notifications'),
+          content: const Text('Are you sure you want to delete all notifications?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 _deleteAllNotifications(context);
               },
-              child: Text('Delete All'),
+              child: const Text('Delete All'),
             ),
           ],
         );

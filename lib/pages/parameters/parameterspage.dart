@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ParameterPage extends StatelessWidget {
+  const ParameterPage({super.key});
+
   @override
   Widget build(BuildContext context) {
 //Retieve the arguemtns passes
@@ -12,7 +13,7 @@ class ParameterPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Parameter for $subprocess'),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(children: [
           // Display tables, descriptions or pictures of name
           //allow editing of parameters

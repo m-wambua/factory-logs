@@ -2,7 +2,6 @@ import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subpro
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_2_details_page4.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_3_details_page4.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SavedValues {
   String tpr = '';
@@ -13,14 +12,16 @@ class SavedValues {
 SavedValues savedValues = SavedValues();
 
 class SubProcess4Page1 extends StatefulWidget {
+  const SubProcess4Page1({super.key});
+
   @override
   State<SubProcess4Page1> createState() => _SubProcess4Page1State();
 }
 
 class _SubProcess4Page1State extends State<SubProcess4Page1> {
-  TextEditingController _trpController = TextEditingController();
-  TextEditingController _strController = TextEditingController();
-  TextEditingController _lrpController = TextEditingController();
+  final TextEditingController _trpController = TextEditingController();
+  final TextEditingController _strController = TextEditingController();
+  final TextEditingController _lrpController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -30,10 +31,11 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
     _lrpController.text = savedValues.lrp;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TLL POSITIONS [MM]'),
+        title: const Text('TLL POSITIONS [MM]'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -41,7 +43,7 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             //Table for data entry specific to subprocess 1
-            DataTable(columns: [
+            DataTable(columns: const [
               DataColumn(label: Text('MOTOR')),
               DataColumn(label: Text('RATED')),
               DataColumn(label: Text('DRAWN')),
@@ -51,37 +53,37 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
 
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('TPR'),
+                  child: const Text('TPR'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SubProcess1Page4Details1_4()));
+                                const SubProcess1Page4Details1_4()));
                   },
                 )),
-                DataCell(Text('  ')),
+                const DataCell(Text('  ')),
                 DataCell(TextField(
                   controller: _trpController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('S.T.R'),
+                  child: const Text('S.T.R'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SubProcess1Page4Details2_4()));
+                                const SubProcess1Page4Details2_4()));
                   },
                 )),
-                DataCell(Text('  ')),
+                const DataCell(Text('  ')),
                 DataCell(TextField(
                   controller: _strController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               //Add more rows as needed
@@ -89,20 +91,20 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
               // Add rows or data entry
               DataRow(cells: [
                 DataCell(TextButton(
-                  child: Text('LRP'),
+                  child: const Text('LRP'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                SubProcess1Page4Details3_4()));
+                                const SubProcess1Page4Details3_4()));
                   },
                 )),
-                DataCell(Text('  ')),
+                const DataCell(Text('  ')),
                 DataCell(TextField(
                   controller: _lrpController,
                 )),
-                DataCell(TextField())
+                const DataCell(TextField())
               ]),
 
               // Add rows or data entry
@@ -130,7 +132,7 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
               ]),
               */
             ]),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             // Add buttons for additonal functionality
@@ -141,7 +143,7 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
                   savedValues.lrp = _lrpController.text.trim();
                   savedValues.str = _strController.text.trim();
                 },
-                child: Text('Saved as Draft')),
+                child: const Text('Saved as Draft')),
           ]),
         ),
       ),
