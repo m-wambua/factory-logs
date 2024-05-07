@@ -63,7 +63,7 @@ class _SubProcess1Page2State extends State<SubProcess1Page2> {
   final TextEditingController _ovensectioncblowerController = TextEditingController();
   final TextEditingController _fumeexhaustblowerController = TextEditingController();
   @override
-  void initSate() {
+  void initState() {
     super.initState();
     _uncoilerController.text = savedValues.uncoiler;
     _briddle1roll1Controller.text = savedValues.briddle1roll1;

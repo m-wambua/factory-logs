@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width'>
+    <script src='https://sagecell.sagemath.org/static/embedded_sagecell.js'></script>
+    <script>$(function () {
+    sagecell.makeSagecell({inputLocation:'div.evaluated',autoeval:true,
+                           template:sagecell.templates.minimal,
+                           evalButtonText:'run'}); });
+    </script>
+  </head>
+  <style>
+  h3 {color:#aa33ff; text-shadow:4px 4px 4px slategray;}
+  pre {width:99%; border:2px double slategray; padding-left:3px;}
+  .sagecell_output {width:99%; border:2px double slategray; padding-right:3px;}
+  body {margin:5px 5px 5px 15px;}
+  </style>  
+  <body>
+    <h3>$$\mathbb{ 3D \; Line \; Graphs }$$</h3>
+<pre ><code>
+def col(): 
+    c1,c2,c3=random(),random(),.8
+    return sage.plot.colors.float_to_html(c1,c2,c3)
+def graph_pe(m,n):
+    g=graphs.CubeGraph(m)
+    PG=Graphics(); k=randint(70,120)/100
+    vg=g.get_pos(); vgp=list(vg.values())
+    eg=g.edges(); nv=len(vg); ne=len(eg)
+    x0=mean([list(vg.values())[i][0] 
+             for i in range(nv)])
+    y0=mean([list(vg.values())[i][1] 
+             for i in range(nv)])
+    cp=[[vgp[i][0]-x0,vgp[i][1]-y0] 
+        for i in range(nv)]
+    l=[[list(vg[eg[i][0]]),list(vg[eg[i][1]])] 
+       for i in range(ne)]
+    cl=[[[x-x0,y-y0] for [x,y] in l[i]] 
+        for i in range(ne)]
+    cp3d=[[[cos(j*pi/k)*x-sin(j*pi/k)*y,
+            sin(j*pi/k)*x+cos(j*pi/k)*y,
+            3*(j+1)/k/n] 
+           for j in range(n)] for [x,y] in cp]
+    cl3d=[[[cos(j*pi/k)*x-sin(j*pi/k)*y,
+            sin(j*pi/k)*x+cos(j*pi/k)*y,
+            3*(j+1)/k/n] 
+           for [x,y] in cl[i]] 
+          for j in range(n) for i in range(ne)]
+    for i in range(nv): 
+        PG+=line3d(cp3d[i],color=col())
+    for i in range(n*ne): 
+        PG+=line3d(cl3d[i],color=col())
+    PG.show(frame=False)
+graph_pe(randint(3,7),randint(3,10))
+
+</code></pre><br/> 
+<div id='cell015' class='evaluated'><script type='text/x-sage'>
+def col(): 
+    c1,c2,c3=random(),random(),.8
+    return sage.plot.colors.float_to_html(c1,c2,c3)
+def graph_pe(m,n):
+    g=graphs.CubeGraph(m)
+    PG=Graphics(); k=randint(70,120)/100
+    vg=g.get_pos(); vgp=list(vg.values())
+    eg=g.edges(); nv=len(vg); ne=len(eg)
+    x0=mean([list(vg.values())[i][0] 
+             for i in range(nv)])
+    y0=mean([list(vg.values())[i][1] 
+             for i in range(nv)])
+    cp=[[vgp[i][0]-x0,vgp[i][1]-y0] 
+        for i in range(nv)]
+    l=[[list(vg[eg[i][0]]),list(vg[eg[i][1]])] 
+       for i in range(ne)]
+    cl=[[[x-x0,y-y0] for [x,y] in l[i]] 
+        for i in range(ne)]
+    cp3d=[[[cos(j*pi/k)*x-sin(j*pi/k)*y,
+            sin(j*pi/k)*x+cos(j*pi/k)*y,
+            3*(j+1)/k/n] 
+           for j in range(n)] for [x,y] in cp]
+    cl3d=[[[cos(j*pi/k)*x-sin(j*pi/k)*y,
+            sin(j*pi/k)*x+cos(j*pi/k)*y,
+            3*(j+1)/k/n] 
+           for [x,y] in cl[i]] 
+          for j in range(n) for i in range(ne)]
+    for i in range(nv): 
+        PG+=line3d(cp3d[i],color=col())
+    for i in range(n*ne): 
+        PG+=line3d(cl3d[i],color=col())
+    PG.show(frame=False)
+graph_pe(randint(3,7),randint(3,10))
+</script></div><br/>
+  </body>
+</html>

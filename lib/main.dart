@@ -1,16 +1,20 @@
 import 'package:collector/pages/history/historypage.dart';
+import 'package:collector/pages/manuals/manualspage2.dart';
 import 'package:collector/pages/manuals/manuelspage.dart';
 import 'package:collector/pages/parameters/parameterspage.dart';
 import 'package:collector/pages/trends/trendspage.dart';
 import 'package:collector/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
-void main() {
-  runApp(
-    
-  
-    
-    const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -20,17 +24,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       routes: {
-        '/history':(context)=>const HistoryPage(),
-        '/trends':(context) => const TrendsPage(),
-        '/manuals':(context)=> ManualsPage(),
-        '/parameters':(context)=>const ParameterPage(),
+        '/history': (context) => const HistoryPage(),
+        '/trends': (context) => const TrendsPage(),
+        '/manuals': (context) => ManualsPage(),
+        '/parameters': (context) => ParameterPage(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(
-        
-        
         // This is the theme of your application.
         //
         // TRY THIS: Try running your application with "flutter run". You'll see
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home:  const WelcomePage(),
+      home: const WelcomePage(),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:collector/pages/process_2/subprocess_1/subprocess_1_np.dart';
 import 'package:collector/pages/process_2/subprocess_2/subprocess_2.dart';
 import 'package:collector/pages/process_2/subprocess_2/subprocess_2_np.dart';
 import 'package:collector/pages/process_2/subprocess_3/subprocess_3.dart';
+import 'package:collector/pages/process_2/subprocess_3/subprocess_3_np.dart';
 import 'package:collector/pages/process_2/subprocess_4/subprocess_4.dart';
 import 'package:collector/pages/process_2/subprocess_5/subprocess_5.dart';
 import 'package:collector/pages/process_2/subprocess_6/subprocess_6.dart';
@@ -218,7 +219,7 @@ class _Process2PageState extends State<Process2Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SubProcess3Page2(),
+                            builder: (context) => const SubProcess3Page2_np(),
                           ),
                         );
                       },
