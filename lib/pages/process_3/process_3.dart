@@ -22,9 +22,17 @@ class _Process3PageState extends State<Process3Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Process 1'),
-      ),
+      appBar: AppBar(title: const Text('Process 1'), actions: [
+        Row(
+          children: [
+            IconButton(
+                onPressed: () {
+                  _addStartUpProcedure(context);
+                },
+                icon: Icon(Icons.power_settings_new))
+          ],
+        )
+      ]),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -187,5 +195,65 @@ class _Process3PageState extends State<Process3Page> {
         ),
       ),
     );
+  }
+
+  Future<void> _addStartUpProcedure(BuildContext context) async {
+    List<TextEditingController> startUpController = [TextEditingController()];
+    showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Add/Update Start-Up Procedure for TLL'),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (int i = 1; i < startUpController.length; i++)
+                    TextField(
+                      controller: startUpController[i],
+                      decoration: InputDecoration(
+                          labelText: 'Procedure $i',
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {}, icon: Icon(Icons.image))
+                            ],
+                          )),
+                      onChanged: (value) {},
+                    ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        setState(
+                          () {
+                            startUpController.add(TextEditingController());
+                          },
+                        );
+                      },
+                      icon: Icon(Icons.add)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(onPressed: () {}, child: Text('Save')),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'))
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+        });
   }
 }

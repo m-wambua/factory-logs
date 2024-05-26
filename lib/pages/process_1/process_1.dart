@@ -31,8 +31,18 @@ class _Process1PageState extends State<Process1Page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trimming Cum Tension Leveler Line'),
-      ),
+          title: const Text('Trimming Cum Tension Leveler Line'),
+          actions: [
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      _addStartUpProcedure(context);
+                    },
+                    icon: Icon(Icons.power_settings_new))
+              ],
+            )
+          ]),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -161,7 +171,6 @@ class _Process1PageState extends State<Process1Page> {
                       height: 100,
                     ),
 
-                    
                     const Text(
                         'ODS Occurence During Shift (Delay please indicate time)'),
                     TextFormField(
@@ -189,7 +198,7 @@ class _Process1PageState extends State<Process1Page> {
                       height: 30,
                     ),
                     CheckboxListTile(
-                      title: const Text('Was the shift eventful?'),
+                        title: const Text('Was the shift eventful?'),
                         value: _eventfulShift,
                         onChanged: (value) {
                           setState(() {
@@ -211,7 +220,7 @@ class _Process1PageState extends State<Process1Page> {
                       )
                   ],
                 ),
-                if(!_productionSelected)
+              if (!_productionSelected)
                 Column(
                   children: [
                     ElevatedButton(
@@ -235,7 +244,7 @@ class _Process1PageState extends State<Process1Page> {
                           ),
                         );
                       },
-                      child: const Text('CC Motores'),
+                      child: const Text('MCC Motors'),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -305,7 +314,6 @@ class _Process1PageState extends State<Process1Page> {
                       height: 100,
                     ),
 
-                    
                     const Text(
                         'ODS Occurence During Shift (Delay please indicate time)'),
                     TextFormField(
@@ -333,7 +341,7 @@ class _Process1PageState extends State<Process1Page> {
                       height: 30,
                     ),
                     CheckboxListTile(
-                      title: const Text('Was the shift eventful?'),
+                        title: const Text('Was the shift eventful?'),
                         value: _eventfulShift,
                         onChanged: (value) {
                           setState(() {
@@ -355,14 +363,70 @@ class _Process1PageState extends State<Process1Page> {
                       )
                   ],
                 )
-              
-
             ],
-            
-
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _addStartUpProcedure(BuildContext context) async {
+    List<TextEditingController> startUpController = [TextEditingController()];
+    showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Add/Update Start-Up Procedure for TLL'),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (int i = 1; i < startUpController.length; i++)
+                    TextField(
+                      controller: startUpController[i],
+                      decoration: InputDecoration(
+                          labelText: 'Procedure $i',
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {}, icon: Icon(Icons.image))
+                            ],
+                          )),
+                      onChanged: (value) {},
+                    ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        setState(
+                          () {
+                            startUpController.add(TextEditingController());
+                          },
+                        );
+                      },
+                      icon: Icon(Icons.add)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(onPressed: () {}, child: Text('Save')),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'))
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+        });
   }
 }

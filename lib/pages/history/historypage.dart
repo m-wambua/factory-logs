@@ -1,3 +1,5 @@
+import 'package:collector/pages/history/maintenance/failurehistory.dart';
+import 'package:collector/pages/history/maintenance/maintenancehistory.dart';
 import 'package:flutter/material.dart';
 
 class HistoryPage extends StatelessWidget {
@@ -9,7 +11,7 @@ class HistoryPage extends StatelessWidget {
     final String subprocess =
         ModalRoute.of(context)?.settings.arguments as String;
 
-        //Use the subprocess variable to display relevant data
+    //Use the subprocess variable to display relevant data
     return Scaffold(
       appBar: AppBar(
         title: Text('History for $subprocess'),
@@ -20,9 +22,29 @@ class HistoryPage extends StatelessWidget {
           //Display scrollable Excel-like table
           //Implement subpages for failure and maintenance
 
-          TextButton(onPressed: (){}, child: const Text('Failure History')),
-          const SizedBox(height: 30,),
-          TextButton(onPressed: (){}, child: const Text('Maintenance History')),
+          TextButton(
+              onPressed: () {
+                /*
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            FailureHistory(subprocess: subprocess)));*/
+              },
+              child: const Text('Failure History')),
+          const SizedBox(
+            height: 30,
+          ),
+          TextButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyMaintenanceHistory(
+                              subprocess: subprocess,
+                            )));
+              },
+              child: const Text('Maintenance History')),
         ],
       )),
     );

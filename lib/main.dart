@@ -1,5 +1,5 @@
 import 'package:collector/pages/history/historypage.dart';
-import 'package:collector/pages/manuals/manualspage2.dart';
+import 'package:collector/pages/history/maintenance/maintenancehistory.dart';
 import 'package:collector/pages/manuals/manuelspage.dart';
 import 'package:collector/pages/parameters/parameterspage.dart';
 import 'package:collector/pages/trends/trendspage.dart';
@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/trends': (context) => const TrendsPage(),
         '/manuals': (context) => ManualsPage(),
         '/parameters': (context) => ParameterPage(),
+        //'/history/mainentance':(context) => MyMaintenanceHistory(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(

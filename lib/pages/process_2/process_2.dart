@@ -25,9 +25,17 @@ class _Process2PageState extends State<Process2Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('COLOR COATING LINE'),
-      ),
+      appBar: AppBar(title: const Text('COLOR COATING LINE'), actions: [
+        Row(
+          children: [
+            IconButton(
+                onPressed: () {
+                  _addStartUpProcedure(context);
+                },
+                icon: Icon(Icons.power_settings_new))
+          ],
+        )
+      ]),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -187,136 +195,194 @@ class _Process2PageState extends State<Process2Page> {
                   ],
                 ),
 
-                if(!_productionSelected)
-                Column(
-                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2_np(),
-                          ),
-                        );
-                      },
-                      child: const Text('DRIVES'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess2Page2_np(),
-                          ),
-                        );
-                      },
-                      child: const Text('MCC MOTORS'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess3Page2_np(),
-                          ),
-                        );
-                      },
-                      child: const Text('CRANES'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess4Page2(),
-                          ),
-                        );
-                      },
-                      child: const Text('TENSIONS'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess5Page2(),
-                          ),
-                        );
-                      },
-                      child: const Text('SPEEDS'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess6Page2(),
-                          ),
-                        );
-                      },
-                      child: const Text('Subprocess 6'),
-                    ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-                    const Text(
-                        'ODS Occurence During Shift (Delay please indicate time)'),
-                    TextFormField(
-                      maxLines: 20,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
-                          filled: true,
-                          fillColor: Colors.grey[200]),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            saveButtonClickTime = DateTime.now();
-                          });
-                        },
-                        child: const Text('Save Current Values')),
-                    if (saveButtonClickTime != null)
-                      Text('The data was saved at$saveButtonClickTime'),
-
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    CheckboxListTile(
-                        title: const Text('Was the shift eventful?'),
-                        value: _eventfulShift,
-                        onChanged: (value) {
-                          setState(() {
-                            _eventfulShift = value!;
-                          });
-                        }),
-                    //TextFormField for event description if shift was eventful
-                    if (_eventfulShift)
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Describe the event....',
-                          border: OutlineInputBorder(),
+              if (!_productionSelected)
+                Column(children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SubProcess1Page2_np(),
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            _eventDescription = value;
-                          });
-                        },
-                      )
-                  ]
-                )
+                      );
+                    },
+                    child: const Text('DRIVES'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SubProcess2Page2_np(),
+                        ),
+                      );
+                    },
+                    child: const Text('MCC MOTORS'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SubProcess3Page2_np(),
+                        ),
+                      );
+                    },
+                    child: const Text('CRANES'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SubProcess4Page2(),
+                        ),
+                      );
+                    },
+                    child: const Text('TENSIONS'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SubProcess5Page2(),
+                        ),
+                      );
+                    },
+                    child: const Text('SPEEDS'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SubProcess6Page2(),
+                        ),
+                      );
+                    },
+                    child: const Text('Subprocess 6'),
+                  ),
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  const Text(
+                      'ODS Occurence During Shift (Delay please indicate time)'),
+                  TextFormField(
+                    maxLines: 20,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                        filled: true,
+                        fillColor: Colors.grey[200]),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          saveButtonClickTime = DateTime.now();
+                        });
+                      },
+                      child: const Text('Save Current Values')),
+                  if (saveButtonClickTime != null)
+                    Text('The data was saved at$saveButtonClickTime'),
+
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  CheckboxListTile(
+                      title: const Text('Was the shift eventful?'),
+                      value: _eventfulShift,
+                      onChanged: (value) {
+                        setState(() {
+                          _eventfulShift = value!;
+                        });
+                      }),
+                  //TextFormField for event description if shift was eventful
+                  if (_eventfulShift)
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        hintText: 'Describe the event....',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _eventDescription = value;
+                        });
+                      },
+                    )
+                ])
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _addStartUpProcedure(BuildContext context) async {
+    List<TextEditingController> startUpController = [TextEditingController()];
+    showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Add/Update Start-Up Procedure for TLL'),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (int i = 1; i < startUpController.length; i++)
+                    TextField(
+                      controller: startUpController[i],
+                      decoration: InputDecoration(
+                          labelText: 'Procedure $i',
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {}, icon: Icon(Icons.image))
+                            ],
+                          )),
+                      onChanged: (value) {},
+                    ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        setState(
+                          () {
+                            startUpController.add(TextEditingController());
+                          },
+                        );
+                      },
+                      icon: Icon(Icons.add)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(onPressed: () {}, child: Text('Save')),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'))
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+        });
   }
 }
