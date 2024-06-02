@@ -87,6 +87,14 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
+  // Method for accepting notifactions elsewhere
+  
+  void _addNotification(NotificationModel notification) {
+    setState(() {
+      widget.notifications.add(notification);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,7 +137,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ],
       ),
       subtitle: Text(notification.description),
-      
       onTap: () {
         _showNotificationDetailsPage(context, notification);
         setState(() {
@@ -152,7 +159,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
         builder: (context) {
           return AlertDialog(
             title: const Text('Delete Notification'),
-            content: const Text('Are you sure you want to delete this notification?'),
+            content: const Text(
+                'Are you sure you want to delete this notification?'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -162,8 +170,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ),
               TextButton(
                 onPressed: () {
-                  _deleteNotification(
-                      context, notification);
+                  _deleteNotification(context, notification);
                 },
                 child: const Text('Delete'),
               )
@@ -194,7 +201,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
           builder: (context) =>
               NotificationDetailsPage(notification: notification),
         ));
-    
   }
 
   void _deleteAllNotifications(BuildContext context) {
@@ -203,7 +209,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
         builder: (context) {
           return AlertDialog(
             title: const Text('Delete All Notifications'),
-            content: const Text('Are you sure you want to delete all notifications?'),
+            content: const Text(
+                'Are you sure you want to delete all notifications?'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -232,7 +239,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Delete All Notifications'),
-          content: const Text('Are you sure you want to delete all notifications?'),
+          content:
+              const Text('Are you sure you want to delete all notifications?'),
           actions: [
             TextButton(
               onPressed: () {

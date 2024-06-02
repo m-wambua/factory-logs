@@ -41,21 +41,30 @@ class SubProcess2Page1 extends StatefulWidget {
 }
 
 class _SubProcess2Page1State extends State<SubProcess2Page1> {
-  final TextEditingController _uncoilerblowerController = TextEditingController();
-  final TextEditingController _briddle1ablowerController = TextEditingController();
-  final TextEditingController _briddler1bblowerController = TextEditingController();
-  final TextEditingController _briddler2ablowerController = TextEditingController();
-  final TextEditingController _briddle2bblowerController = TextEditingController();
-  final TextEditingController _recoilerblowerController = TextEditingController();
-  final TextEditingController _flattenerblowerController = TextEditingController();
-  final TextEditingController _recoilerlubmotorController = TextEditingController();
+  final TextEditingController _uncoilerblowerController =
+      TextEditingController();
+  final TextEditingController _briddle1ablowerController =
+      TextEditingController();
+  final TextEditingController _briddler1bblowerController =
+      TextEditingController();
+  final TextEditingController _briddler2ablowerController =
+      TextEditingController();
+  final TextEditingController _briddle2bblowerController =
+      TextEditingController();
+  final TextEditingController _recoilerblowerController =
+      TextEditingController();
+  final TextEditingController _flattenerblowerController =
+      TextEditingController();
+  final TextEditingController _recoilerlubmotorController =
+      TextEditingController();
   final TextEditingController _hydraulic_power_packController =
       TextEditingController();
   final TextEditingController _hydraulic_recirculationController =
       TextEditingController();
   final TextEditingController _weldermotorController = TextEditingController();
   final TextEditingController _scrap_ballerController = TextEditingController();
-  final TextEditingController _unc_lub_motorController = TextEditingController();
+  final TextEditingController _unc_lub_motorController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -107,7 +116,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details2()));
+                            builder: (context) =>
+                                const SubProcess1Page2Details1_2 ()));
                   },
                 )),
                 const DataCell(Text('6.0')),
@@ -127,11 +137,9 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details1_2()));
-                 
-                  }
-                  ,
-
+                            builder: (context) =>
+                                const SubProcess1Page2Details1_2()));
+                  },
                 )), //BRIDDLE 1 #A BLOWER
                 const DataCell(Text('2.8')),
                 DataCell(TextField(
@@ -148,8 +156,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details2_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details2_2()));
                   },
                 )), //BRIDLE 1#B BLOWER
                 const DataCell(Text('6.0')),
@@ -166,8 +174,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details3_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details3_2()));
                   },
                 )), //BRIDDLE 2#A BLOWER MOTOR
                 const DataCell(Text('6.1')),
@@ -185,8 +193,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details4_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details4_2()));
                   },
                 )), //BRIDDLE 2#B BLOWER MOTOR
                 const DataCell(Text('2.8')),
@@ -204,8 +212,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details5_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details5_2()));
                   },
                 )), //RECOILER MOTOR BLOWER
                 const DataCell(Text('6.0')),
@@ -223,8 +231,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details6_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details6_2()));
                   },
                 )), //FLATTENER MOTOR
                 const DataCell(Text('20.5')),
@@ -239,12 +247,11 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextButton(
                   child: const Text('REC LUB MOTOR'),
                   onPressed: () {
-
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details7_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details7_2()));
                   },
                 )), //REC LUB MOTOR
                 const DataCell(Text('3.4')),
@@ -262,8 +269,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details8_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details8_2()));
                   },
                 )), //HYD P PACK WRK & STBY
                 const DataCell(Text('40.0')),
@@ -281,8 +288,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details9_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details9_2()));
                   },
                 )), //HYDR. RECIRCULATIONS
                 const DataCell(Text('3.4')),
@@ -297,12 +304,11 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextButton(
                   child: const Text('WELDER MOTOR'),
                   onPressed: () {
-
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details10_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details10_2()));
                   },
                 )), //WELDER MOTOR
                 const DataCell(Text('5.37/3.45')),
@@ -320,8 +326,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details11_2()));
-                 
+                            builder: (context) =>
+                                const SubProcess1Page2Details11_2()));
                   },
                 )), //SCRAP BALLER MOTOR
                 const DataCell(Text('39.5')),
@@ -339,7 +345,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page2Details12_2()));
+                            builder: (context) =>
+                                const SubProcess1Page2Details12_2()));
                   },
                 )), //UNC. LUB MOTOR
                 const DataCell(Text('3.4')),

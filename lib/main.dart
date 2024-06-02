@@ -1,5 +1,5 @@
 import 'package:collector/pages/history/historypage.dart';
-import 'package:collector/pages/history/maintenance/maintenancehistory.dart';
+import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
 import 'package:collector/pages/manuals/manuelspage.dart';
 import 'package:collector/pages/parameters/parameterspage.dart';
 import 'package:collector/pages/trends/trendspage.dart';

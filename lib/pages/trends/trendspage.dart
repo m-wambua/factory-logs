@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
-class TrendsPage extends StatelessWidget {
+class TrendsPage extends StatefulWidget {
   const TrendsPage({super.key});
 
+  @override
+  State<TrendsPage> createState() => _TrendsPageState();
+}
+
+class _TrendsPageState extends State<TrendsPage> {
   @override
   Widget build(BuildContext context) {
     //Retrieve the arguments passes

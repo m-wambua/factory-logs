@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:collector/pages/logout_page.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/notificationpage.dart';
@@ -9,33 +12,11 @@ import 'package:collector/pages/process_4/process_4.dart';
 
 class LandingPage extends StatefulWidget {
   final String username;
-  const LandingPage({super.key, required this.username});
+
+  const LandingPage({Key? key, required this.username}) : super(key: key);
+
   @override
   _LandingPageState createState() => _LandingPageState();
-}
-
-// a list of notification example
-List<NotificationModel> _sampleNotifications = [
-  NotificationModel(
-    title: 'Notification 1',
-    description: 'Description of Notification 1',
-    timestamp: DateTime.now(),
-    isRead: false,
-    type: NotificationType.MaintenanceUpdate
-  ),
-  NotificationModel(
-    title: 'Notification 2',
-    description: 'Description of Notification 2',
-    timestamp: DateTime.now(),
-    isRead: false,
-    type: NotificationType.LogsCollected
-  ),
-  // Add more sample notifications as needed
-];
-
-int getNotificationCount() {
-  //Assuming
-  return _sampleNotifications.length;
 }
 
 class _LandingPageState extends State<LandingPage> {
@@ -48,9 +29,24 @@ class _LandingPageState extends State<LandingPage> {
     'Logout': false,
   };
 
+  List<NotificationModel> _notifications = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadNotifications();
+  }
+
+  Future<void> loadNotifications() async {
+    List<NotificationModel> notifications = await loadNotificationsFromFile();
+    setState(() {
+      _notifications = notifications;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    int notificationCount=getNotificationCount();
+    int notificationCount = _notifications.length;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Factory Processes'),
@@ -59,38 +55,47 @@ class _LandingPageState extends State<LandingPage> {
           const SizedBox(
             width: 15,
           ),
-          Stack(children: [
-
-            IconButton(
-              onPressed: () {
-                Navigator.push(
+          Stack(
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NotificationsPage(
-                              notifications: _sampleNotifications,
-                            )));
-              },
-              icon: const Icon(Icons.notifications)),
-              if (notificationCount>0)
-              Positioned(
-                right: 5,
-                top: 5,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius:BorderRadius.circular(10),
-
+                      builder: (context) => NotificationsPage(
+                        notifications: _notifications,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.notifications),
+              ),
+              if (notificationCount > 0)
+                Positioned(
+                  right: 5,
+                  top: 5,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 10,
+                      minHeight: 10,
+                    ),
+                    child: Text(
+                      notificationCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  constraints: const BoxConstraints(minWidth: 10,
-                  minHeight: 10),
-                  child: (Text(
-                    notificationCount.toString(),style: const TextStyle(color: Colors.white,fontSize: 12),
-                    textAlign: TextAlign.center,
-                  )),
-                ))
-          ],),
-          
+                )
+            ],
+          ),
           const SizedBox(
             width: 15,
           ),
@@ -128,7 +133,6 @@ class _LandingPageState extends State<LandingPage> {
               });
             },
           ),
-          //LoginPage(), // Display LoginPage on top of the LandingPage
         ],
       ),
     );
@@ -150,7 +154,7 @@ class _LandingPageState extends State<LandingPage> {
     }).toList();
   }
 
-  void _handleButtonPressed(String label) {
+  void _handleButtonPressed(String label) async {
     setState(() {
       _buttonStates[label] = !_buttonStates[label]!;
     });
@@ -182,12 +186,16 @@ class _LandingPageState extends State<LandingPage> {
 
       case 'Logout':
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    LogoutPage(currentUser: widget.username)));
+          context,
+          MaterialPageRoute(
+            builder: (context) => LogoutPage(currentUser: widget.username),
+          ),
+        );
+        break;
       default:
         throw Exception('Invalid route: $label');
     }
+
+    await loadNotifications();
   }
 }

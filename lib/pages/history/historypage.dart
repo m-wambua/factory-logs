@@ -1,5 +1,5 @@
-import 'package:collector/pages/history/maintenance/failurehistory.dart';
-import 'package:collector/pages/history/maintenance/maintenancehistory.dart';
+import 'package:collector/pages/history/maintenance/failureMaintenance/failurehistory.dart';
+import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
 import 'package:flutter/material.dart';
 
 class HistoryPage extends StatelessWidget {

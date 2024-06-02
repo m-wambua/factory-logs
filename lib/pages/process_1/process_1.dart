@@ -1,3 +1,4 @@
+import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_1_np.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_2_np.dart';
 import 'package:collector/pages/process_1/subprocess_3/subprocess_3_np.dart';
@@ -26,23 +27,26 @@ class _Process1PageState extends State<Process1Page> {
   DateTime? saveButtonClickTime;
   bool _eventfulShift = false;
   String? _eventDescription;
+  final List<NotificationModel> notifications = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Trimming Cum Tension Leveler Line'),
-          actions: [
-            Row(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      _addStartUpProcedure(context);
-                    },
-                    icon: Icon(Icons.power_settings_new))
-              ],
-            )
-          ]),
+        title: const Text('Trimming Cum Tension Leveler Line'),
+        actions: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  _addStartUpProcedure(context);
+                },
+                icon: Icon(Icons.power_settings_new),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -71,8 +75,6 @@ class _Process1PageState extends State<Process1Page> {
                     },
                   ),
                   const Text('No Production'),
-
-                  //TextField(maxLines: 40,),
                 ],
               ),
               const SizedBox(height: 20),
@@ -85,7 +87,13 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page1(),
+                            builder: (context) => SubProcess1Page1(
+                              onNotificationAdded: (notification) {
+                                setState(() {
+                                  notifications.add(notification);
+                                });
+                              },
+                            ),
                           ),
                         );
                       },
@@ -151,10 +159,7 @@ class _Process1PageState extends State<Process1Page> {
                       },
                       child: const Text('Tensions'),
                     ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-
+                    const SizedBox(height: 100),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -167,45 +172,40 @@ class _Process1PageState extends State<Process1Page> {
                       },
                       child: const Text('Currents'),
                     ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-
+                    const SizedBox(height: 100),
                     const Text(
-                        'ODS Occurence During Shift (Delay please indicate time)'),
+                        'ODS Occurrence During Shift (Delay please indicate time)'),
                     TextFormField(
                       maxLines: 20,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
-                          filled: true,
-                          fillColor: Colors.grey[200]),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                      ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                     ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            saveButtonClickTime = DateTime.now();
-                          });
-                        },
-                        child: const Text('Save Current Values')),
-                    if (saveButtonClickTime != null)
-                      Text('The data was saved at$saveButtonClickTime'),
-
-                    const SizedBox(
-                      height: 30,
+                      onPressed: () {
+                        setState(() {
+                          saveButtonClickTime = DateTime.now();
+                        });
+                      },
+                      child: const Text('Save Current Values'),
                     ),
+                    if (saveButtonClickTime != null)
+                      Text('The data was saved at $saveButtonClickTime'),
+                    const SizedBox(height: 30),
                     CheckboxListTile(
-                        title: const Text('Was the shift eventful?'),
-                        value: _eventfulShift,
-                        onChanged: (value) {
-                          setState(() {
-                            _eventfulShift = value!;
-                          });
-                        }),
-                    //TextFormField for event description if shift was eventful
+                      title: const Text('Was the shift eventful?'),
+                      value: _eventfulShift,
+                      onChanged: (value) {
+                        setState(() {
+                          _eventfulShift = value!;
+                        });
+                      },
+                    ),
                     if (_eventfulShift)
                       TextFormField(
                         decoration: const InputDecoration(
@@ -217,7 +217,7 @@ class _Process1PageState extends State<Process1Page> {
                             _eventDescription = value;
                           });
                         },
-                      )
+                      ),
                   ],
                 ),
               if (!_productionSelected)
@@ -294,10 +294,7 @@ class _Process1PageState extends State<Process1Page> {
                       },
                       child: const Text('Tensions'),
                     ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-
+                    const SizedBox(height: 100),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -310,45 +307,40 @@ class _Process1PageState extends State<Process1Page> {
                       },
                       child: const Text('Currents'),
                     ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-
+                    const SizedBox(height: 100),
                     const Text(
-                        'ODS Occurence During Shift (Delay please indicate time)'),
+                        'ODS Occurrence During Shift (Delay please indicate time)'),
                     TextFormField(
                       maxLines: 20,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
-                          filled: true,
-                          fillColor: Colors.grey[200]),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                      ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                     ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            saveButtonClickTime = DateTime.now();
-                          });
-                        },
-                        child: const Text('Save Current Values')),
-                    if (saveButtonClickTime != null)
-                      Text('The data was saved at$saveButtonClickTime'),
-
-                    const SizedBox(
-                      height: 30,
+                      onPressed: () {
+                        setState(() {
+                          saveButtonClickTime = DateTime.now();
+                        });
+                      },
+                      child: const Text('Save Current Values'),
                     ),
+                    if (saveButtonClickTime != null)
+                      Text('The data was saved at $saveButtonClickTime'),
+                    const SizedBox(height: 30),
                     CheckboxListTile(
-                        title: const Text('Was the shift eventful?'),
-                        value: _eventfulShift,
-                        onChanged: (value) {
-                          setState(() {
-                            _eventfulShift = value!;
-                          });
-                        }),
-                    //TextFormField for event description if shift was eventful
+                      title: const Text('Was the shift eventful?'),
+                      value: _eventfulShift,
+                      onChanged: (value) {
+                        setState(() {
+                          _eventfulShift = value!;
+                        });
+                      },
+                    ),
                     if (_eventfulShift)
                       TextFormField(
                         decoration: const InputDecoration(
@@ -360,9 +352,9 @@ class _Process1PageState extends State<Process1Page> {
                             _eventDescription = value;
                           });
                         },
-                      )
+                      ),
                   ],
-                )
+                ),
             ],
           ),
         ),
@@ -373,10 +365,10 @@ class _Process1PageState extends State<Process1Page> {
   Future<void> _addStartUpProcedure(BuildContext context) async {
     List<TextEditingController> startUpController = [TextEditingController()];
     showDialog(
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
               title: Text('Add/Update Start-Up Procedure for TLL'),
               content: Column(
@@ -387,46 +379,47 @@ class _Process1PageState extends State<Process1Page> {
                     TextField(
                       controller: startUpController[i],
                       decoration: InputDecoration(
-                          labelText: 'Procedure $i',
-                          suffixIcon: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                  onPressed: () {}, icon: Icon(Icons.image))
-                            ],
-                          )),
+                        labelText: 'Procedure $i',
+                        suffixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.image),
+                            ),
+                          ],
+                        ),
+                      ),
                       onChanged: (value) {},
                     ),
-                  SizedBox(
-                    height: 5,
-                  ),
+                  SizedBox(height: 5),
                   IconButton(
-                      onPressed: () {
-                        setState(
-                          () {
-                            startUpController.add(TextEditingController());
-                          },
-                        );
-                      },
-                      icon: Icon(Icons.add)),
-                  SizedBox(
-                    height: 5,
+                    onPressed: () {
+                      setState(() {
+                        startUpController.add(TextEditingController());
+                      });
+                    },
+                    icon: Icon(Icons.add),
                   ),
+                  SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(onPressed: () {}, child: Text('Save')),
                       ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Cancel'))
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('Cancel'),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             );
-          });
-        });
+          },
+        );
+      },
+    );
   }
 }

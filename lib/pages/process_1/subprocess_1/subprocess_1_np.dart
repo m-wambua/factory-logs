@@ -1,3 +1,4 @@
+import 'package:collector/pages/process_1/subprocess_1/subprocess_data_display.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_1_details_page1.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_2_details_page1.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_3_details_page1.dart';
@@ -5,7 +6,6 @@ import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subpro
 import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_5_details_page1.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_details/subprocess_6_details_page1.dart';
 import 'package:flutter/material.dart';
-
 
 class SubProcess1Page1_Np extends StatefulWidget {
   const SubProcess1Page1_Np({super.key});
@@ -15,14 +15,11 @@ class SubProcess1Page1_Np extends StatefulWidget {
 }
 
 class _SubProcess1Page1State extends State<SubProcess1Page1_Np> {
-  
   @override
-  
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Subprocess 1'),
+        title: const Text('TLL Drives'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -41,7 +38,8 @@ class _SubProcess1Page1State extends State<SubProcess1Page1_Np> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page1Details1()));
+                            builder: (context) =>
+                                const SubProcess1Page1Details1()));
                   },
                 )),
               ]),
@@ -56,10 +54,10 @@ class _SubProcess1Page1State extends State<SubProcess1Page1_Np> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page1Details2()));
+                            builder: (context) =>
+                                const SubProcess1Page1Details2()));
                   },
                 )),
-               
               ]),
 
               // Add rows or data entry
@@ -70,7 +68,8 @@ class _SubProcess1Page1State extends State<SubProcess1Page1_Np> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page1Details3()));
+                            builder: (context) =>
+                                const SubProcess1Page1Details3()));
                   },
                 )),
               ]),
@@ -82,10 +81,10 @@ class _SubProcess1Page1State extends State<SubProcess1Page1_Np> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page1Details4()));
+                            builder: (context) =>
+                                const SubProcess1Page1Details4()));
                   },
                 )),
-               
               ]),
 
               // Add rows or data entry
@@ -96,7 +95,8 @@ class _SubProcess1Page1State extends State<SubProcess1Page1_Np> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page1Details5()));
+                            builder: (context) =>
+                                const SubProcess1Page1Details5()));
                   },
                 )),
               ]),
@@ -108,7 +108,8 @@ class _SubProcess1Page1State extends State<SubProcess1Page1_Np> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page1Details6()));
+                            builder: (context) =>
+                                const SubProcess1Page1Details6()));
                   },
                 )),
               ]),
@@ -118,7 +119,19 @@ class _SubProcess1Page1State extends State<SubProcess1Page1_Np> {
             ),
 
             // Add buttons for additonal functionality
-           
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SubProcessDataDisplay()),
+                );
+              },
+              child: const Text('View Saved Data'),
+
+// Create a list of Categories for other components here
+            ),
           ]),
         ),
       ),
