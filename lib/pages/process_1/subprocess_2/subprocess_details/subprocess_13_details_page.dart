@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
-class SubProcess1Page2Details5_2 extends StatelessWidget {
-  const SubProcess1Page2Details5_2({super.key});
+class SubProcess1Page2Details13_2 extends StatelessWidget {
+  const SubProcess1Page2Details13_2({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BRIDDLE 2B MOTOR BLOWER'),
+        title: const Text('RECOILER MOTOR BLOWER'),
       ),
       body: Column(
         children: [
           TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/history',
-                    arguments: 'BRIDDLE 2B MOTOR BLOWER');
+                Navigator.pushNamed(context, '/history', arguments: 'RECOILER MOTOR BLOWER');
               },
               child: const Text('History')),
           const SizedBox(
@@ -22,8 +21,8 @@ class SubProcess1Page2Details5_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/trends',
-                    arguments: 'BRIDDLE 2B MOTOR BLOWER');
+               
+                Navigator.pushNamed(context, '/trends', arguments: 'RECOILER MOTOR BLOWER');
               },
               child: const Text('Trends')),
           const SizedBox(
@@ -31,8 +30,8 @@ class SubProcess1Page2Details5_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/manuals',
-                    arguments: 'BRIDDLE 2B MOTOR BLOWER');
+                
+                Navigator.pushNamed(context, '/manuals', arguments: 'RECOILER MOTOR BLOWER');
               },
               child: const Text('Manuals')),
           const SizedBox(
@@ -40,8 +39,8 @@ class SubProcess1Page2Details5_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/parameters',
-                    arguments: 'BRIDDLE 2B MOTOR BLOWER');
+                
+                Navigator.pushNamed(context, '/parameters', arguments: 'RECOILER MOTOR BLOWER');
               },
               child: const Text('Parameters')),
         ],
@@ -49,3 +48,4 @@ class SubProcess1Page2Details5_2 extends StatelessWidget {
     );
   }
 }
+

@@ -7,7 +7,7 @@ class SubProcess1Page2Details1_2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('UNCOILER BLOWER'),
+        title: const Text('UNCOILER BLOWER MOTOR'),
       ),
       body: Column(
         children: [

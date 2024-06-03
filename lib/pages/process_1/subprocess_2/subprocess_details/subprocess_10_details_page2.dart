@@ -7,13 +7,14 @@ class SubProcess1Page2Details10_2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('wELDER MOTOR'),
+        title: const Text('WELDER MOTOR'),
       ),
       body: Column(
         children: [
           TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/history', arguments: 'WELDER MOTOR');
+                Navigator.pushNamed(context, '/history',
+                    arguments: 'WELDER MOTOR');
               },
               child: const Text('History')),
           const SizedBox(
@@ -21,8 +22,8 @@ class SubProcess1Page2Details10_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-               
-                Navigator.pushNamed(context, '/trends', arguments: 'WELDER MOTOR');
+                Navigator.pushNamed(context, '/trends',
+                    arguments: 'WELDER MOTOR');
               },
               child: const Text('Trends')),
           const SizedBox(
@@ -30,8 +31,8 @@ class SubProcess1Page2Details10_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                
-                Navigator.pushNamed(context, '/manuals', arguments: 'WELDER MOTOR');
+                Navigator.pushNamed(context, '/manuals',
+                    arguments: 'WELDER MOTOR');
               },
               child: const Text('Manuals')),
           const SizedBox(
@@ -39,10 +40,11 @@ class SubProcess1Page2Details10_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                
-                Navigator.pushNamed(context, '/parameters', arguments: 'WELDER MOTOR');
+                Navigator.pushNamed(context, '/parameters',
+                    arguments: 'WELDER MOTOR');
               },
-              child: const Text('Parameters')),       ],
+              child: const Text('Parameters')),
+        ],
       ),
     );
   }

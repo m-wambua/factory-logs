@@ -1,25 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
-class Process1Category {
+class Process2Category {
   String name;
   int current;
   String remark;
 
-  Process1Category({
+  Process2Category({
     required this.name,
     required this.current,
     required this.remark,
   });
 
-  factory Process1Category.fromJson(Map<String, dynamic> json) {
-    return Process1Category(
-      name: json['name'],
-      current: json['current'],
-      remark: json['remark'],
-    );
+  factory Process2Category.fromJson(Map<String, dynamic> json) {
+    return Process2Category(
+        name: json['name'], current: json['current'], remark: json['remark']);
   }
 
   Map<String, dynamic> toJson() {
@@ -31,24 +26,21 @@ class Process1Category {
   }
 }
 
-class Process1Entry {
-  List<Process1Category> categories;
+class Process2Entry {
+  List<Process2Category> categories;
   DateTime lastUpdate;
-
-  Process1Entry({
+  Process2Entry({
     required this.categories,
     required this.lastUpdate,
   });
 
-  factory Process1Entry.fromJson(Map<String, dynamic> json) {
-    List<Process1Category> categories = (json['categories'] as List)
-        .map((categoryJson) => Process1Category.fromJson(categoryJson))
+  factory Process2Entry.fromJson(Map<String, dynamic> json) {
+    List<Process2Category> categories = (json['categories'] as List)
+        .map((categoryJson) => Process2Category.fromJson(categoryJson))
         .toList();
 
-    return Process1Entry(
-      categories: categories,
-      lastUpdate: DateTime.parse(json['lastUpdate']),
-    );
+    return Process2Entry(
+        categories: categories, lastUpdate: DateTime.parse(json['lastUpdate']));
   }
 
   Map<String, dynamic> toJson() {
@@ -59,59 +51,54 @@ class Process1Entry {
   }
 }
 
-class Process1Data {
-  List<Process1Entry> process1DataList = [];
-
-  Future<void> loadSubprocess1Data() async {
+class Process2Data {
+  List<Process2Entry> process2DataList = [];
+  Future<void> loadSubprocess2Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_1';
-      final file = File('$directory/Subprocess1_data.json');
+      final directory = 'pages/process_1/subprocess_2';
+      final file = File('$directory/Subprocess2_data.json');
 
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);
-        process1DataList =
-            jsonData.map((item) => Process1Entry.fromJson(item)).toList();
+        process2DataList =
+            jsonData.map((item) => Process2Entry.fromJson(item)).toList();
       }
     } catch (e) {
-      print('Error loading Subprocess 1 data: $e');
+      print('Error loading Subprocess 2 data $e');
     }
   }
 
-  Future<void> saveSubprocess1Data() async {
+  Future<void> saveSubprocess2Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_1';
+      final directory = 'pages/process_2/subprocess_2';
       final file = File('$directory/Subprocess1_data.json');
-
       if (!await file.exists()) {
         await file.create(recursive: true);
       }
-
       // Read existing data if the file already exists
-      List<Process1Entry> existingEntries = [];
+      List<Process2Entry> existingEntries = [];
       if (await file.exists()) {
         String existingJsonString = await file.readAsString();
         if (existingJsonString.isNotEmpty) {
           List<dynamic> existingJsonData = json.decode(existingJsonString);
           existingEntries = existingJsonData
-              .map((item) => Process1Entry.fromJson(item))
+              .map((item) => Process2Entry.fromJson(item))
               .toList();
         }
       }
-
       // Append new data to existing entries
-      existingEntries.addAll(process1DataList);
-
-      // Convert all entries to JSON and write to the file with formatting
+      existingEntries.addAll(process2DataList);
+      // Convert all entries to Json and write to the file with formatiing
       JsonEncoder encoder = JsonEncoder.withIndent('  ');
       String jsonString = encoder
           .convert(existingEntries.map((detail) => detail.toJson()).toList());
       await file.writeAsString(jsonString, mode: FileMode.write, flush: true);
 
-      // Clear the current list to avoid duplicating data in the next save
-      process1DataList.clear();
+      //clear the current list to avoid duplication data in the next save
+      process2DataList.clear();
     } catch (e) {
-      print('Error saving Subprocess 1 data: $e');
+      print('Error saving Subprocess 2 data $e');
     }
   }
 }

@@ -7,13 +7,14 @@ class SubProcess1Page2Details6_2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('fLATTENER MOTOR'),
+        title: const Text('FLATTENER MOTOR'),
       ),
       body: Column(
         children: [
           TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/history', arguments: 'FLATTENER MOTOR');
+                Navigator.pushNamed(context, '/history',
+                    arguments: 'FLATTENER MOTOR');
               },
               child: const Text('History')),
           const SizedBox(
@@ -21,8 +22,8 @@ class SubProcess1Page2Details6_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-               
-                Navigator.pushNamed(context, '/trends', arguments: 'FLATTENER MOTOR');
+                Navigator.pushNamed(context, '/trends',
+                    arguments: 'FLATTENER MOTOR');
               },
               child: const Text('Trends')),
           const SizedBox(
@@ -30,8 +31,8 @@ class SubProcess1Page2Details6_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                
-                Navigator.pushNamed(context, '/manuals', arguments: 'FLATENNER MOTOR');
+                Navigator.pushNamed(context, '/manuals',
+                    arguments: 'FLATENNER MOTOR');
               },
               child: const Text('Manuals')),
           const SizedBox(
@@ -39,8 +40,8 @@ class SubProcess1Page2Details6_2 extends StatelessWidget {
           ),
           TextButton(
               onPressed: () {
-                
-                Navigator.pushNamed(context, '/parameters', arguments: 'FLATTENER MOTOR');
+                Navigator.pushNamed(context, '/parameters',
+                    arguments: 'FLATTENER MOTOR');
               },
               child: const Text('Parameters')),
         ],
@@ -48,4 +49,3 @@ class SubProcess1Page2Details6_2 extends StatelessWidget {
     );
   }
 }
-

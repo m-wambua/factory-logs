@@ -1,6 +1,11 @@
+import 'package:collector/pages/models/notification.dart';
+import 'package:collector/pages/process_1/subprocess_1/subprocess_data_display.dart';
+import 'package:collector/pages/process_1/subprocess_2/subprocess2Data.dart';
+import 'package:collector/pages/process_1/subprocess_2/subprocess_data_display.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_10_details_page2.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_11_details_page2.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_12_details_page2.dart';
+import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_13_details_page.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_1_details_page2.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_2_details_page2.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_3_details_page2.dart';
@@ -14,6 +19,7 @@ import 'package:collector/pages/process_2/subprocess_2/subprocess_details/subpro
 import 'package:flutter/material.dart';
 
 class SavedValues {
+  // Current
   String uncoiler_blower_motor = '';
   String briddle_1a_blower = '';
   String briddler_1b_blower = '';
@@ -29,6 +35,22 @@ class SavedValues {
   String unc_lub_motor = '';
   //String uncoiler_blower_motor = '';
   //String uncoiler_blower_motor = '';
+
+// Remarks
+
+  String uncoiler_blower_motorRemark = '';
+  String briddle_1a_blowerRemark = '';
+  String briddler_1b_blowerRemark = '';
+  String briddle_2a_blowerRemark = '';
+  String briddle_2b_blowerRemark = '';
+  String recoiler_motor_blowerRemark = '';
+  String flattener_blowerRemark = '';
+  String recoiler_lub_motorRemark = '';
+  String hydraulic_power_packRemark = '';
+  String hydraulic_recirculationRemark = '';
+  String welder_motorRemark = '';
+  String scrap_baller_motorRemark = '';
+  String unc_lub_motorRemark = '';
 }
 
 SavedValues savedValues = SavedValues();
@@ -66,24 +88,82 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
   final TextEditingController _unc_lub_motorController =
       TextEditingController();
 
+  // Remarks
+
+  final TextEditingController _uncoilerblowerControllerRemark =
+      TextEditingController();
+  final TextEditingController _briddle1ablowerControllerRemark =
+      TextEditingController();
+  final TextEditingController _briddler1bblowerControllerRemark =
+      TextEditingController();
+  final TextEditingController _briddler2ablowerControllerRemark =
+      TextEditingController();
+  final TextEditingController _briddle2bblowerControllerRemark =
+      TextEditingController();
+  final TextEditingController _recoilerblowerControllerRemark =
+      TextEditingController();
+  final TextEditingController _flattenerblowerControllerRemark =
+      TextEditingController();
+  final TextEditingController _recoilerlubmotorControllerRemark =
+      TextEditingController();
+  final TextEditingController _hydraulic_power_packControllerRemark =
+      TextEditingController();
+  final TextEditingController _hydraulic_recirculationControllerRemark =
+      TextEditingController();
+  final TextEditingController _weldermotorControllerRemark =
+      TextEditingController();
+  final TextEditingController _scrap_ballerControllerRemark =
+      TextEditingController();
+  final TextEditingController _unc_lub_motorControllerRemark =
+      TextEditingController();
+
+  final Process2Data process2data = Process2Data();
+  List<NotificationModel> _sampleNotifications = [];
+
   @override
   void initState() {
     super.initState();
     //Initialize text field with saved values
-    _uncoilerblowerController.text = savedValues.unc_lub_motor;
-    _briddle1ablowerController.text = savedValues.briddle_1a_blower;
-    _briddler1bblowerController.text = savedValues.briddler_1b_blower;
-    _briddler2ablowerController.text = savedValues.briddle_2a_blower;
-    _briddle2bblowerController.text = savedValues.briddle_2b_blower;
-    _recoilerblowerController.text = savedValues.recoiler_motor_blower;
-    _flattenerblowerController.text = savedValues.flattener_blower;
-    _recoilerlubmotorController.text = savedValues.recoiler_lub_motor;
-    _hydraulic_power_packController.text = savedValues.hydraulic_power_pack;
+    _uncoilerblowerController.text = savedValues.unc_lub_motor.toString();
+    _briddle1ablowerController.text = savedValues.briddle_1a_blower.toString();
+    _briddler1bblowerController.text =
+        savedValues.briddler_1b_blower.toString();
+    _briddler2ablowerController.text = savedValues.briddle_2a_blower.toString();
+    _briddle2bblowerController.text = savedValues.briddle_2b_blower.toString();
+    _recoilerblowerController.text =
+        savedValues.recoiler_motor_blower.toString();
+    _flattenerblowerController.text = savedValues.flattener_blower.toString();
+    _recoilerlubmotorController.text =
+        savedValues.recoiler_lub_motor.toString();
+    _hydraulic_power_packController.text =
+        savedValues.hydraulic_power_pack.toString();
     _hydraulic_recirculationController.text =
-        savedValues.hydraulic_recirculation;
-    _weldermotorController.text = savedValues.welder_motor;
-    _scrap_ballerController.text = savedValues.scrap_baller_motor;
-    _unc_lub_motorController.text = savedValues.unc_lub_motor;
+        savedValues.hydraulic_recirculation.toString();
+    _weldermotorController.text = savedValues.welder_motor.toString();
+    _scrap_ballerController.text = savedValues.scrap_baller_motor.toString();
+    _unc_lub_motorController.text = savedValues.unc_lub_motor.toString();
+
+    // Remarks
+
+    _uncoilerblowerControllerRemark.text = savedValues.unc_lub_motorRemark;
+    _briddle1ablowerControllerRemark.text = savedValues.briddle_1a_blowerRemark;
+    _briddler1bblowerControllerRemark.text =
+        savedValues.briddler_1b_blowerRemark;
+    _briddler2ablowerControllerRemark.text =
+        savedValues.briddle_2a_blowerRemark;
+    _briddle2bblowerControllerRemark.text = savedValues.briddle_2b_blowerRemark;
+    _recoilerblowerControllerRemark.text =
+        savedValues.recoiler_motor_blowerRemark;
+    _flattenerblowerControllerRemark.text = savedValues.flattener_blowerRemark;
+    _recoilerlubmotorControllerRemark.text =
+        savedValues.recoiler_lub_motorRemark;
+    _hydraulic_power_packControllerRemark.text =
+        savedValues.hydraulic_power_packRemark;
+    _hydraulic_recirculationControllerRemark.text =
+        savedValues.hydraulic_recirculationRemark;
+    _weldermotorControllerRemark.text = savedValues.welder_motorRemark;
+    _scrap_ballerControllerRemark.text = savedValues.scrap_baller_motorRemark;
+    _unc_lub_motorControllerRemark.text = savedValues.unc_lub_motorRemark;
   }
 
   @override
@@ -117,14 +197,16 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const SubProcess1Page2Details1_2 ()));
+                                const SubProcess1Page2Details1_2()));
                   },
                 )),
                 const DataCell(Text('6.0')),
                 DataCell(TextField(
                   controller: _uncoilerblowerController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _uncoilerblowerControllerRemark,
+                ))
               ]),
 
               //Add more rows as needed
@@ -138,14 +220,16 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const SubProcess1Page2Details1_2()));
+                                const SubProcess1Page2Details2_2()));
                   },
                 )), //BRIDDLE 1 #A BLOWER
                 const DataCell(Text('2.8')),
                 DataCell(TextField(
                   controller: _briddle1ablowerController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _briddle1ablowerControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -157,14 +241,16 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const SubProcess1Page2Details2_2()));
+                                const SubProcess1Page2Details3_2()));
                   },
                 )), //BRIDLE 1#B BLOWER
                 const DataCell(Text('6.0')),
                 DataCell(TextField(
                   controller: _briddler1bblowerController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _briddler1bblowerControllerRemark,
+                ))
               ]),
 // Add rows or data entry
               DataRow(cells: [
@@ -175,14 +261,16 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const SubProcess1Page2Details3_2()));
+                                const SubProcess1Page2Details4_2()));
                   },
                 )), //BRIDDLE 2#A BLOWER MOTOR
                 const DataCell(Text('6.1')),
                 DataCell(TextField(
                   controller: _briddler2ablowerController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _briddler2ablowerControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -194,14 +282,16 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const SubProcess1Page2Details4_2()));
+                                const SubProcess1Page2Details5_2()));
                   },
                 )), //BRIDDLE 2#B BLOWER MOTOR
                 const DataCell(Text('2.8')),
                 DataCell(TextField(
                   controller: _briddle2bblowerController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _briddle2bblowerControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -213,14 +303,16 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const SubProcess1Page2Details5_2()));
+                                const SubProcess1Page2Details13_2()));
                   },
                 )), //RECOILER MOTOR BLOWER
                 const DataCell(Text('6.0')),
                 DataCell(TextField(
                   controller: _recoilerblowerController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _recoilerblowerControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -239,7 +331,9 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextField(
                   controller: _flattenerblowerController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _flattenerblowerControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -258,7 +352,9 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextField(
                   controller: _recoilerlubmotorController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _recoilerlubmotorControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -277,7 +373,9 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextField(
                   controller: _hydraulic_power_packController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _hydraulic_power_packControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -296,7 +394,9 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextField(
                   controller: _hydraulic_recirculationController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _hydraulic_recirculationControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -315,7 +415,9 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextField(
                   controller: _weldermotorController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _weldermotorControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -334,7 +436,9 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextField(
                   controller: _scrap_ballerController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _scrap_ballerControllerRemark,
+                ))
               ]),
 
               // Add rows or data entry
@@ -353,43 +457,175 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                 DataCell(TextField(
                   controller: _unc_lub_motorController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _unc_lub_motorControllerRemark,
+                ))
               ]),
             ]),
             const SizedBox(
               height: 20,
             ),
             // Add buttons for additonal functionality
-            ElevatedButton(
-                onPressed: () {
-                  savedValues.unc_lub_motor =
-                      _uncoilerblowerController.text.trim();
-                  savedValues.briddle_1a_blower =
-                      _briddle1ablowerController.text.trim();
-                  savedValues.briddler_1b_blower =
-                      _briddler1bblowerController.text.trim();
-                  savedValues.briddle_2a_blower =
-                      _briddler2ablowerController.text.trim();
-                  savedValues.briddle_2b_blower =
-                      _briddle2bblowerController.text.trim();
-                  savedValues.recoiler_motor_blower =
-                      _recoilerblowerController.text.trim();
-                  savedValues.flattener_blower =
-                      _flattenerblowerController.text.trim();
-                  savedValues.recoiler_lub_motor =
-                      _flattenerblowerController.text.trim();
 
-                  savedValues.hydraulic_power_pack =
-                      _hydraulic_power_packController.text.trim();
-                  savedValues.hydraulic_recirculation =
-                      _hydraulic_recirculationController.text.trim();
-                  savedValues.welder_motor = _weldermotorController.text.trim();
-                  savedValues.scrap_baller_motor =
-                      _scrap_ballerController.text.trim();
-                  savedValues.unc_lub_motor =
-                      _unc_lub_motorController.text.trim();
-                },
-                child: const Text('Save as Draft'))
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      savedValues.unc_lub_motor =
+                          _uncoilerblowerController.text.trim();
+                      savedValues.briddle_1a_blower =
+                          _briddle1ablowerController.text.trim();
+                      savedValues.briddler_1b_blower =
+                          _briddler1bblowerController.text.trim();
+                      savedValues.briddle_2a_blower =
+                          _briddler2ablowerController.text.trim();
+                      savedValues.briddle_2b_blower =
+                          _briddle2bblowerController.text.trim();
+                      savedValues.recoiler_motor_blower =
+                          _recoilerblowerController.text.trim();
+                      savedValues.flattener_blower =
+                          _flattenerblowerController.text.trim();
+                      savedValues.recoiler_lub_motor =
+                          _flattenerblowerController.text.trim();
+
+                      savedValues.hydraulic_power_pack =
+                          _hydraulic_power_packController.text.trim();
+                      savedValues.hydraulic_recirculation =
+                          _hydraulic_recirculationController.text.trim();
+                      savedValues.welder_motor =
+                          _weldermotorController.text.trim();
+                      savedValues.scrap_baller_motor =
+                          _scrap_ballerController.text.trim();
+                      savedValues.unc_lub_motor =
+                          _unc_lub_motorController.text.trim();
+                    },
+                    child: const Text('Save as Draft')),
+                SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const SubProcess2DataDisplay()));
+                    },
+                    child: Text('View Saved Data')),
+                SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      // Update placeholders with entered values
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Data Saved as Draft')));
+                      // Create a list of categories foe each component
+                      List<Process2Category> categories = [
+                        Process2Category(
+                            name: 'UNCOILER BLOWER MOTOR',
+                            current: int.parse(
+                                _uncoilerblowerController.text.trim()),
+                            remark:
+                                _uncoilerblowerControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'BRIDDLE 1#A BLOWER',
+                            current: int.parse(
+                                _briddle1ablowerController.text.trim()),
+                            remark:
+                                _briddle1ablowerControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'BRIDDLE 1#B BLOWER',
+                            current: int.parse(
+                                _briddle1ablowerController.text.trim()),
+                            remark:
+                                _briddle1ablowerControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'BRIDDLE 2#A BLOWER',
+                            current: int.parse(
+                                _briddler2ablowerController.text.trim()),
+                            remark:
+                                _briddler2ablowerControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'BRIDDLE 2#B BLOWER',
+                            current: int.parse(
+                                _briddle2bblowerController.text.trim()),
+                            remark:
+                                _briddle2bblowerControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'RECOILER MOTOR BLOWER',
+                            current: int.parse(
+                                _recoilerblowerController.text.trim()),
+                            remark:
+                                _recoilerblowerControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'FLATTENER MOTOR',
+                            current: int.parse(
+                                _flattenerblowerController.text.trim()),
+                            remark:
+                                _flattenerblowerControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'RECOILER LUB MOTOR',
+                            current: int.parse(
+                                _recoilerlubmotorController.text.trim()),
+                            remark:
+                                _recoilerlubmotorControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'HYDRAULIC PACK WRK & STBY',
+                            current: int.parse(
+                                _hydraulic_power_packController.text.trim()),
+                            remark: _hydraulic_power_packControllerRemark.text
+                                .trim()),
+                        Process2Category(
+                            name: 'HYDRAULIC RECIRCULATIONS',
+                            current: int.parse(
+                                _hydraulic_recirculationController.text.trim()),
+                            remark: _hydraulic_recirculationControllerRemark
+                                .text
+                                .trim()),
+                        Process2Category(
+                            name: 'WELDER MOTOR',
+                            current:
+                                int.parse(_weldermotorController.text.trim()),
+                            remark: _weldermotorControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'SCRAP BALLER MOTOR',
+                            current:
+                                int.parse(_scrap_ballerController.text.trim()),
+                            remark: _scrap_ballerControllerRemark.text.trim()),
+                        Process2Category(
+                            name: 'UNCOILER LUB MOTOR',
+                            current:
+                                int.parse(_unc_lub_motorController.text.trim()),
+                            remark: _unc_lub_motorControllerRemark.text.trim())
+                      ];
+                      // Create a new entry with the categories and current timestamp
+                      final newEntry = Process2Entry(
+                          categories: categories, lastUpdate: DateTime.now());
+
+                      setState(() {
+                        process2data.process2DataList.add(newEntry);
+                      });
+
+                      //Save the data
+                      await process2data.saveSubprocess2Data();
+                      // Create a new notification
+                      final newNotification = NotificationModel(
+                          title: 'New Entry Saved',
+                          description: ' An entry has been saved and Submitted',
+                          timestamp: DateTime.timestamp(),
+                          type: NotificationType.LogsCollected);
+
+                      // Add the new notification to the list
+                      setState(() {
+                        _sampleNotifications.add(newNotification);
+                        saveNotificationsToFile(_sampleNotifications);
+                      });
+                    },
+                    child: Text('Save and Submit All'))
+              ],
+            )
           ]),
         ),
       ),
