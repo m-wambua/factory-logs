@@ -1,4 +1,6 @@
 import 'package:collector/pages/models/notification.dart';
+import 'package:collector/pages/process_1/startup.dart';
+import 'package:collector/pages/process_1/startuppage.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_1_np.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_2_np.dart';
 import 'package:collector/pages/process_1/subprocess_3/subprocess_3_np.dart';
@@ -28,7 +30,7 @@ class _Process1PageState extends State<Process1Page> {
   bool _eventfulShift = false;
   String? _eventDescription;
   final List<NotificationModel> notifications = [];
-
+  StartUpEntryData startUpEntryData = StartUpEntryData();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,7 +107,13 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SubProcess2Page1(),
+                            builder: (context) => SubProcess2Page1(
+                              onNotificationAdded: (notification) {
+                                setState(() {
+                                  notifications.add(notification);
+                                });
+                              },
+                            ),
                           ),
                         );
                       },
@@ -364,6 +372,7 @@ class _Process1PageState extends State<Process1Page> {
 
   Future<void> _addStartUpProcedure(BuildContext context) async {
     List<TextEditingController> startUpController = [TextEditingController()];
+    TextEditingController lastUpdatePerson = TextEditingController();
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -393,6 +402,13 @@ class _Process1PageState extends State<Process1Page> {
                       onChanged: (value) {},
                     ),
                   SizedBox(height: 5),
+                  TextField(
+                    controller: lastUpdatePerson,
+                    decoration: InputDecoration(labelText: 'Updated By'),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
                   IconButton(
                     onPressed: () {
                       setState(() {
@@ -405,7 +421,28 @@ class _Process1PageState extends State<Process1Page> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ElevatedButton(onPressed: () {}, child: Text('Save')),
+                      ElevatedButton(
+                          onPressed: () {
+                            final startUpEntry = StartUpEntry(
+                                startupStep: startUpController
+                                    .map((controller) => controller.text)
+                                    .toList(),
+                                lastPersonUpdate: lastUpdatePerson.text,
+                                lastUpdate: DateTime.now());
+
+                            startUpEntryData.savingStartUpEntry(startUpEntry);
+                            Navigator.of(dialogContext).pop();
+                          },
+                          child: Text('Save')),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        StartUpEntriesPage()));
+                          },
+                          child: Text('View Saved Start-Up')),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);

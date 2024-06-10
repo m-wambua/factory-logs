@@ -313,5 +313,40 @@
       }
     ],
     "lastUpdate": "2024-06-03T13:46:41.242665"
+  },
+  {
+    "categories": [
+      {
+        "name": "UNCOILER",
+        "current": 67,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 1 A",
+        "current": 68,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 1 B",
+        "current": 79,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 2 A",
+        "current": 34,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 2 B",
+        "current": 56,
+        "remark": ""
+      },
+      {
+        "name": "RECOILER",
+        "current": 40,
+        "remark": ""
+      }
+    ],
+    "lastUpdate": "2024-06-04T08:23:37.642818"
   }
 ]

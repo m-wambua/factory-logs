@@ -56,7 +56,8 @@ class SavedValues {
 SavedValues savedValues = SavedValues();
 
 class SubProcess2Page1 extends StatefulWidget {
-  const SubProcess2Page1({super.key});
+  final Function(NotificationModel) onNotificationAdded;
+  const SubProcess2Page1({super.key, required this.onNotificationAdded});
 
   @override
   State<SubProcess2Page1> createState() => _SubProcess2Page1State();

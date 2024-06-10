@@ -1,10 +1,17 @@
 import 'package:collector/pages/history/maintenance/failureMaintenance/failurehistory.dart';
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
+import 'package:collector/pages/models/notification.dart';
 import 'package:flutter/material.dart';
 
-class HistoryPage extends StatelessWidget {
+class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
+  final List<NotificationModel> notifications = [];
   @override
   Widget build(BuildContext context) {
     //Retriev the arguments passed
@@ -42,6 +49,11 @@ class HistoryPage extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => MyMaintenanceHistory(
                               subprocess: subprocess,
+                              onNotificationAdded: (notification) {
+                                setState(() {
+                                  notifications.add(notification);
+                                });
+                              },
                             )));
               },
               child: const Text('Maintenance History')),

@@ -1,0 +1,142 @@
+[
+  {
+    "categories": [
+      {
+        "name": "UNCOILER BLOWER MOTOR",
+        "current": 7,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 1#A BLOWER",
+        "current": 6,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 1#B BLOWER",
+        "current": 6,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 2#A BLOWER",
+        "current": 3,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 2#B BLOWER",
+        "current": 2,
+        "remark": ""
+      },
+      {
+        "name": "RECOILER MOTOR BLOWER",
+        "current": 7,
+        "remark": ""
+      },
+      {
+        "name": "FLATTENER MOTOR",
+        "current": 9,
+        "remark": ""
+      },
+      {
+        "name": "RECOILER LUB MOTOR",
+        "current": 0,
+        "remark": ""
+      },
+      {
+        "name": "HYDRAULIC PACK WRK & STBY",
+        "current": 6,
+        "remark": ""
+      },
+      {
+        "name": "HYDRAULIC RECIRCULATIONS",
+        "current": 4,
+        "remark": ""
+      },
+      {
+        "name": "WELDER MOTOR",
+        "current": 5,
+        "remark": ""
+      },
+      {
+        "name": "SCRAP BALLER MOTOR",
+        "current": 7,
+        "remark": ""
+      },
+      {
+        "name": "UNCOILER LUB MOTOR",
+        "current": 7,
+        "remark": ""
+      }
+    ],
+    "lastUpdate": "2024-06-04T08:25:08.769482"
+  },
+  {
+    "categories": [
+      {
+        "name": "UNCOILER BLOWER MOTOR",
+        "current": 7,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 1#A BLOWER",
+        "current": 6,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 1#B BLOWER",
+        "current": 6,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 2#A BLOWER",
+        "current": 3,
+        "remark": ""
+      },
+      {
+        "name": "BRIDDLE 2#B BLOWER",
+        "current": 2,
+        "remark": ""
+      },
+      {
+        "name": "RECOILER MOTOR BLOWER",
+        "current": 7,
+        "remark": ""
+      },
+      {
+        "name": "FLATTENER MOTOR",
+        "current": 9,
+        "remark": ""
+      },
+      {
+        "name": "RECOILER LUB MOTOR",
+        "current": 0,
+        "remark": ""
+      },
+      {
+        "name": "HYDRAULIC PACK WRK & STBY",
+        "current": 6,
+        "remark": ""
+      },
+      {
+        "name": "HYDRAULIC RECIRCULATIONS",
+        "current": 4,
+        "remark": ""
+      },
+      {
+        "name": "WELDER MOTOR",
+        "current": 5,
+        "remark": ""
+      },
+      {
+        "name": "SCRAP BALLER MOTOR",
+        "current": 7,
+        "remark": ""
+      },
+      {
+        "name": "UNCOILER LUB MOTOR",
+        "current": 7,
+        "remark": ""
+      }
+    ],
+    "lastUpdate": "2024-06-04T08:25:25.570379"
+  }
+]

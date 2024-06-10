@@ -5,6 +5,7 @@ import 'package:collector/pages/history/maintenance/preventiveMaintenance/mainte
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenance_entry.dart'
     as MaintenanceEntry;
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistorysparecode.dart';
+import 'package:collector/pages/models/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
@@ -12,8 +13,10 @@ import 'package:collection/collection.dart';
 
 class MyMaintenanceHistory extends StatefulWidget {
   final String subprocess;
+  final Function(NotificationModel) onNotificationAdded;
 
-  MyMaintenanceHistory({required this.subprocess});
+  MyMaintenanceHistory(
+      {required this.subprocess, required this.onNotificationAdded});
 
   @override
   _MyMaintenanceHistoryState createState() => _MyMaintenanceHistoryState();
@@ -30,6 +33,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
   List<MaintenanceDetails> maintenanceDetailsList = [];
   MaintenanceData maintenanceData = MaintenanceData();
   MaintenanceDetails? details;
+  List<NotificationModel> _sampleNotification = [];
   @override
   void initState() {
     super.initState();
@@ -485,6 +489,15 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
 
                   _saveMaintenanceEntries();
                   _updateMaintenanceEntriesByEquipment();
+                  final newNotification = NotificationModel(
+                      title: 'New Maintenance Record Updated',
+                      description: ' An Entry has been saved and Submitted',
+                      timestamp: DateTime.timestamp(),
+                      type: NotificationType.MaintenanceUpdate);
+                  setState(() {
+                    _sampleNotification.add(newNotification);
+                    saveNotificationsToFile(_sampleNotification);
+                  });
                 });
                 Navigator.of(context).pop();
               },

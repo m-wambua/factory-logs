@@ -55,7 +55,7 @@ class Process2Data {
   List<Process2Entry> process2DataList = [];
   Future<void> loadSubprocess2Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_2';
+      final directory = 'pages/process_2/subprocess_2';
       final file = File('$directory/Subprocess2_data.json');
 
       if (await file.exists()) {
@@ -72,7 +72,7 @@ class Process2Data {
   Future<void> saveSubprocess2Data() async {
     try {
       final directory = 'pages/process_2/subprocess_2';
-      final file = File('$directory/Subprocess1_data.json');
+      final file = File('$directory/Subprocess2_data.json');
       if (!await file.exists()) {
         await file.create(recursive: true);
       }

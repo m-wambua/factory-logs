@@ -1,0 +1,17 @@
+[
+  {
+    "startUpStep": [
+      "",
+      "On the Panel that is Immediately on your Left once you enter the Control Room Locate the main ACB",
+      "On ACB there willl be an indicator called 'Spring' where it shows either charged or discharged",
+      "In the event the 'Spring' Indicates 'discharged' Using the handle  charge the spring until you hear a loud spring action and the status changes to 'Charged'",
+      "Once in the 'Charged' position  press the 'Closse' Button to power on the ACB and wait a few seconds",
+      "as you move towards the left of the control room click on the ' Reset Drives ' Button on the panels  that will be yellow in color waiting a few seconds before moving to the next one",
+      "The buttons above will be a total of four",
+      "At this point you can as the operator to carry on with operations",
+      "If there is still an issue  restart the procedure by  clicking on the' Open' button of the ACB and carry on with the steps that follow"
+    ],
+    "lastPersonUpdate": "Wambua",
+    "lastUpdate": "2024-06-10T08:36:38.881862"
+  }
+]
