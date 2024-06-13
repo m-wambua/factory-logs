@@ -13,7 +13,7 @@ class SubProcess1Page2Details2_3 extends StatelessWidget {
         children: [
           TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/history', arguments: 'UNCOILER BLOWER');
+                Navigator.pushNamed(context, '/history', arguments: 'C.T MOTOR');
               },
               child: const Text('History')),
           const SizedBox(
@@ -22,7 +22,7 @@ class SubProcess1Page2Details2_3 extends StatelessWidget {
           TextButton(
               onPressed: () {
                
-                Navigator.pushNamed(context, '/trends', arguments: 'UNCOILER BLOWER');
+                Navigator.pushNamed(context, '/trends', arguments: 'C.T MOTOR');
               },
               child: const Text('Trends')),
           const SizedBox(
@@ -31,7 +31,7 @@ class SubProcess1Page2Details2_3 extends StatelessWidget {
           TextButton(
               onPressed: () {
                 
-                Navigator.pushNamed(context, '/manuals', arguments: 'UNCOILER BLOWER');
+                Navigator.pushNamed(context, '/manuals', arguments: 'C.T MOTOR');
               },
               child: const Text('Manuals')),
           const SizedBox(
@@ -40,7 +40,7 @@ class SubProcess1Page2Details2_3 extends StatelessWidget {
           TextButton(
               onPressed: () {
                 
-                Navigator.pushNamed(context, '/parameters', arguments: 'UNCOILER BLOWER');
+                Navigator.pushNamed(context, '/parameters', arguments: 'C.T MOTOR');
               },
               child: const Text('Parameters')),
         ],

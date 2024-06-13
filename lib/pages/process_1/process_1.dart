@@ -125,7 +125,13 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SubProcess3Page1(),
+                            builder: (context) => SubProcess3Page1(
+                              onNotificationAdded: (notification) {
+                                setState(() {
+                                  notifications.add(notification);
+                                });
+                              },
+                            ),
                           ),
                         );
                       },
@@ -137,7 +143,13 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SubProcess4Page1(),
+                            builder: (context) => SubProcess4Page1(
+                              onNotificationAdded: (notification) {
+                                setState(() {
+                                  notifications.add(notification);
+                                });
+                              },
+                            ),
                           ),
                         );
                       },

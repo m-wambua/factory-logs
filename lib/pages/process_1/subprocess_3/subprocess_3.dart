@@ -1,3 +1,6 @@
+import 'package:collector/pages/models/notification.dart';
+import 'package:collector/pages/process_1/subprocess_3/subprocess3Data.dart';
+import 'package:collector/pages/process_1/subprocess_3/subprocess3_data_display.dart';
 import 'package:collector/pages/process_1/subprocess_3/subprocess_details/subprocess_1_details_page3.dart';
 import 'package:collector/pages/process_1/subprocess_3/subprocess_details/subprocess_2_details_page3.dart';
 import 'package:collector/pages/process_1/subprocess_3/subprocess_details/subprocess_3_details_page3.dart';
@@ -7,12 +10,17 @@ class SavedValues {
   String ltmotor = '';
   String ctmotor = '';
   String hoistmotor = '';
+
+  String ltmotorRemark = '';
+  String ctmotorRemark = '';
+  String hoistmotorRemark = '';
 }
 
 SavedValues savedValues = SavedValues();
 
 class SubProcess3Page1 extends StatefulWidget {
-  const SubProcess3Page1({super.key});
+  final Function(NotificationModel) onNotificationAdded;
+  const SubProcess3Page1({super.key, required this.onNotificationAdded});
 
   @override
   State<SubProcess3Page1> createState() => _SubProcess3Page1State();
@@ -25,12 +33,25 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
 
   final TextEditingController _hoistmotorController = TextEditingController();
 
+  final TextEditingController _ltmotorRemarkController =
+      TextEditingController();
+  final TextEditingController _ctmotorRemarkController =
+      TextEditingController();
+  final TextEditingController _hoistmotorRemarkController =
+      TextEditingController();
+
+  final Process3Data process3data = Process3Data();
+  List<NotificationModel> _sampleNotifications = [];
   @override
   void initState() {
     super.initState();
-    _ltmotorController.text = savedValues.ltmotor;
-    _ctmotorController.text = savedValues.ctmotor;
-    _hoistmotorController.text = savedValues.hoistmotor;
+    _ltmotorController.text = savedValues.ltmotor.toString();
+    _ctmotorController.text = savedValues.ctmotor.toString();
+    _hoistmotorController.text = savedValues.hoistmotor.toString();
+
+    _ltmotorRemarkController.text = savedValues.ltmotorRemark;
+    _ctmotorRemarkController.text = savedValues.ctmotorRemark;
+    _hoistmotorRemarkController.text = savedValues.hoistmotorRemark;
   }
 
   @override
@@ -67,7 +88,9 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
                 DataCell(TextField(
                   controller: _ltmotorController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _ltmotorRemarkController,
+                ))
               ]),
 
               //Add more rows as needed
@@ -88,7 +111,9 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
                 DataCell(TextField(
                   controller: _ctmotorController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _ctmotorRemarkController,
+                ))
               ]),
 
               // Add rows or data entry
@@ -107,7 +132,9 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
                 DataCell(TextField(
                   controller: _hoistmotorController,
                 )),
-                const DataCell(TextField())
+                DataCell(TextField(
+                  controller: _hoistmotorRemarkController,
+                ))
               ]),
               /*
 // Add rows or data entry
@@ -130,15 +157,84 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
             const SizedBox(
               height: 20,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      savedValues.ltmotor = _ltmotorController.text.trim();
+                      savedValues.ctmotor = _ctmotorController.text.trim();
+                      savedValues.hoistmotor =
+                          _hoistmotorController.text.trim();
+                    },
+                    child: const Text('Save as Draft')),
+                SizedBox(
+                  width: 10,
+                ),
+                // Add buttons for additonal functionality
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const Subprocess3DataDisplay()),
+                      );
+                    },
+                    child: Text(' View saved Data')),
+                SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      // Update placeholders with entered values
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text(' Data  Saved as Draft')),
+                      );
+                      // Create a list of categories for each component
+                      List<Process3Category> categories = [
+                        Process3Category(
+                            name: 'L.T Motor',
+                            current: int.parse(_ltmotorController.text.trim()),
+                            remark: _ltmotorRemarkController.text.trim()),
+                        Process3Category(
+                            name: 'C.T Motor',
+                            current: int.parse(_ctmotorController.text.trim()),
+                            remark: _ctmotorRemarkController.text.trim()),
+                        Process3Category(
+                            name: 'Hoist Motor',
+                            current:
+                                int.parse(_hoistmotorController.text.trim()),
+                            remark: _hoistmotorRemarkController.text.trim()),
+                      ];
+                      // Create a new entry with the categories and current timestamp
 
-            ElevatedButton(
-                onPressed: () {
-                  savedValues.ltmotor = _ltmotorController.text.trim();
-                  savedValues.ctmotor = _ctmotorController.text.trim();
-                  savedValues.hoistmotor = _hoistmotorController.text.trim();
-                },
-                child: const Text('Save as Draft'))
-            // Add buttons for additonal functionality
+                      final newEntry = Process3Entry(
+                          categories: categories, lastUpdate: DateTime.now());
+
+                      // Add the new Entry to the datalist
+                      setState(() {
+                        process3data.process3DataList.add(newEntry);
+                      });
+
+                      // Save the data
+                      await process3data.saveSubprocess3Data();
+
+                      final newNotification = NotificationModel(
+                          title: 'New Entry Saved ',
+                          description: 'An entry has been saved and Submitted',
+                          timestamp: DateTime.now(),
+                          type: NotificationType.LogsCollected);
+
+                      // Add the new notification to the list
+                      setState(() {
+                        _sampleNotifications.add(newNotification);
+                        saveNotificationsToFile(_sampleNotifications);
+                      });
+                    },
+                    child: Text(' Save and Submit All'))
+              ],
+            )
           ]),
         ),
       ),

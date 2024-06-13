@@ -1,0 +1,22 @@
+[
+  {
+    "categories": [
+      {
+        "name": "L.T Motor",
+        "current": 0,
+        "remark": "Okay"
+      },
+      {
+        "name": "C.T Motor",
+        "current": 0,
+        "remark": "Okay"
+      },
+      {
+        "name": "Hoist Motor",
+        "current": 0,
+        "remark": "Okay"
+      }
+    ],
+    "lastUpdate": "2024-06-12T16:54:55.961811"
+  }
+]
