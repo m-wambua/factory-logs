@@ -17,9 +17,9 @@ class FailureHistory extends StatefulWidget {
 }
 
 class _FailureHistoryState extends State<FailureHistory> {
-  List<FailureEntry.FailureEntry> failureEntries = [];
-  Map<String, List<FailureEntry.FailureEntry>> failureEntriesEquipment = {};
-  Map<String, List<FailureEntry.FailureEntry>> failureEntriesByTask = {};
+  List<FailureEntry.MaintenanceEntry> failureEntries = [];
+  Map<String, List<FailureEntry.MaintenanceEntry>> failureEntriesEquipment = {};
+  Map<String, List<FailureEntry.MaintenanceEntry>> failureEntriesByTask = {};
   DateTime lastUpdate = DateTime.now();
 
   bool _updateExisting = false;
@@ -375,8 +375,8 @@ class _FailureHistoryState extends State<FailureHistory> {
             TextButton(
               onPressed: () {
                 setState(() {
-                  FailureEntry.FailureEntry newEntry =
-                      FailureEntry.FailureEntry(
+                  FailureEntry.MaintenanceEntry newEntry =
+                      FailureEntry.MaintenanceEntry(
                     equipment: equipment,
                     task: task,
                     lastUpdate: lastUpdate,
@@ -409,7 +409,7 @@ class _FailureHistoryState extends State<FailureHistory> {
   }
 
   void _addProcedure(
-      BuildContext context, FailureEntry.FailureEntry entry) async {
+      BuildContext context, FailureEntry.MaintenanceEntry entry) async {
     List<TextEditingController> stepsController = [TextEditingController()];
     List<TextEditingController> toolsController = [TextEditingController()];
 
@@ -603,8 +603,8 @@ class _FailureHistoryState extends State<FailureHistory> {
       String equipment, FailureTaskDetails taskDetails) async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File(
-          '${directory.path}/${widget.subprocess}/failure_details.json');
+      final file =
+          File('${directory.path}/${widget.subprocess}/failure_details.json');
       List<FailureDetails> detailsList = [];
 
       // Load existing data if the file exists
@@ -748,13 +748,12 @@ class _FailureHistoryState extends State<FailureHistory> {
   Future<void> _loadFailureEntries() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file =
-          File('${directory.path}/${widget.subprocess}/failure.json');
+      final file = File('${directory.path}/${widget.subprocess}/failure.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);
         failureEntries = jsonData
-            .map((item) => FailureEntry.FailureEntry.fromJson(item))
+            .map((item) => FailureEntry.MaintenanceEntry.fromJson(item))
             .toList();
 
         // Rebuild maintenanceEntriesByEquipment based on loaded maintenanceEntries
@@ -775,8 +774,7 @@ class _FailureHistoryState extends State<FailureHistory> {
   Future<void> _saveFailureEntries() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file =
-          File('${directory.path}/${widget.subprocess}/failure.json');
+      final file = File('${directory.path}/${widget.subprocess}/failure.json');
 
       // Update existing task if it exists, otherwise add the new task
       for (var entry in failureEntries) {
@@ -822,8 +820,8 @@ class _FailureHistoryState extends State<FailureHistory> {
   Future<void> _loadMaintenanceDetails() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File(
-          '${directory.path}/${widget.subprocess}/failure_details.json');
+      final file =
+          File('${directory.path}/${widget.subprocess}/failure_details.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);
@@ -835,6 +833,4 @@ class _FailureHistoryState extends State<FailureHistory> {
     }
     setState(() {});
   }
-
-  }
-
+}

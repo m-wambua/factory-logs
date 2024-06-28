@@ -1,3 +1,4 @@
+import 'package:collector/pages/process_1/subprocess_5/subprocess_data_display.dart';
 import 'package:flutter/material.dart';
 
 class SubProcess5Page1_NP extends StatelessWidget {
@@ -62,6 +63,15 @@ class SubProcess5Page1_NP extends StatelessWidget {
               height: 20,
             ),
             // Add buttons for additonal functionality
+
+             ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Subprocess5DataDisplay()));
+                    },
+                    child: Text('View saved data')),
           ]),
         ),
       ),

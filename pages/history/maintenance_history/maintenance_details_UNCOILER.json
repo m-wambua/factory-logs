@@ -1,0 +1,18 @@
+[
+  {
+    "equipment": "Bearing",
+    "task": "Replacing worn out bearing",
+    "lastUpdate": "2024-06-17T11:41:21.230295",
+    "updateCount": 1,
+    "duration": "3 hours",
+    "responsiblePerson": "Wambua",
+    "taskState": 0,
+    "checklistItems": [
+      {
+        "item": "Grease bearing before mounting to the shaft",
+        "isChecked": false,
+        "comment": ""
+      }
+    ]
+  }
+]

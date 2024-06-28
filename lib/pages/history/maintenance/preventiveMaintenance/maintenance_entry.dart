@@ -1,7 +1,8 @@
 import 'dart:convert';
-
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenance_details.dart';
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
+
+import 'package:flutter/foundation.dart';
 
 class MaintenanceEntry {
   String equipment;
@@ -11,6 +12,7 @@ class MaintenanceEntry {
   String duration;
   String responsiblePerson;
   TaskState taskState;
+  List<ChecklistItem> checklistItems;
 
   MaintenanceEntry({
     required this.equipment,
@@ -20,6 +22,7 @@ class MaintenanceEntry {
     required this.duration,
     required this.responsiblePerson,
     required this.taskState,
+    this.checklistItems = const [],
   });
 
   factory MaintenanceEntry.fromJson(Map<String, dynamic> json) {
@@ -31,6 +34,9 @@ class MaintenanceEntry {
       duration: json['duration'],
       responsiblePerson: json['responsiblePerson'],
       taskState: TaskState.values[json['taskState']],
+      checklistItems: (json['checklistItems'] as List<dynamic>? ?? [])
+          .map((item) => ChecklistItem.fromJson(item))
+          .toList(),
     );
   }
 
@@ -43,20 +49,8 @@ class MaintenanceEntry {
       'duration': duration,
       'responsiblePerson': responsiblePerson,
       'taskState': taskState.index,
+      'checklistItems': checklistItems.map((item) => item.toJson()).toList(),
     };
-  }
-
-  MaintenanceTaskDetails toMaintenanceTaskDetails() {
-    return MaintenanceTaskDetails(
-      task: task,
-      lastUpdate: lastUpdate,
-      situationBefore: '',
-      stepsTaken: [],
-      toolsUsed: [],
-      situationResolved: false,
-      situationAfter: '',
-      personResponsible: responsiblePerson,
-    );
   }
 }
 

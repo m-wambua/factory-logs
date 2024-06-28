@@ -4,6 +4,8 @@ import 'maintenance_details.dart';
 //import 'maintenance_data.dart'; // Import maintenance data
 
 class MaintenanceDetailsPage extends StatefulWidget {
+  final String subprocess;
+  MaintenanceDetailsPage({required this.subprocess});
   @override
   _MaintenanceDetailsPageState createState() => _MaintenanceDetailsPageState();
 }
@@ -19,8 +21,8 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
   }
 
   Future<void> loadMaintenanceDetails() async {
-    await maintenanceData
-        .loadMaintenanceDetails(); // Load maintenance details from file
+    await maintenanceData.loadMaintenanceDetails(
+        widget.subprocess); // Load maintenance details from file
     setState(() {
       details = maintenanceData.maintenanceDetailsList.isNotEmpty
           ? maintenanceData.maintenanceDetailsList.first
@@ -174,8 +176,41 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                 ),
                               ),
 
-                              SizedBox(
-                                  height: 16), // Add some space between tasks
+                              SizedBox(height: 16),
+                              Text('Checklist Issued:',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: task.checklist.length,
+                                itemBuilder:
+                                    (BuildContext context, int checklistIndex) {
+                                  final checklistItem =
+                                      task.checklist[checklistIndex];
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          '${checklistIndex + 1}. ${checklistItem.item}'),
+                                      Row(
+                                        children: [
+                                          Text('Checked: '),
+                                          Checkbox(
+                                            value: checklistItem.isChecked,
+                                            onChanged: (value) {
+                                              // Handle checkbox change if needed
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      Text('Comment: ${checklistItem.comment}'),
+                                    ],
+                                  );
+                                },
+                              ),
+                              // Add some space between tasks
                             ],
                           ),
                         );

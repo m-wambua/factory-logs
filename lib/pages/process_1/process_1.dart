@@ -1,4 +1,7 @@
 import 'package:collector/pages/models/notification.dart';
+import 'package:collector/pages/process_1/codebase.dart';
+import 'package:collector/pages/process_1/codedata.dart';
+import 'package:collector/pages/process_1/codedetails.dart';
 import 'package:collector/pages/process_1/startup.dart';
 import 'package:collector/pages/process_1/startuppage.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_1_np.dart';
@@ -45,6 +48,12 @@ class _Process1PageState extends State<Process1Page> {
                 },
                 icon: Icon(Icons.power_settings_new),
               ),
+              const SizedBox(width: 5),
+              IconButton(
+                  onPressed: () {
+                    _showOptionsDialog(context);
+                  },
+                  icon: Icon(Icons.code)),
             ],
           ),
         ],
@@ -161,7 +170,13 @@ class _Process1PageState extends State<Process1Page> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SubProcess5Page1(),
+                            builder: (context) => SubProcess5Page1(
+                              onNotificationAdded: (notification) {
+                                setState(() {
+                                  notifications.add(notification);
+                                });
+                              },
+                            ),
                           ),
                         );
                       },
@@ -470,5 +485,46 @@ class _Process1PageState extends State<Process1Page> {
         );
       },
     );
+  }
+
+  Widget uploadOrNot(BuildContext context) {
+    return AlertDialog(
+      title: Text('Code Base Storage'),
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                //Handle view existing code bases
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ExistingCodeBasesPage()));
+              },
+              child: Text('View Existing Code Bases')),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog first
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UploadScreen()));
+            },
+            child: Text('Upload New Code Bases'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showOptionsDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return uploadOrNot(context);
+        });
   }
 }

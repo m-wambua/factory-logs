@@ -1,9 +1,8 @@
 import 'dart:convert';
-
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenance_details.dart';
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
 
-class FailureEntry {
+class MaintenanceEntry {
   String equipment;
   String task;
   DateTime lastUpdate;
@@ -11,8 +10,9 @@ class FailureEntry {
   String duration;
   String responsiblePerson;
   TaskState taskState;
+  List<ChecklistItem> checklistItems; // Updated to List<ChecklistItem>
 
-  FailureEntry({
+  MaintenanceEntry({
     required this.equipment,
     required this.task,
     required this.lastUpdate,
@@ -20,10 +20,11 @@ class FailureEntry {
     required this.duration,
     required this.responsiblePerson,
     required this.taskState,
+    this.checklistItems = const [], // Updated default value
   });
 
-  factory FailureEntry.fromJson(Map<String, dynamic> json) {
-    return FailureEntry(
+  factory MaintenanceEntry.fromJson(Map<String, dynamic> json) {
+    return MaintenanceEntry(
       equipment: json['equipment'],
       task: json['task'],
       lastUpdate: DateTime.parse(json['lastUpdate']),
@@ -31,6 +32,9 @@ class FailureEntry {
       duration: json['duration'],
       responsiblePerson: json['responsiblePerson'],
       taskState: TaskState.values[json['taskState']],
+      checklistItems: (json['checklistItems'] as List)
+          .map((item) => ChecklistItem.fromJson(item))
+          .toList(), // Parse checklist items from JSON
     );
   }
 
@@ -43,6 +47,7 @@ class FailureEntry {
       'duration': duration,
       'responsiblePerson': responsiblePerson,
       'taskState': taskState.index,
+      'checklistItems': checklistItems.map((item) => item.toJson()).toList(), // Convert checklist items to JSON
     };
   }
 
@@ -56,6 +61,7 @@ class FailureEntry {
       situationResolved: false,
       situationAfter: '',
       personResponsible: responsiblePerson,
+      checklist: checklistItems, // Include checklist items
     );
   }
 }

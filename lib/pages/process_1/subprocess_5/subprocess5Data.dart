@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
-class Process4Category {
+class Process5Category {
   String name;
   int current;
   String remark;
-  Process4Category({
+  Process5Category({
     required this.name,
     required this.current,
     required this.remark,
   });
 
-  factory Process4Category.fromJson(Map<String, dynamic> json) {
-    return Process4Category(
+  factory Process5Category.fromJson(Map<String, dynamic> json) {
+    return Process5Category(
         name: json['name'], current: json['current'], remark: json['remark']);
   }
 
@@ -21,19 +21,19 @@ class Process4Category {
   }
 }
 
-class Process4Entry {
-  List<Process4Category> categories;
+class Process5Entry {
+  List<Process5Category> categories;
   DateTime lastUpdate;
-  Process4Entry({
+  Process5Entry({
     required this.lastUpdate,
     required this.categories,
   });
 
-  factory Process4Entry.fromJson(Map<String, dynamic> json) {
-    List<Process4Category> categories = (json['categories'] as List)
-        .map((categoryJson) => Process4Category.fromJson(categoryJson))
+  factory Process5Entry.fromJson(Map<String, dynamic> json) {
+    List<Process5Category> categories = (json['categories'] as List)
+        .map((categoryJson) => Process5Category.fromJson(categoryJson))
         .toList();
-    return Process4Entry(
+    return Process5Entry(
         lastUpdate: DateTime.parse(json['lastUpdate']), categories: categories);
   }
 
@@ -45,50 +45,52 @@ class Process4Entry {
   }
 }
 
-class Process4Data {
-  List<Process4Entry> process4DataList = [];
-  Future<void> loadSubprocess4Data() async {
+class Process5Data {
+  List<Process5Entry> process5DataList = [];
+  Future<void> loadSubprocess5Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_4';
-      final file = File('$directory/Subprocess4_data.json');
+      final directory = 'paages/process_1/subprocess_5';
+      final file = File('$directory/Subprocess5_data.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);
-        process4DataList =
-            jsonData.map((item) => Process4Entry.fromJson(item)).toList();
+        process5DataList =
+            jsonData.map((item) => Process5Entry.fromJson(item)).toList();
       }
     } catch (e) {
-      print('Error loading Subprocess 4 data $e');
+      print('Error loading Subprocess 5 data $e');
     }
   }
 
-  Future<void> saveSUbprocess4Data() async {
+  Future<void> savedSubprocess5Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_4';
-      final file = File('$directory/Subprocess4_data.json');
+      final directory = 'pages/process_1/subprocess_5';
+      final file = File('$directory/Subprocess5_data.json');
       if (!await file.exists()) {
         await file.create(recursive: true);
       }
-      // Read existing data of the file already exists
-      List<Process4Entry> existingEntries = [];
+      // Read existing data of the file already exist
+      List<Process5Entry> existingEntries = [];
       String existingJsonString = await file.readAsString();
       if (existingJsonString.isNotEmpty) {
         List<dynamic> existingJsonData = json.decode(existingJsonString);
         existingEntries = existingJsonData
-            .map((item) => Process4Entry.fromJson(item))
+            .map((item) => Process5Entry.fromJson(item))
             .toList();
       }
-      // append new data to existing entries
-      existingEntries.addAll(process4DataList);
-      //COnvert all entries to Json and write to the file with formatting
+      // Append new data to existing entries
+      existingEntries.addAll(process5DataList);
+      //Convert all entries to Json and write to the file with the formatting
       JsonEncoder encoder = JsonEncoder.withIndent('  ');
       String jsonString = encoder
           .convert(existingEntries.map((detail) => detail.toJson()).toList());
+
       await file.writeAsString(jsonString, mode: FileMode.write, flush: true);
-      // clear the current list to avoid duplicating data in the next save
-      process4DataList.clear();
+
+      // Clear the current list to avoid duplicating data in the nect save
+      process5DataList.clear();
     } catch (e) {
-      print('Error saving Subprocess 4 data$e');
+      print('Error saving Subprocess 5 data $e');
     }
   }
 }

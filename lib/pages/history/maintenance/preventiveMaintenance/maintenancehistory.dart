@@ -41,12 +41,11 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
   }
 
   Future<void> loadMaintenanceDetails() async {
-    await maintenanceData
-        .loadMaintenanceDetails(); // Load maintenance details from file
+    await maintenanceData.loadMaintenanceDetails(
+        widget.subprocess); // Load maintenance details from file
     setState(() {
-      details = maintenanceData.maintenanceDetailsList.isNotEmpty
-          ? maintenanceData.maintenanceDetailsList.first
-          : null; // Assign the first details if available, otherwise null
+      maintenanceDetailsList = maintenanceData
+          .maintenanceDetailsList; // Assign the first details if available, otherwise null
     });
   }
 
@@ -55,7 +54,8 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     _loadMaintenanceEntries();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Preventive Maintenance Checklist'),
+        title:
+            Text('Preventive Maintenance Checklist for ${widget.subprocess} '),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -96,6 +96,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     List<DataRow> rows = [];
 
     // Iterate over each equipment entry in maintenanceEntriesByEquipment
+    Set<String> uniqueEntries = Set<String>();
     maintenanceEntriesByEquipment.forEach((equipment, entries) {
       // Add a DataRow for each equipment with its grouped maintenance entries
       rows.add(
@@ -106,7 +107,9 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MaintenanceDetailsPage()));
+                      builder: (context) => MaintenanceDetailsPage(
+                            subprocess: widget.subprocess,
+                          )));
             },
             child: Text(equipment),
           ))),
@@ -119,12 +122,13 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
 
       // Add a DataRow for each maintenance entry of this equipment
       entries.forEach((entry) {
+        bool checklistPresent = entry.checklistItems.isNotEmpty;
         rows.add(
           DataRow(cells: [
             DataCell(SizedBox()), // Empty cell for equipment
             DataCell(TextButton(
               onPressed: () {
-                _addProcedure(context, entry);
+                _addProcedure(context, entry, entry.checklistItems);
               },
               child: Row(
                 children: [
@@ -141,11 +145,24 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   .format(entry.lastUpdate)), // Format DateTime
             )),
             DataCell(Text(entry.duration)), // Display duration
-            DataCell(TextButton(
-              onPressed: () {
-                _addApprover(context);
-              },
-              child: Text(entry.responsiblePerson),
+            DataCell(Row(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    _addApprover(context);
+                  },
+                  child: Text(entry.responsiblePerson),
+                ),
+                if (checklistPresent)
+                  IconButton(
+                      onPressed: () {
+                        _showCheckListDetailsDialog(
+                            context, entry.checklistItems);
+                        //Handle list icon on pressed action
+                        //You can navigate to another page or show a dialog for checklist items here
+                      },
+                      icon: Icon(Icons.list))
+              ],
             )), // Display responsible person
           ]),
         );
@@ -156,6 +173,75 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     });
 
     return rows;
+  }
+
+  void _showCheckListDetailsDialog(
+      BuildContext context, List<ChecklistItem> checklistItems) {
+    List<Map<String, dynamic>> items =
+        []; // List to hold checklist items and their status
+    for (var item in checklistItems) {
+      items.add({
+        'item': item.item, // Make sure to access the actual item string
+        'isChecked': false, // initialize with unchecked status
+        'comment': '', // initialize empty additional note
+      });
+    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Checklist Details'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Display checklist items with checkbox and optional note field
+                for (var item in items)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: item['isChecked'],
+                        onChanged: (bool? value) {
+                          setState(() {
+                            item['isChecked'] = value ?? false;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(child: Text(item['item'] ?? '')),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: TextField(
+                          decoration:
+                              InputDecoration(hintText: 'Additional note'),
+                          onChanged: (value) {
+                            setState(() {
+                              item['comment'] = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _scheduleNextTask(
@@ -402,104 +488,243 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     int updateCount = 1;
     MaintenanceEntry.TaskState taskState =
         MaintenanceEntry.TaskState.unactioned;
+    bool addChecklist = false;
+    List<ChecklistItem> checklistItems =
+        []; // Initialize empty checklist items list
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(existingTask == null ? 'Add New Entry' : 'Update Task'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                if (existingTask == null)
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Equipment'),
-                    initialValue: equipment,
-                    onChanged: (value) {
-                      equipment = value;
-                    },
-                  ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Task'),
-                  initialValue: task,
-                  onChanged: (value) {
-                    task = value;
-                  },
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title:
+                  Text(existingTask == null ? 'Add New Entry' : 'Update Task'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (existingTask == null)
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Equipment'),
+                        initialValue: equipment,
+                        onChanged: (value) {
+                          equipment = value;
+                        },
+                      ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Task'),
+                      initialValue: task,
+                      onChanged: (value) {
+                        task = value;
+                      },
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Duration'),
+                      onChanged: (value) {
+                        duration = value;
+                      },
+                    ),
+                    TextFormField(
+                      decoration:
+                          InputDecoration(labelText: 'Responsible Person'),
+                      onChanged: (value) {
+                        responsiblePerson = value;
+                      },
+                    ),
+                    DropdownButtonFormField<MaintenanceEntry.TaskState>(
+                      value: taskState,
+                      decoration: InputDecoration(labelText: 'Task State'),
+                      onChanged: (value) {
+                        setState(() {
+                          taskState = value!;
+                        });
+                      },
+                      items: MaintenanceEntry.TaskState.values
+                          .map((MaintenanceEntry.TaskState state) {
+                        return DropdownMenuItem<MaintenanceEntry.TaskState>(
+                          value: state,
+                          child: Text(state.toString().split('.').last),
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: addChecklist,
+                          onChanged: (value) async {
+                            setState(() {
+                              addChecklist = value ?? false;
+                            });
+                            if (addChecklist) {
+                              List<String>? result = await _showChecklistDialog(
+                                  context, checklistItems);
+                              if (result != null) {
+                                setState(() {
+                                  checklistItems = result
+                                      .map((item) => ChecklistItem(
+                                          item: item,
+                                          isChecked: false,
+                                          comment: ''))
+                                      .toList();
+                                });
+                              }
+                            }
+                          },
+                        ),
+                        Text('Do you wish to add a checklist?'),
+                      ],
+                    ),
+                    if (checklistItems.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Checklist Items:'),
+                          SizedBox(height: 8),
+                          ...checklistItems
+                              .map((item) => ListTile(title: Text(item.item))),
+                        ],
+                      ),
+                  ],
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Duration'),
-                  onChanged: (value) {
-                    duration = value;
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
+                  child: Text('Cancel'),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Responsible Person'),
-                  onChanged: (value) {
-                    responsiblePerson = value;
-                  },
-                ),
-                DropdownButtonFormField<MaintenanceEntry.TaskState>(
-                  value: taskState,
-                  decoration: InputDecoration(labelText: 'Task State'),
-                  onChanged: (value) {
+                TextButton(
+                  onPressed: () {
                     setState(() {
-                      taskState = value!;
+                      MaintenanceEntry.MaintenanceEntry newEntry =
+                          MaintenanceEntry.MaintenanceEntry(
+                        equipment: equipment,
+                        task: task,
+                        lastUpdate: lastUpdate,
+                        updateCount: updateCount,
+                        duration: duration,
+                        responsiblePerson: responsiblePerson,
+                        taskState: taskState,
+                        checklistItems: checklistItems,
+                      );
+
+                      if (existingTask == null) {
+                        maintenanceEntries.add(newEntry);
+                      } else {
+                        maintenanceEntries.removeWhere((entry) =>
+                            entry.equipment == equipment &&
+                            entry.task == existingTask);
+                        maintenanceEntries.add(newEntry);
+                      }
+
+                      _saveMaintenanceEntries();
+                      _updateMaintenanceEntriesByEquipment();
+                      _updateMaintenanceDetailsPage();
+
+                      final newNotification = NotificationModel(
+                        title: 'New Maintenance Record Updated',
+                        description: 'An entry has been saved and submitted',
+                        timestamp: DateTime.now(),
+                        type: NotificationType.MaintenanceUpdate,
+                      );
+                      _sampleNotification.add(newNotification);
+                      saveNotificationsToFile(_sampleNotification);
                     });
+                    Navigator.of(context).pop();
                   },
-                  items: MaintenanceEntry.TaskState.values
-                      .map((MaintenanceEntry.TaskState state) {
-                    return DropdownMenuItem<MaintenanceEntry.TaskState>(
-                      value: state,
-                      child: Text(state.toString().split('.').last),
-                    );
-                  }).toList(),
+                  child: Text('Save'),
                 ),
               ],
-            ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<List<String>?> _showChecklistDialog(
+      BuildContext context, List<ChecklistItem> currentItems) async {
+    List<String> checklistItems =
+        currentItems.map((item) => item.item).toList();
+    TextEditingController checklistController = TextEditingController();
+    List<String> newItems = []; // Track new items added
+
+    return await showDialog<List<String>?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit Checklist'),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                width: double.maxFinite, // Set maximum width
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 200, // Set a fixed height for the list
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            ...checklistItems.map((item) => ListTile(
+                                  title: Text(item),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      setState(() {
+                                        checklistItems.remove(item);
+                                      });
+                                    },
+                                  ),
+                                )),
+                            ...newItems.map((item) => ListTile(
+                                  title: Text(item),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      setState(() {
+                                        newItems.remove(item);
+                                      });
+                                    },
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: checklistController,
+                      decoration: InputDecoration(labelText: 'Checklist Item'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          if (checklistController.text.isNotEmpty) {
+                            newItems.add(checklistController.text);
+                            checklistController.clear(); // Clear the text field
+                          }
+                        });
+                      },
+                      child: Text('Add Item'),
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
+              );
+            },
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  MaintenanceEntry.MaintenanceEntry newEntry =
-                      MaintenanceEntry.MaintenanceEntry(
-                    equipment: equipment,
-                    task: task,
-                    lastUpdate: lastUpdate,
-                    updateCount: updateCount,
-                    duration: duration,
-                    responsiblePerson: responsiblePerson,
-                    taskState: taskState,
-                  );
-
-                  if (existingTask == null) {
-                    maintenanceEntries.add(newEntry);
-                  } else {
-                    maintenanceEntries.removeWhere((entry) =>
-                        entry.equipment == equipment &&
-                        entry.task == existingTask);
-                    maintenanceEntries.add(newEntry);
-                  }
-
-                  _saveMaintenanceEntries();
-                  _updateMaintenanceEntriesByEquipment();
-                  final newNotification = NotificationModel(
-                      title: 'New Maintenance Record Updated',
-                      description: ' An Entry has been saved and Submitted',
-                      timestamp: DateTime.timestamp(),
-                      type: NotificationType.MaintenanceUpdate);
-                  setState(() {
-                    _sampleNotification.add(newNotification);
-                    saveNotificationsToFile(_sampleNotification);
-                  });
-                });
-                Navigator.of(context).pop();
+                // Combine current items with new items
+                List<String> updatedChecklistItems = [
+                  ...checklistItems,
+                  ...newItems
+                ];
+                Navigator.of(context).pop(updatedChecklistItems);
               },
               child: Text('Save'),
             ),
@@ -510,7 +735,9 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
   }
 
   void _addProcedure(
-      BuildContext context, MaintenanceEntry.MaintenanceEntry entry) async {
+      BuildContext context,
+      MaintenanceEntry.MaintenanceEntry entry,
+      List<ChecklistItem> currentItems) async {
     List<TextEditingController> stepsController = [TextEditingController()];
     List<TextEditingController> toolsController = [TextEditingController()];
 
@@ -632,22 +859,22 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                     );
 
                     final taskDetails = MaintenanceTaskDetails(
-                      task: entry.task,
-                      lastUpdate: entry.lastUpdate,
-                      situationBefore: situationBeforeController.text,
-                      stepsTaken: stepsController
-                          .map((controller) => controller.text)
-                          .toList(),
-                      toolsUsed: toolsController
-                          .map((controller) => controller.text)
-                          .toList(),
-                      situationResolved: situationResolved,
-                      situationAfter: situationAfterController.text,
-                      personResponsible: entry.responsiblePerson,
-                    );
+                        task: entry.task,
+                        lastUpdate: entry.lastUpdate,
+                        situationBefore: situationBeforeController.text,
+                        stepsTaken: stepsController
+                            .map((controller) => controller.text)
+                            .toList(),
+                        toolsUsed: toolsController
+                            .map((controller) => controller.text)
+                            .toList(),
+                        situationResolved: situationResolved,
+                        situationAfter: situationAfterController.text,
+                        personResponsible: entry.responsiblePerson,
+                        checklist: currentItems);
 
                     details.tasks.add(taskDetails);
-                    maintenanceData.saveMaintenanceDetails();
+                    maintenanceData.saveMaintenanceDetails(widget.subprocess);
 
                     Navigator.of(dialogContext).pop();
 
@@ -665,46 +892,6 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
         );
       },
     );
-  }
-
-  void _saveProcedure({
-    required String equipment,
-    required String task,
-    required String situationBefore,
-    required List<String> stepsTaken,
-    required List<String> toolsUsed,
-    required bool situationResolved,
-    required String situationAfter,
-    required String personResponsible,
-  }) {
-    MaintenanceTaskDetails taskDetails = MaintenanceTaskDetails(
-        task: task,
-        lastUpdate: lastUpdate,
-        situationBefore: situationBefore,
-        stepsTaken: stepsTaken,
-        toolsUsed: toolsUsed,
-        situationResolved: situationResolved,
-        situationAfter: situationAfter,
-        personResponsible:
-            personResponsible); // Find the existing maintenance details for the equipment
-    MaintenanceDetails? existingDetails =
-        maintenanceDetailsList.firstWhereOrNull(
-      (details) => details.equipment == equipment,
-    );
-    if (existingDetails != null) {
-      // If the details exist, add the new task to the list of tasks
-      existingDetails.tasks.add(taskDetails);
-    } else {
-      // If no details exist for the equipment, create a new one with the task
-      MaintenanceDetails newDetails = MaintenanceDetails(
-        equipment: equipment,
-        tasks: [taskDetails],
-      );
-      maintenanceDetailsList.add(newDetails);
-    }
-
-    // Save the maintenance details list
-    _saveMaintenanceDetails(equipment, taskDetails);
   }
 
   Future<void> _saveMaintenanceDetails(

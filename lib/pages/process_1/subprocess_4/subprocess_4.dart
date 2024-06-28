@@ -205,8 +205,7 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
                             remark: _lrpRemarkController.text.trim()),
                         Process4Category(
                             name: 'S.T.R',
-                            current:
-                                int.parse(_strRemarkController.text.trim()),
+                            current: int.parse(_strController.text.trim()),
                             remark: _strRemarkController.text.trim())
                       ];
                       // Create a new entry with the categories and current timestamp

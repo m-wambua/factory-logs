@@ -31,12 +31,11 @@ class _HistoryPageState extends State<HistoryPage> {
 
           TextButton(
               onPressed: () {
-                /*
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            FailureHistory(subprocess: subprocess)));*/
+                            FailureHistory(subprocess: subprocess)));
               },
               child: const Text('Failure History')),
           const SizedBox(

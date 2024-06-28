@@ -1,0 +1,24 @@
+[
+  {
+    "equipment": "Bearing",
+    "tasks": [
+      {
+        "task": "Replacing Bearing",
+        "lastUpdate": "2024-06-17T13:47:52.329490",
+        "situationBefore": "",
+        "stepsTaken": [],
+        "toolsUsed": [],
+        "situationResolved": false,
+        "situationAfter": "",
+        "personResponsible": "Wambua",
+        "checklist": [
+          {
+            "item": "greasing bearing",
+            "isChecked": false,
+            "comment": ""
+          }
+        ]
+      }
+    ]
+  }
+]

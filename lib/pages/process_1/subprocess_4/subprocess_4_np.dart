@@ -1,3 +1,4 @@
+import 'package:collector/pages/process_1/subprocess_4/subprocess4_data_display.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_1_details_page4.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_2_details_page4.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_details/subprocess_3_details_page4.dart';
@@ -93,9 +94,17 @@ class SubProcess4Page1_NP extends StatelessWidget {
               height: 20,
             ),
             // Add buttons for additonal functionality
+             ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Subprocess4DataDisplay()));
+                    },
+                    child: Text('View saved data')),
           ]),
         ),
-      ),
+      )
     );
   }
 }

@@ -1,0 +1,62 @@
+[
+  {
+    "categories": [
+      {
+        "name": "T.R.P",
+        "current": 10,
+        "remark": "Okay"
+      },
+      {
+        "name": "L.R.P",
+        "current": 10,
+        "remark": "Okay"
+      },
+      {
+        "name": "S.T.R",
+        "current": 10,
+        "remark": "Okay"
+      }
+    ],
+    "lastUpdate": "2024-06-14T16:38:55.328987"
+  },
+  {
+    "categories": [
+      {
+        "name": "T.R.P",
+        "current": 10,
+        "remark": "Okay"
+      },
+      {
+        "name": "L.R.P",
+        "current": 10,
+        "remark": "Okay"
+      },
+      {
+        "name": "S.T.R",
+        "current": 10,
+        "remark": "Okay"
+      }
+    ],
+    "lastUpdate": "2024-06-14T16:39:06.835187"
+  },
+  {
+    "categories": [
+      {
+        "name": "T.R.P",
+        "current": 10,
+        "remark": "Okay"
+      },
+      {
+        "name": "L.R.P",
+        "current": 10,
+        "remark": "Okay"
+      },
+      {
+        "name": "S.T.R",
+        "current": 10,
+        "remark": "Okay"
+      }
+    ],
+    "lastUpdate": "2024-06-14T16:44:50.054634"
+  }
+]

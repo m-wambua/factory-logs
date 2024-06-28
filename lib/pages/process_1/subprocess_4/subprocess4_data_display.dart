@@ -16,7 +16,7 @@ class _Subprocess4DataDisplayState extends State<Subprocess4DataDisplay> {
   }
 
   Future<void> _loadData() async {
-    await process4data.loadSubprovess4Data();
+    await process4data.loadSubprocess4Data();
     setState(() {
       // Data loaded , trigger a rebuild to display the data
     });
