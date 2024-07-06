@@ -1,7 +1,8 @@
 import 'package:collector/pages/models/notification.dart';
-import 'package:collector/pages/process_1/codebase.dart';
-import 'package:collector/pages/process_1/codedata.dart';
-import 'package:collector/pages/process_1/codedetails.dart';
+import 'package:collector/pages/process_1/cableSchedule/cablescheduleadd.dart';
+import 'package:collector/pages/process_1/codebase/codebase.dart';
+import 'package:collector/pages/process_1/codebase/codedata.dart';
+import 'package:collector/pages/process_1/codebase/codedetails.dart';
 import 'package:collector/pages/process_1/startup.dart';
 import 'package:collector/pages/process_1/startuppage.dart';
 import 'package:collector/pages/process_1/subprocess_1/subprocess_1_np.dart';
@@ -43,17 +44,24 @@ class _Process1PageState extends State<Process1Page> {
           Row(
             children: [
               IconButton(
-                onPressed: () {
-                  _addStartUpProcedure(context);
-                },
-                icon: Icon(Icons.power_settings_new),
-              ),
-              const SizedBox(width: 5),
+                  onPressed: () {}, icon: const Icon(Icons.chrome_reader_mode)),
+              IconButton(
+                  onPressed: () {
+                    _showCableScheduleDialog(context);
+                  },
+                  icon: const Icon(Icons.cable_outlined)),
               IconButton(
                   onPressed: () {
                     _showOptionsDialog(context);
                   },
-                  icon: Icon(Icons.code)),
+                  icon: const Icon(Icons.code)),
+              IconButton(
+                onPressed: () {
+                  _addStartUpProcedure(context);
+                },
+                icon: const Icon(Icons.power_settings_new),
+              ),
+              const SizedBox(width: 5),
             ],
           ),
         ],
@@ -194,7 +202,6 @@ class _Process1PageState extends State<Process1Page> {
                       },
                       child: const Text('Tensions'),
                     ),
-                    const SizedBox(height: 100),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -329,7 +336,6 @@ class _Process1PageState extends State<Process1Page> {
                       },
                       child: const Text('Tensions'),
                     ),
-                    const SizedBox(height: 100),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -520,11 +526,50 @@ class _Process1PageState extends State<Process1Page> {
     );
   }
 
+  Widget uploadCableScheduleorNot(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Cable Schedule Storage'),
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // close the dialog
+                //Handle view  existing cable schedule
+              },
+              child: const Text('View Existing Cable Schedule')),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // close the dialog first
+                //Handle the uploading of the cable Schedule
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UploadScreenCableSchedule()));
+              },
+              child: Text('Upload New/Updated Cable Schedule'))
+        ],
+      ),
+    );
+  }
+
   void _showOptionsDialog(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return uploadOrNot(context);
+        });
+  }
+
+  void _showCableScheduleDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return uploadCableScheduleorNot(context);
         });
   }
 }

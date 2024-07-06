@@ -243,6 +243,7 @@ class _ParameterPageState extends State<ParameterPage> {
   }
 
   void _createApparatusParametersFolder(String subprocess) async {
+    final directory = await getApplicationDocumentsDirectory();
     String folderPath = 'services/parameters/files_and_folders/$subprocess';
     Directory parameterDirectory = Directory(folderPath);
     bool exists = parameterDirectory.existsSync();
