@@ -41,7 +41,7 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
       TextEditingController();
 
   final Process3Data process3data = Process3Data();
-  List<NotificationModel> _sampleNotifications = [];
+  final List<NotificationModel> _sampleNotifications = [];
   @override
   void initState() {
     super.initState();
@@ -168,7 +168,7 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
                           _hoistmotorController.text.trim();
                     },
                     child: const Text('Save as Draft')),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 // Add buttons for additonal functionality
@@ -181,8 +181,8 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
                                 const Subprocess3DataDisplay()),
                       );
                     },
-                    child: Text(' View saved Data')),
-                SizedBox(
+                    child: const Text(' View saved Data')),
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -232,7 +232,7 @@ class _SubProcess3Page1State extends State<SubProcess3Page1> {
                         saveNotificationsToFile(_sampleNotifications);
                       });
                     },
-                    child: Text(' Save and Submit All'))
+                    child: const Text(' Save and Submit All'))
               ],
             )
           ]),

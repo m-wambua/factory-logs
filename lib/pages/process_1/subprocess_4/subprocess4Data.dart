@@ -49,7 +49,7 @@ class Process4Data {
   List<Process4Entry> process4DataList = [];
   Future<void> loadSubprocess4Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_4';
+      const directory = 'pages/process_1/subprocess_4';
       final file = File('$directory/Subprocess4_data.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
@@ -64,7 +64,7 @@ class Process4Data {
 
   Future<void> saveSUbprocess4Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_4';
+      const directory = 'pages/process_1/subprocess_4';
       final file = File('$directory/Subprocess4_data.json');
       if (!await file.exists()) {
         await file.create(recursive: true);
@@ -81,7 +81,7 @@ class Process4Data {
       // append new data to existing entries
       existingEntries.addAll(process4DataList);
       //COnvert all entries to Json and write to the file with formatting
-      JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      JsonEncoder encoder = const JsonEncoder.withIndent('  ');
       String jsonString = encoder
           .convert(existingEntries.map((detail) => detail.toJson()).toList());
       await file.writeAsString(jsonString, mode: FileMode.write, flush: true);

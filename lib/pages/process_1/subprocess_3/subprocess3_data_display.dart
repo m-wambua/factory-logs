@@ -2,7 +2,7 @@ import 'package:collector/pages/process_1/subprocess_3/subprocess3Data.dart';
 import 'package:flutter/material.dart';
 
 class Subprocess3DataDisplay extends StatefulWidget {
-  const Subprocess3DataDisplay({Key? key}) : super(key: key);
+  const Subprocess3DataDisplay({super.key});
   @override
   _Subprocess3DataDisplayState createState() => _Subprocess3DataDisplayState();
 }
@@ -36,7 +36,7 @@ class _Subprocess3DataDisplayState extends State<Subprocess3DataDisplay> {
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columns: [
-                    DataColumn(label: Text('Date')),
+                    const DataColumn(label: Text('Date')),
                     for (var category
                         in process3data.process3DataList.first.categories)
                       DataColumn(label: Text('${category.name} Current')),
@@ -48,7 +48,7 @@ class _Subprocess3DataDisplayState extends State<Subprocess3DataDisplay> {
                     return DataRow(cells: [
                       DataCell(Text(entry.lastUpdate.toString())),
                       for (var category in entry.categories)
-                        DataCell(Text('${category.current.toString()}')),
+                        DataCell(Text(category.current.toString())),
                       //Optionally include remar cells here
                       //for (var category in entry.categories)
                       // DataCell(Text(category.remark)),

@@ -2,6 +2,8 @@ import 'package:collector/pages/process_1/startup.dart';
 import 'package:flutter/material.dart';
 
 class StartUpEntriesPage extends StatefulWidget {
+  const StartUpEntriesPage({super.key});
+
   @override
   _StartupEntriesPageState createState() => _StartupEntriesPageState();
 }
@@ -26,7 +28,7 @@ class _StartupEntriesPageState extends State<StartUpEntriesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('StartUp Entries '),
+        title: const Text('StartUp Entries '),
       ),
       body: ListView.builder(
           itemCount: entries.length,
@@ -50,7 +52,7 @@ class _StartupEntriesPageState extends State<StartUpEntriesPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(' Start Up Procedure Details Details'),
+            title: const Text(' Start Up Procedure Details Details'),
             content: SingleChildScrollView(
               child: ListBody(
                 children: entry.startupStep.map((step) => Text(step)).toList(),
@@ -61,7 +63,7 @@ class _StartupEntriesPageState extends State<StartUpEntriesPage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'))
+                  child: const Text('Close'))
             ],
           );
         });

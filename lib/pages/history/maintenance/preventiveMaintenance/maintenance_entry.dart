@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenance_details.dart';
-import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
 
-import 'package:flutter/foundation.dart';
 
 class MaintenanceEntry {
   String equipment;

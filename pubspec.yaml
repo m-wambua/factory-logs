@@ -63,6 +63,9 @@ dependencies:
   fl_chart: ^0.68.0
   excel: ^4.0.3
   open_file: ^3.3.2
+  path_provider: any
+  intl: any
+  collection: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
