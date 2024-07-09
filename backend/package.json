@@ -1,0 +1,47 @@
+{
+  "name": "factory-log",
+  "version": "1.0.0",
+  "description": "A web-based application for factory management",
+  "main": "app.js",
+  "scripts": {
+    "start-dev": "export NODE_ENV=development; nodemon app.js",
+    "start-dev-test": "export NODE_ENV=test; nodemon app.js",
+    "test": "export NODE_ENV=test; mocha --exit",
+    "test-prod": "export NODE_ENV=prod-test; mocha --exit",
+    "start": "export NODE_ENV=production; node app.js"
+  },
+  "author": "AlvyneZ",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
+    "@babel/preset-env": "^7.23.9",
+    "chai": "^4.4.1",
+    "chai-http": "^4.4.0",
+    "chai-uuid": "^1.0.6",
+    "eslint": "^8.56.0",
+    "eslint-config-semistandard": "^17.0.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "mocha": "^10.3.0",
+    "nodemon": "^3.0.3"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "fs": "0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.5",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
+  }
+}
