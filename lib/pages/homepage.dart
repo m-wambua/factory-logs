@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collector/pages/creatorspage.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/notificationpage.dart';
@@ -21,11 +22,11 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   String _selectedProcess = '';
-  final Map<String, bool> _buttonStates = {
-    'Process 1': false,
-    'Process 2': false,
-    'Process 3': false,
-    'Process 4': false,
+  final Map<String, String> _buttonStates = {
+    'Process 1': 'finalized',
+    'Process 2': 'finalized',
+    'Process 3': 'finalized',
+    'Process 4': 'finalized',
   };
 
   List<NotificationModel> _notifications = [];
@@ -49,13 +50,14 @@ class _LandingPageState extends State<LandingPage> {
       int newIndex = _processes.length + 5; // Start index from 5
       String newProcess = 'Process $newIndex';
       _processes.add(newProcess);
-      _buttonStates[newProcess] = false;
+      _buttonStates[newProcess] = 'creation';
     });
   }
 
   void _createNewProcess3() async {
     bool createDefault = true;
     String defaultName = 'Process ${_processes.length + 5}';
+    String processStatus = 'creation'; // Default to creation mode
 
     // Show a dialog to confirm creating a new process
     bool? confirmCreate = await showDialog<bool>(
@@ -81,6 +83,7 @@ class _LandingPageState extends State<LandingPage> {
         actions: [
           TextButton(
             onPressed: () {
+              processStatus = 'creation'; // Set status to finalized
               Navigator.pop(context, true); // Confirm creation
             },
             child: Text('OK'),
@@ -99,8 +102,13 @@ class _LandingPageState extends State<LandingPage> {
     if (confirmCreate == true) {
       setState(() {
         _processes.add(defaultName);
-        _buttonStates[defaultName] = false;
+        _buttonStates[defaultName] = processStatus; // Set process status
       });
+      // Navigate to the creator's page for the new process
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CreatorPage(processName: defaultName)));
     }
   }
 
@@ -198,11 +206,14 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   List<Widget> _buildNavigationItems() {
-    // Static process buttons
     List<Widget> navigationItems = _buttonStates.keys.map((String label) {
+      Color tileColor =
+          _buttonStates[label] == 'creation' ? Colors.red : Colors.green;
+
       return ListTile(
         title: Text(label),
         selected: _selectedProcess == label,
+        tileColor: tileColor,
         onTap: () {
           Navigator.pop(context); // Close the drawer
           _handleButtonPressed(label);
@@ -212,25 +223,6 @@ class _LandingPageState extends State<LandingPage> {
         },
       );
     }).toList();
-
-    // Dynamic process buttons
-    for (String process in _processes) {
-      if (!_buttonStates.containsKey(process)) {
-        navigationItems.add(
-          ListTile(
-            title: Text(process),
-            selected: _selectedProcess == process,
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-              _handleButtonPressed(process);
-              setState(() {
-                _selectedProcess = process;
-              });
-            },
-          ),
-        );
-      }
-    }
 
     // Ensure 'Logout' button is always last
     navigationItems.add(ListTile(
@@ -251,7 +243,7 @@ class _LandingPageState extends State<LandingPage> {
   void _handleButtonPressed(String label) async {
     if (_buttonStates.containsKey(label)) {
       setState(() {
-        _buttonStates[label] = !_buttonStates[label]!;
+        _buttonStates[label] = _buttonStates[label]!;
       });
     }
 
