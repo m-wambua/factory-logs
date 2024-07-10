@@ -1,0 +1,32 @@
+services:
+  mongo-factory-log:
+    image: mongo:8.0-rc
+    container_name: mongo-factory-log
+    command: [
+      "--replSet", "rs0", "--bind_ip_all", "--port", "27017",
+      "--config", "/etc/mongo/mongod.conf", "--keyFile", "/etc/mongo/rs0.key"]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - factory-net
+    ports:
+      - 27017:27017
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'172.17.0.1:27017'}]}) }" | mongosh --port 27017 -u mongoadmin -p secret --quiet
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      start_interval: 1s
+      retries: 30
+    volumes:
+      - "./cfg:/etc/mongo"
+      - "./logs:/var/log/mongodb"
+      - "./data:/data/db"
+
+networks:
+  factory-net:
+    name: "factory-net"
+    driver: bridge

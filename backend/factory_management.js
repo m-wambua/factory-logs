@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 'use strict';
 
 const process = require('process');
@@ -15,7 +17,7 @@ async function main () {
 
   await mongoConnect()
     .catch((err) => {
-      console.error(`Error connecting to database: ${err}`);
+      console.error('Error connecting to database: ', err);
       process.exit();
     });
 
@@ -46,41 +48,24 @@ function printUsage(args) {
 }
 
 async function addFactoryAndAdmin(args) {
-  let factory, admin;
   try {
-      factory = await Factory.create({
+    const session = await mongoose.startSession();
+    await session.withTransaction(async (session) => {
+      const factories = await Factory.create([{
         companyName: args[3],
         location: args[4]
-      });
-      
-      admin = await User.create({
+      }], { session });
+      const admins = await User.create([{
         userName: args[5],
         role: 'Admin',
         hashedPassword: await bcrypt.hash(args[6], 10),
-        factoryId: factory._id
-      })
-
-      console.log('Successfully created factory:', factory.toJSON());
-      console.log('And successfully created admin:', admin.toJSON());
+        factoryId: factories[0]._id
+      }], { session });
+      console.log('Successfully created factory:', factories[0].toJSON());
+      console.log('And successfully created admin:', admins[0].toJSON());
+    });
   } catch(err) {
-    console.error(`Error creating factory and admin: ${err}`);
-    try {
-      if (factory) {
-        await factory.deleteOne();
-        console.log('Deleted created factory');
-      }
-    } catch(err2) {
-      console.error(`Error deleting created factory: ${err2}`);
-    }
-    try {
-      if (admin) {
-        await admin.deleteOne();
-        console.log('Deleted created admin');
-      }
-    } catch(err2) {
-      console.error(`Error deleting created admin: ${err2}`);
-    }
-    return;
+    console.error('Error creating factory and admin: ', err);
   }
 }
 
@@ -95,14 +80,19 @@ async function removeFactory(args) {
     if (users.length > 1) {
       console.log('Multiple users are already linked to the factory. Thus this tool may not be used.');
       return;
-    } else if (users.length === 1) {
-      console.log('Deleting user: ', users[0].toJSON());
-      await users[0].deleteOne();
+    } else {
+      const session = await mongoose.startSession();
+      await session.withTransaction(async (session) => {
+        if (users.length === 1) {
+          console.log('Deleting user: ', users[0].toJSON());
+          await users[0].deleteOne({ session });
+        }
+        console.log('Deleting factory: ', factory.toJSON());
+        await factory.deleteOne({ session });
+      });
     }
-    console.log('Deleting factory: ', factory.toJSON());
-    await factory.deleteOne();
   }catch(err) {
-    console.error(`Error deleting factory and admin: ${err}`);
+    console.error('Error deleting factory and admin: ', err);
   }
 }
 

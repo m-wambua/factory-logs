@@ -1,6 +1,6 @@
 {
   "development": {
-    "connectString": "mongodb://127.0.0.1:27017/",
+    "connectString": "mongodb://172.17.0.1:27017/?replicaSet=rs0",
     "options": {
       "user": "mongoadmin",
       "pass": "secret",
@@ -8,7 +8,7 @@
     }
   },
   "test": {
-    "connectString": "mongodb://127.0.0.1:27017/",
+    "connectString": "mongodb://172.17.0.1:27017/?replicaSet=rs0",
     "options": {
       "user": "mongoadmin",
       "pass": "secret",
@@ -16,7 +16,7 @@
     }
   },
   "prod-test": {
-    "connectString": "mongodb://127.0.0.1:27017/",
+    "connectString": "mongodb://172.17.0.1:27017/?replicaSet=rs0",
     "options": {
       "user": "mongoadmin",
       "pass": "secret",
@@ -24,7 +24,7 @@
     }
   },
   "production": {
-    "connectString": "mongodb://127.0.0.1:27017/",
+    "connectString": "mongodb://172.17.0.1:27017/?replicaSet=rs0",
     "options": {
       "user": "mongoadmin",
       "pass": "secret",

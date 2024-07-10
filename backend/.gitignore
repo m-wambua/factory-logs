@@ -1,8 +1,8 @@
 node_modules
 *-lock.json*
 migrations
+mongodb/cfg
 mongodb/data
 mongodb/logs
 .env
 sslcert/*
-!sslcert/install.p12

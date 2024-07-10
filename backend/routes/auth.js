@@ -95,8 +95,8 @@ function verifyNewUserDetails (req, res, next) {
  *                 type: string
  *                 description: The password of the user
  *             example:
- *               userName: Factory0.Tech0
- *               password: pAssword00
+ *               userName: Fct0.Admn0
+ *               password: password0A0
  *     responses:
  *       200:
  *         description: The user has been successfully logged in
@@ -225,9 +225,9 @@ authRouter.use(auth.verifySession);
  *                 type: string
  *                 description: The password to be saved for the new user
  *             example:
- *               userName: Factory0.Tech1
+ *               userName: Fct0.Tech0
  *               role: Technician
- *               password: pAssword01
+ *               password: password0T1
  *     responses:
  *       201:
  *         description: The user has been successfully created
