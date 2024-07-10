@@ -154,6 +154,10 @@ async function getLoggedInDetails (req) {
   req.user = await User.findOne({ _id: tokenData.userId });
 }
 
+async function hashPassword (password) {
+  return await bcrypt.hash(password, 10);
+}
+
 /* To add a new user */
 async function handleAddUser (req, res) {
   if (req.user?.role !== 'Admin') {
@@ -161,7 +165,7 @@ async function handleAddUser (req, res) {
   }
   const { userName, role, password } = req.body;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
     const user = await User.create({
       userName, role, hashedPassword, factoryId: req.user.factoryId
     });
@@ -171,4 +175,7 @@ async function handleAddUser (req, res) {
   }
 }
 
-module.exports = { handleLogin, handleRefresh, handleLogout, verifySession, getLoggedInDetails, handleAddUser };
+module.exports = {
+  handleLogin, handleRefresh, handleLogout,
+  verifySession, getLoggedInDetails,
+  hashPassword, handleAddUser };

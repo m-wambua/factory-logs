@@ -31,6 +31,8 @@ module.exports = (mongoose) => {
     timestamps: true,
     toJSON: {
       transform: function (doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
         delete ret.hashedPassword;
         delete ret.refreshToken;
         delete ret.__v;

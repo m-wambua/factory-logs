@@ -85,10 +85,10 @@ async function removeFactory(args) {
       await session.withTransaction(async (session) => {
         if (users.length === 1) {
           console.log('Deleting user: ', users[0].toJSON());
-          await users[0].deleteOne({ session });
+          await users[0].deleteOne({ session }).exec();
         }
         console.log('Deleting factory: ', factory.toJSON());
-        await factory.deleteOne({ session });
+        await factory.deleteOne({ session }).exec();
       });
     }
   }catch(err) {
@@ -99,7 +99,17 @@ async function removeFactory(args) {
 async function listFactories() {
   const admins = await User.find({ role: 'Admin' })
     .populate('factoryId').exec();
-  console.log(admins);
+    const factories = admins.map((adm) => {
+      const json = adm.toJSON();
+      const ret = {
+        adminId: json.id,
+        ...json,
+        ...json.factoryId
+      };
+      delete ret.factoryId;
+      return ret;
+    });
+  console.log(factories);
 }
 
 main();

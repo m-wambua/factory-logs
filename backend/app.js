@@ -27,9 +27,7 @@ const swaggerOptions = {
       description: 'A factory management API'
     },
     servers: [
-      { url: 'http://192.168.0.110:3000' },
       { url: 'http://localhost:3000' },
-      { url: 'https://192.168.0.110:3001' },
       { url: 'https://localhost:3001' }
     ]
   },

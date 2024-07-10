@@ -23,12 +23,32 @@
  */
 
 const express = require('express');
+const { User } = require('../models');
 
 const apiRouter = express.Router();
 
 /* Attaching the different routes */
 const authRouter = require('./auth');
+const usersRouter = require('./users');
+const factoriesRouter = require('./factories');
 
 apiRouter.use('/auth', authRouter);
+apiRouter.use('/users', usersRouter);
+apiRouter.use('/factories', factoriesRouter);
 
-module.exports = apiRouter
+/** Middleware for retrieving a specific user's details for
+ *  admin purposes */
+async function userIdParamCallback (req, res, next, userId) {
+  if (req.user.role !== 'Admin') {
+    return res.status(403).send('Only admins may access a specific user\'s details');
+  }
+  req.subjUser = await User.findById(userId);
+  if ((!req.subjUser) || (req.subjUser.factoryId !== req.user.factoryId)) {
+    return res.sendStatus(404);
+  }
+  next();
+}
+
+usersRouter.param('userId', userIdParamCallback);
+
+module.exports = apiRouter;

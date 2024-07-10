@@ -227,7 +227,7 @@ authRouter.use(auth.verifySession);
  *             example:
  *               userName: Fct0.Tech0
  *               role: Technician
- *               password: password0T1
+ *               password: password0T0
  *     responses:
  *       201:
  *         description: The user has been successfully created
