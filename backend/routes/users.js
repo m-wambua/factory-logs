@@ -36,7 +36,7 @@
  *         id: 668ec52476e53805e7fa5cc6
  *         userName: Fct0.Admn0
  *         role: Admin
- *         password: password0A0
+ *         factoryId: 668ec52476e53805e7fa5cc1
  *         createdAt: 2024-07-10T17:30:12.515Z
  *         updatedAt: 2024-07-10T17:30:12.515Z
  * tags:
