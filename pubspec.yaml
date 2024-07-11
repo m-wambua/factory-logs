@@ -63,6 +63,7 @@ dependencies:
   fl_chart: ^0.68.0
   excel: ^4.0.3
   open_file: ^3.3.2
+  json_serializable: ^6.8.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
