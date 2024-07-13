@@ -4,6 +4,16 @@ Note: All shell commands listed in this file are run from the same
  working directory as this README.md file, ie *"backend/mongodb/"*.
 
 ## Local Database Instance Setup
+A Makefile is included to automate the setup and has "clean", "setup"
+ and "refresh" targets. To setup the database:
+```
+$   make clean
+$   make setup
+```
+The following explains what is needed for the data base setup (and
+ accomplished by the Makefile).
+
+
 ### Docker Volumes
 For persistence of data, docker's volume mounting feature will be used
  for the following folders: **"./cfg", "./data" and "./logs"**. These
@@ -28,6 +38,7 @@ systemLog:
 net:
   port: 27017
   bindIp: 0.0.0.0
+
 setParameter:
   enableLocalhostAuthBypass: false
 
