@@ -1,22 +1,6 @@
 'use strict';
 const { Schema } = require('mongoose');
 module.exports = (mongoose) => {
-  const ProcessSchema = new Schema({
-    name: {
-      type: String,
-      required: true,
-      unique: true
-    }
-  }, {
-    timestamps: true,
-    toJSON: {
-      transform: function (doc, ret) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-      }
-    }
-  });
 
   const FactorySchema = new Schema({
     companyName: {
@@ -28,7 +12,10 @@ module.exports = (mongoose) => {
       type: String,
       required: true
     },
-    processes: [ProcessSchema]
+    processes: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Process'
+    }]
   }, {
     toJSON: {
       transform: function (doc, ret) {
