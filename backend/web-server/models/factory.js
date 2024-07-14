@@ -12,7 +12,7 @@ module.exports = (mongoose) => {
       type: String,
       required: true
     },
-    processes: [{
+    processIds: [{
       type: Schema.Types.ObjectId,
       ref: 'Process'
     }]

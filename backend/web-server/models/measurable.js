@@ -1,21 +1,23 @@
 'use strict';
 const { Schema } = require('mongoose');
 module.exports = (mongoose) => {
-  const CableSchedSchema = new Schema({
+  const MeasurableSchema = new Schema({
     equipmentId: {
       type: Schema.Types.ObjectId,
       ref: 'Equipment',
       required: true
     },
-    panel: {
-      type: String
+    quantity: {
+      type: String,
+      required: true
     },
-    image: {
-      type: String
+    unit: {
+      type: String,
+      required: true
     },
-    cableIds: [{
+    shiftIds: [{
       type: Schema.Types.ObjectId,
-      ref: 'CableDesc'
+      ref: 'Shift'
     }],
   }, {
     timestamps: true,
@@ -28,5 +30,5 @@ module.exports = (mongoose) => {
     }
   });
   
-  return mongoose.model('CableSched', CableSchedSchema);
+  return mongoose.model('Measurable', MeasurableSchema);
 };

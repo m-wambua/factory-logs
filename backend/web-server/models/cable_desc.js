@@ -1,29 +1,33 @@
 'use strict';
 const { Schema } = require('mongoose');
 module.exports = (mongoose) => {
-  const StartupPrcdSchema = new Schema({
+  const CableDescSchema = new Schema({
+    parentSchedId: {
+      type: Schema.Types.ObjectId,
+      ref: 'CableSched',
+      required: true
+    },
     authorId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
-    prevPrcdId: {
+    prevDescId: {
       type: Schema.Types.ObjectId,
-      ref: 'StartupPrcd'
+      ref: 'CableDesc'
     },
-    changeLog: {
+    labelDesc: {
       type: String,
+      required: true
     },
-    steps: [{
-      num: {
-        type: number,
-        required: true
-      },
-      action: {
-        type: String,
-        required: true
-      },
-    }],
+    purpose: {
+      type: String,
+      required: true
+    },
+    termDescId: {
+      type: Schema.Types.ObjectId,
+      ref: 'CableDesc'
+    }
   }, {
     timestamps: true,
     toJSON: {
@@ -35,5 +39,5 @@ module.exports = (mongoose) => {
     }
   });
   
-  return mongoose.model('StartupPrcd', StartupPrcdSchema);
+  return mongoose.model('CableDesc', CableDescSchema);
 };

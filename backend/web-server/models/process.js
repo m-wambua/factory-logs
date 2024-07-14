@@ -7,8 +7,14 @@ module.exports = (mongoose) => {
       required: true,
       unique: true
     },
-    cable_sched: require('./cable_sched').schema,
-    startup: require('./startup_prcd').schema
+    startup: {
+      type: Schema.Types.ObjectId,
+      ref: 'StartupPrcd'
+    },
+    equipments: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Equipment'
+    }]
   }, {
     timestamps: true,
     toJSON: {
