@@ -7,11 +7,11 @@ module.exports = (mongoose) => {
       required: true,
       unique: true
     },
-    startup: {
+    startupId: {
       type: Schema.Types.ObjectId,
       ref: 'StartupPrcd'
     },
-    equipments: [{
+    equipmentIds: [{
       type: Schema.Types.ObjectId,
       ref: 'Equipment'
     }]
@@ -22,6 +22,14 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        if (doc.populated('startupId')) {
+          ret.startup = ret.startupId;
+          delete ret.startupId;
+        }
+        if (doc.populated('equipmentIds')) {
+          ret.equipments = ret.equipmentIds;
+          delete ret.equipmentIds;
+        }
       }
     }
   });

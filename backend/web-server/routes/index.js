@@ -23,7 +23,7 @@
  */
 
 const express = require('express');
-const { User } = require('../models');
+const { User, Factory, Process } = require('../models');
 
 const apiRouter = express.Router();
 
@@ -31,10 +31,12 @@ const apiRouter = express.Router();
 const authRouter = require('./auth');
 const usersRouter = require('./users');
 const factoriesRouter = require('./factories');
+const processesRouter = require('./processes');
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', usersRouter);
 apiRouter.use('/factories', factoriesRouter);
+apiRouter.use('/processes', processesRouter);
 
 /** Middleware for retrieving a specific user's details for
  *  admin purposes */
@@ -49,6 +51,21 @@ async function userIdParamCallback (req, res, next, userId) {
   next();
 }
 
+/** Middleware for retrieving a specific process's details */
+async function processIdParamCallback (req, res, next, processId) {
+  req.factory = await Factory.findById(req.user.factoryId).exec();
+  if ((!req.factory) || (!req.factory.processIds.includes(processId))) {
+    return res.status(404);
+  }
+  req.process = await Process.findById(processId);
+  if (!req.process) {
+    return res.sendStatus(404);
+  }
+  next();
+}
+
 usersRouter.param('userId', userIdParamCallback);
+
+processesRouter.param('processId', processIdParamCallback);
 
 module.exports = apiRouter;

@@ -15,14 +15,8 @@ module.exports = (mongoose) => {
       type: String,
     },
     steps: [{
-      num: {
-        type: number,
-        required: true
-      },
-      action: {
-        type: String,
-        required: true
-      },
+      type: String,
+      required: true
     }],
   }, {
     timestamps: true,
@@ -31,6 +25,14 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        if (doc.populated('authorId')) {
+          ret.author = ret.authorId;
+          delete ret.authorId;
+        }
+        if (doc.populated('prevPrcdId')) {
+          ret.prevPrcd = ret.prevPrcdId;
+          delete ret.prevPrcdId;
+        }
       }
     }
   });

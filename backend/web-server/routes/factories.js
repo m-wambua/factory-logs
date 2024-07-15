@@ -4,31 +4,6 @@
  * @swagger
  * components:
  *   schemas:
- *     Process:
- *       type: object
- *       required:
- *         - id
- *         - name
- *       properties:
- *         id:
- *           type: string
- *           description: The unique identifier of the process
- *         name:
- *           type: string
- *           description: The unique name of the process
- *         createdAt:
- *           type: string
- *           format: date-time
- *           description: The time the process was added to the system
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           description: The last time the process details were edited
- *       example:
- *         id: 668ec52476e53805e7fa5cc6
- *         name: Fct0.Process0
- *         createdAt: 2024-07-10T17:30:12.515Z
- *         updatedAt: 2024-07-10T17:30:12.515Z
  *     Factory:
  *       type: object
  *       required:
@@ -45,19 +20,18 @@
  *         location:
  *           type: string
  *           description: The location where the factory is situated
- *         processes:
+ *         processIds:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/Process'
+ *             type: string
+ *             description: The unique identifier of a process of the factory
  *       example:
  *         id: 648et52706e53812e7fr5ki8
  *         companyName: Factory0
  *         location: City0
- *         processes:
- *           - id: 668ec52476e53805e7fa5cc6
- *             name: Fct0.Process0
- *             createdAt: 2024-07-10T17:30:12.515Z
- *             updatedAt: 2024-07-10T17:30:12.515Z
+ *         processIds:
+ *           - 668ec52476e53805e7fa5cc6
+ *           - 657hc41476e54505e9yj5fd2
  * tags:
  *   name: Factories
  *   description: The factories management API

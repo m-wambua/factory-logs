@@ -22,6 +22,10 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        if (doc.populated('processIds')) {
+          ret.processes = ret.processIds;
+          delete ret.processIds;
+        }
       }
     }
   });

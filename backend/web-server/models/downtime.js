@@ -39,6 +39,14 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        if (doc.populated('equipmentId')) {
+          ret.equipment = ret.equipmentId;
+          delete ret.equipmentId;
+        }
+        if (doc.populated('shiftId')) {
+          ret.shift = ret.shiftId;
+          delete ret.shiftId;
+        }
       }
     }
   });

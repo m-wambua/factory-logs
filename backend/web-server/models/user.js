@@ -36,6 +36,10 @@ module.exports = (mongoose) => {
         delete ret.hashedPassword;
         delete ret.refreshToken;
         delete ret.__v;
+        if (doc.populated('factoryId')) {
+          ret.factory = ret.factoryId;
+          delete ret.factoryId;
+        }
       }
     }
   });

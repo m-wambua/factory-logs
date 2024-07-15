@@ -79,6 +79,18 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        if (doc.populated('measurableIds')) {
+          ret.measurables = ret.measurableIds;
+          delete ret.measurableIds;
+        }
+        if (doc.populated('downtimeIds')) {
+          ret.downtimes = ret.downtimeIds;
+          delete ret.downtimeIds;
+        }
+        if (doc.populated('cableSchedIds')) {
+          ret.cableScheds = ret.cableSchedIds;
+          delete ret.cableSchedIds;
+        }
       }
     }
   });

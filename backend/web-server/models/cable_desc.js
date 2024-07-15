@@ -35,6 +35,22 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        if (doc.populated('parentSchedId')) {
+          ret.parentSched = ret.parentSchedId;
+          delete ret.parentSchedId;
+        }
+        if (doc.populated('prevDescId')) {
+          ret.prevDesc = ret.prevDescId;
+          delete ret.prevDescId;
+        }
+        if (doc.populated('authorId')) {
+          ret.author = ret.authorId;
+          delete ret.authorId;
+        }
+        if (doc.populated('termDescId')) {
+          ret.termDesc = ret.termDescId;
+          delete ret.termDescId;
+        }
       }
     }
   });

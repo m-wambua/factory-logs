@@ -1,6 +1,31 @@
 'use strict';
 const { Schema } = require('mongoose');
 module.exports = (mongoose) => {
+  const LogSchema = new Schema({
+    measurableId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Measurable'
+    },
+    time: {
+      type: Schema.Types.Date,
+      required: true
+    },
+    value: {
+      type: Number,
+      required: true
+    }
+  }, {
+    _id : false,
+    toJSON: {
+      transform: function (doc, ret) {
+        delete ret.__v;
+        if (doc.populated('measurableId')) {
+          ret.measurable = ret.measurableId;
+          delete ret.measurableId;
+        }
+      }
+    }
+  });
   const ShiftSchema = new Schema({
     leadId: {
       type: Schema.Types.ObjectId,
@@ -34,20 +59,7 @@ module.exports = (mongoose) => {
       type: String,
       required: true
     }],
-    logs: [{
-      measurableId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Measurable'
-      },
-      time: {
-        type: Schema.Types.Date,
-        required: true
-      },
-      value: {
-        type: number,
-        required: true
-      }
-    }],
+    logs: [LogSchema],
     downtimeIds: [{
       type: Schema.Types.ObjectId,
       ref: 'Downtime'
@@ -59,6 +71,18 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        if (doc.populated('leadId')) {
+          ret.lead = ret.leadId;
+          delete ret.leadId;
+        }
+        if (doc.populated('teammateIds')) {
+          ret.teammates = ret.teammateIds;
+          delete ret.teammateIds;
+        }
+        if (doc.populated('downtimeIds')) {
+          ret.downtimes = ret.downtimeIds;
+          delete ret.downtimeIds;
+        }
       }
     }
   });
