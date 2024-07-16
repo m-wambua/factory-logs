@@ -29,8 +29,7 @@ module.exports = (mongoose) => {
       required: true
     }],
     remark: {
-      type: String,
-      required: true
+      type: String
     }
   }, {
     timestamps: true,

@@ -13,6 +13,9 @@ module.exports = (mongoose) => {
     value: {
       type: Number,
       required: true
+    },
+    remark: {
+      type: String
     }
   }, {
     _id : false,
