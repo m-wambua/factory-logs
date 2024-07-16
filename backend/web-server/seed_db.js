@@ -21,7 +21,7 @@ async function main () {
       console.error('Error connecting to database: ', err);
       process.exit();
     });
-/*
+
   try {
     const session = await db.mongoose.startSession();
     await session.withTransaction(async (session) => {
@@ -164,7 +164,7 @@ async function main () {
     console.error('Error creating processes and their startup Procedures: ', err);
     process.exit();
   }
-*/
+
   try {
     const session = await db.mongoose.startSession();
     await session.withTransaction(async (session) => {

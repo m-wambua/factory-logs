@@ -271,6 +271,8 @@ processesRouter.post('/', async (req, res) => {
  *         $ref: '#/components/responses/Unauthorised'
  *       403:
  *         $ref: '#/components/responses/Forbidden'
+ *       404:
+ *         description: The process does not exist or does not belong to the current user's factory
  *       500:
  *         description: Server Error. Could not edit the process.
  *         content:

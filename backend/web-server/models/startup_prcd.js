@@ -14,10 +14,12 @@ module.exports = (mongoose) => {
     changeLog: {
       type: String,
     },
-    steps: [{
-      type: String,
-      required: true
-    }],
+    steps: {
+      type: [{
+        type: String
+      }],
+      validate: [(val) => (val.length > 0), 'Startup Procedure must include at least one step']
+    },
   }, {
     timestamps: true,
     toJSON: {
