@@ -107,7 +107,9 @@ When connecting to the MongoDB instance of the container, the following
  connection string may be used:  
 **"mongodb://mongoadmin:secret@172.17.0.1:27017/?replicaSet=rs0"**
 
-Note: The connect string and dockercompose file both assume that the
- **docker network interface** has IP address **172.17.0.1**. To confirm
- the IP address, run ```ip address```, and look for "docker0". Then
- replace the IP address appropriately.
+Note: The Makefile assumes that the **docker network interface** is
+ named **"docker0"** and is used to get the required IP address (normally
+ *172.17.0.1*, as assumed in the above connect String). To confirm
+ the interface name, run ```ip address```. The connectString to be used
+ will be provided after a DB refresh. Update the web-server's config
+ file if necessary.

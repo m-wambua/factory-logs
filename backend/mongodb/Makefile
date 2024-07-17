@@ -18,6 +18,9 @@ DOCKER_EXEC_CMD=docker exec -it
 DOCKER_CONTAINER_NAME=mongo-factory-log
 DOCKER_NETWORK_NAME=factory-net
 
+DOCKER_GET_HOST_IP_CMD=export DOCKER_HOST_IP=$(shell \
+ ip addr show docker0 | grep -oE "inet [.0-9]+\/" | grep -oE "[.0-9]+")
+
 MONGODB_CRED=-u mongoadmin -p secret --authenticationDatabase admin
 
 define MONGO_CONF_DATA
@@ -69,10 +72,15 @@ setup:
 	chmod 400 ${MONGO_KEY_FILE}
 	sudo chown 999:999 ${MONGO_KEY_FILE}
 	@echo ">>>>>>>>>>>> Spinning up docker container <<<<<<<<<"
-	${DOCKER_BUILD_CMD}
+	${DOCKER_GET_HOST_IP_CMD} && ${DOCKER_BUILD_CMD}
 	@echo ">>>>>>>>>>>> Waiting 2 seconds to check status <<<<<<<<<"
 	@sleep 2
 	@${DOCKER_STATUS_CMD}
+	@echo "\n.................................................................."
+	@echo ">>>>>>>>>>>>>>>>>>>>          Done!           <<<<<<<<<<<<<<<<<<<<"
+	@echo ">>>>>>>>>>>>>>>>>>>>  Connect String to use:  <<<<<<<<<<<<<<<<<<<<"
+	@${DOCKER_GET_HOST_IP_CMD} && echo ">>\033[0;32m mongodb://mongoadmin:secret@$${DOCKER_HOST_IP}:27017/?replicaSet=rs0 \033[0m<<"
+	@echo "''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''\n"
 
 refresh: clean setup
 
