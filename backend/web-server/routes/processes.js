@@ -213,7 +213,9 @@ processesRouter.post('/', async (req, res) => {
   try {
     const session = await req.app.db.startSession();
     const process = await session.withTransaction(async (session) => {
-      const processes = await Process.create([{ name }], { session });
+      const processes = await Process.create([
+        { _factoryId: req.user.factoryId, name }
+      ], { session });
       const factory = await Factory.findById(req.user.factoryId).exec();
       factory.processIds.push(processes[0]._id);
       await factory.save({ session });

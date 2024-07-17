@@ -216,6 +216,7 @@ startupPrcdRouter.post('/process/:processId', async (req, res) => {
     const session = await req.app.db.startSession();
     const startupPrcd = await session.withTransaction(async (session) => {
       const startupPrcds = await StartupPrcd.create([{
+        _factoryId: req.user.factoryId,
         authorId: req.user._id,
         prevPrcdId: req.process.startupId,
         changeLog,
@@ -353,7 +354,7 @@ startupPrcdRouter.put('/:startupId', async (req, res) => {
  *       403:
  *         $ref: '#/components/responses/Forbidden'
  */
-startupPrcdRouter.get('/:startupId', async (req, res) => {console.log(req.startupPrcd.toJSON());
+startupPrcdRouter.get('/:startupId', async (req, res) => {
   return res.json(req.startupPrcd);
 });
 

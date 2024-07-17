@@ -2,6 +2,11 @@
 const { Schema } = require('mongoose');
 module.exports = (mongoose) => {
   const StartupPrcdSchema = new Schema({
+    _factoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Factory',
+      required: true
+    },
     authorId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -27,6 +32,7 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        delete ret._factoryId;
         if (doc.populated('authorId')) {
           ret.author = ret.authorId;
           delete ret.authorId;

@@ -22,6 +22,8 @@ async function main () {
       process.exit();
     });
 
+  let factory0Id;
+
   try {
     const session = await db.mongoose.startSession();
     await session.withTransaction(async (session) => {
@@ -67,6 +69,7 @@ async function main () {
           factoryId: factories[0]._id
         }
       ], { session });
+      factory0Id = factories[0]._id;
       console.log('Successfully created factory:', factories[0].companyName);
       console.log('And successfully created users:', users.map((user)=>user.userName));
     });
@@ -133,6 +136,7 @@ async function main () {
     await session.withTransaction(async (session) => {
       const startupPrcds = await db.StartupPrcd.create([
         {
+          _factoryId: factory0Id,
           authorId: (await db.User.findOne({userName: 'Fct0.Admn0'}).select('_id').exec())._id,
           changeLog: 'First startup Procedure for Process0',
           steps: [
@@ -142,6 +146,7 @@ async function main () {
           ]
         },
         {
+          _factoryId: factory0Id,
           authorId: (await db.User.findOne({userName: 'Fct0.Oprt0'}).select('_id').exec())._id,
           changeLog: 'First startup Procedure for Process1',
           steps: [
@@ -151,11 +156,11 @@ async function main () {
         }
       ], { session });
       const processes = await db.Process.create([
-        { name: 'Fct0.Prcs0', startupId: startupPrcds[0]._id },
-        { name: 'Fct0.Prcs1', startupId: startupPrcds[1]._id },
-        { name: 'Fct0.Prcs2' }
+        { _factoryId: factory0Id, name: 'Fct0.Prcs0', startupId: startupPrcds[0]._id },
+        { _factoryId: factory0Id, name: 'Fct0.Prcs1', startupId: startupPrcds[1]._id },
+        { _factoryId: factory0Id, name: 'Fct0.Prcs2' }
       ], { session });
-      const factory = await db.Factory.findOne({ companyName: 'Factory0' }).exec();
+      const factory = await db.Factory.findById(factory0Id).exec();
       factory.processIds.push(...(processes.map((process)=>process._id)));
       factory.save();
       console.log('Successfully created processes for Factory0:', processes.map((process)=>process.name));
@@ -170,6 +175,7 @@ async function main () {
     await session.withTransaction(async (session) => {
       const equipments = await db.Equipment.create([
         {
+          _factoryId: factory0Id,
           name: 'F0P0.Eqpt0',
           type: 'Drive',
           manufacturer: 'Man0',
@@ -181,6 +187,7 @@ async function main () {
           }
         },
         {
+          _factoryId: factory0Id,
           name: 'F0P0.Eqpt1',
           type: 'Drive',
           manufacturer: 'Man0',
@@ -192,6 +199,7 @@ async function main () {
           }
         },
         {
+          _factoryId: factory0Id,
           name: 'F0P0.Eqpt2',
           type: 'Motor',
           manufacturer: 'Man1',
@@ -202,6 +210,7 @@ async function main () {
           }
         },
         {
+          _factoryId: factory0Id,
           name: 'F0P0.Eqpt3',
           type: 'Motor',
           manufacturer: 'Man2',
@@ -212,6 +221,7 @@ async function main () {
           }
         },
         {
+          _factoryId: factory0Id,
           name: 'F0P0.Eqpt4',
           type: 'PLC',
           manufacturer: 'Man1',

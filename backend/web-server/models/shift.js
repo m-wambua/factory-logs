@@ -29,10 +29,17 @@ module.exports = (mongoose) => {
       }
     }
   });
+
   const ShiftSchema = new Schema({
+    _factoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Factory',
+      required: true
+    },
     leadId: {
       type: Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     },
     teammateIds: [{
       type: Schema.Types.ObjectId,
@@ -41,7 +48,7 @@ module.exports = (mongoose) => {
     type: {
       type: String,
       enum: {
-        values: ['A', 'B', 'C', 'G'],
+        values: ['Morning', 'Afternoon', 'Evening', 'Night', 'Supervisory'],
         message: 'Shift type {VALUE} is not supported'
       },
       required: true
@@ -74,6 +81,7 @@ module.exports = (mongoose) => {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        delete ret._factoryId;
         if (doc.populated('leadId')) {
           ret.lead = ret.leadId;
           delete ret.leadId;
