@@ -23,7 +23,7 @@
  */
 
 const express = require('express');
-const { User, Factory, Process, StartupPrcd } = require('../models');
+const models= require('../models');
 
 const apiRouter = express.Router();
 
@@ -33,12 +33,14 @@ const usersRouter = require('./users');
 const factoriesRouter = require('./factories');
 const processesRouter = require('./processes');
 const startupPrcdsRouter = require('./startup_prcds');
+const equipmentsRouter = require('./equipments');
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', usersRouter);
 apiRouter.use('/factories', factoriesRouter);
 apiRouter.use('/processes', processesRouter);
 apiRouter.use('/startup', startupPrcdsRouter);
+apiRouter.use('/equipments', equipmentsRouter);
 
 /** Middleware for retrieving a specific user's details for
  *  admin purposes */
@@ -46,7 +48,7 @@ async function userIdParamCallback (req, res, next, userId) {
   if (req.user.role !== 'Admin') {
     return res.status(403).send('Only admins may access a specific user\'s details');
   }
-  req.subjUser = await User.findById(userId).exec();
+  req.subjUser = await models.User.findById(userId).exec();
   if (!req.subjUser) {
     return res.sendStatus(404);
   }
@@ -58,7 +60,7 @@ async function userIdParamCallback (req, res, next, userId) {
 
 /** Middleware for retrieving a specific process's details */
 async function processIdParamCallback (req, res, next, processId) {
-  req.process = await Process.findById(processId).exec();
+  req.process = await models.Process.findById(processId).exec();
   if (!req.process) {
     return res.sendStatus(404);
   }
@@ -70,7 +72,7 @@ async function processIdParamCallback (req, res, next, processId) {
 
 /** Middleware for retrieving a specific startup procedure's details */
 async function startupIdParamCallback (req, res, next, startupId) {
-  req.startupPrcd = await StartupPrcd.findById(startupId)
+  req.startupPrcd = await models.StartupPrcd.findById(startupId)
     .populate({ path: 'authorId', select: ['_id', 'userName'] }).exec();
   if (!req.startupPrcd) {
     return res.sendStatus(404);
@@ -81,11 +83,28 @@ async function startupIdParamCallback (req, res, next, startupId) {
   next();
 }
 
+/** Middleware for retrieving a specific equipment's details */
+async function equipmentIdParamCallback (req, res, next, equipmentId) {
+  req.equipment = await models.Equipment.findById(equipmentId)
+    .select(['-manuals', '-downtimeIds', '-cableSchedIds', '-codebases'])
+    .populate({ path: 'measurableIds', select: ['quantity', 'unit'] }).exec();
+  if (!req.equipment) {
+    return res.sendStatus(404);
+  }
+  if (!req.equipment._factoryId.equals(req.user.factoryId)) {
+    return res.status(403).send('The equipment does not belong to the user\'s factory');
+  }
+  next();
+}
+
 usersRouter.param('userId', userIdParamCallback);
 
 processesRouter.param('processId', processIdParamCallback);
 
 startupPrcdsRouter.param('processId', processIdParamCallback);
 startupPrcdsRouter.param('startupId', startupIdParamCallback);
+
+equipmentsRouter.param('processId', processIdParamCallback);
+equipmentsRouter.param('equipmentId', equipmentIdParamCallback);
 
 module.exports = apiRouter;

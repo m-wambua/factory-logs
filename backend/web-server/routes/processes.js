@@ -73,10 +73,10 @@
  *                 description: the action of a given step
  *         equipmentTypes:
  *           type: array
- *           description: The types of equipment that the process has
+ *           description: The types of operational equipment that the process has
  *           items:
  *             type: object
- *             description: The process's equipment that are of a specific type
+ *             description: The process's operational equipment that are of a specific type
  *             additionalProperties:
  *               type: array
  *               items:
@@ -336,6 +336,7 @@ processesRouter.get('/:processId', async (req, res) => {
 
   await req.process.populate({
     path: 'equipmentIds',
+    match: { decommissioned: false },
     select: ['_id', 'name', 'type']
   });
   const equipmentTypes = req.process.equipmentIds.reduce((types, item) => {

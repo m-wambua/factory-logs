@@ -13,7 +13,7 @@
  *       properties:
  *         id:
  *           type: string
- *           description: The unique identifier of the process
+ *           description: The unique identifier of the startup procedure
  *         author:
  *           type: object
  *           description: The details of the user who published the startup proecdure

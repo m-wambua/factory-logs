@@ -1,6 +1,44 @@
 'use strict';
 const { Schema } = require('mongoose');
 module.exports = (mongoose) => {
+  const LocationSchema = new Schema({
+    description: {
+      type: String,
+      required: true
+    },
+    image: {
+      type: String
+    }
+  }, { _id: false });
+
+  const ManualSchema = new Schema({
+    name: {
+      type: String,
+      required: true
+    },
+    file: {
+      type: String,
+      required: true
+    }
+  }, { _id: false });
+
+  const CodebaseSchema = new Schema({
+    name: {
+      type: String,
+      required: true
+    },
+    date: {
+      type: Schema.Types.Date,
+      required: true
+    },
+    files: {
+      type: [{
+        type: String
+      }],
+      validate: [(val) => (val.length > 0), 'Codebase must include at least one file']
+    }
+  }, { _id: false });
+
   const EquipmentSchema = new Schema({
     _factoryId: {
       type: Schema.Types.ObjectId,
@@ -27,28 +65,16 @@ module.exports = (mongoose) => {
     rating: {
       type: String
     },
-    location: {
-      type: {
-        description: {
-          type: String,
-          required: true
-        },
-        image: {
-          type: String
-        }
-      },
+    decommissioned: {
+      type: Schema.Types.Boolean,
+      default: false,
       required: true
     },
-    manuals: [{
-      name: {
-        type: String,
-        required: true
-      },
-      file: {
-        type: String,
-        required: true
-      }
-    }],
+    location: {
+      type: LocationSchema,
+      required: true
+    },
+    manuals: [ManualSchema],
     measurableIds: [{
       type: Schema.Types.ObjectId,
       ref: 'Measurable'
@@ -57,22 +83,7 @@ module.exports = (mongoose) => {
       type: Schema.Types.ObjectId,
       ref: 'Downtime'
     }],
-    codeBases: [{
-      name: {
-        type: String,
-        required: true
-      },
-      date: {
-        type: Schema.Types.Date,
-        required: true
-      },
-      files: {
-        type: [{
-          type: String
-        }],
-        validate: [(val) => (val.length > 0), 'Codebase must include at least one file']
-      }
-    }],
+    codebases: [CodebaseSchema],
     cableSchedIds: [{
       type: Schema.Types.ObjectId,
       ref: 'CableSched'
