@@ -4,7 +4,8 @@ module.exports = (mongoose) => {
   const LogSchema = new Schema({
     measurableId: {
       type: Schema.Types.ObjectId,
-      ref: 'Measurable'
+      ref: 'Measurable',
+      required: true
     },
     time: {
       type: Schema.Types.Date,

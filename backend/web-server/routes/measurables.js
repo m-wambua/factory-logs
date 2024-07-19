@@ -83,12 +83,16 @@ measurablesRouter.get('/:measurableNum/logs', async (req, res) => {
     .select(['shiftIds'])
     .populate({
       path: 'shiftIds',
-      select: 'logs',
+      select: ['_id', 'logs'],
       match: { 'logs.measurableId': measurableId },
       sort: { start: -1 }
     });
-  const logs = measurable.shiftIds.map((shift) => shift.logs)
-    .reduce((prev, cur) => prev.concat(...cur), []);
+  const logs = [];
+  measurable.shiftIds.forEach((shift) => {
+    shift.logs.forEach((log) => {
+      logs.push({ ...log.toJSON(), shiftId: shift._id, measurableId: undefined });
+    });
+  });
   return res.json(logs);
 });
 

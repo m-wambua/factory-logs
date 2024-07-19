@@ -250,6 +250,65 @@ async function main () {
     console.error('Error creating equipments: ', err);
     process.exit();
   }
+
+  try {
+    const session = await db.mongoose.startSession();
+    await session.withTransaction(async (session) => {
+      const userIds = (await db.User.find({ factoryId: factory0Id })
+        .limit(5).exec()).map((user) => user._id);
+      const measurables = (await db.Measurable.find()
+        .limit(5).exec());
+
+      const logs = [[], []];
+      for (let i in measurables) {
+        logs[0].push({
+          measurableId: measurables[i]._id,
+          time: new Date(Date.now() + ((i + 1) * 60 * 60 * 1000)),
+          value: 10 + i
+        });
+        if (i < 2) {
+          logs[1].push({
+            measurableId: measurables[i]._id,
+            time: new Date(Date.now() + 60000 + ((i + 1) * 60 * 60 * 1000)),
+            value: 20 + i
+          });
+        }
+      }
+      const shifts = await db.Shift.create([
+        {
+          _factoryId: factory0Id,
+          leadId: userIds[0],
+          teammateIds: [...userIds.slice(1)],
+          type: 'Morning',
+          date: new Date(),
+          start: new Date(),
+          end: new Date(Date.now() + (6 * 60 * 60 * 1000)),
+          logs: logs[0]
+        },
+        {
+          _factoryId: factory0Id,
+          leadId: userIds[1],
+          teammateIds: [...userIds.splice(1,1)],
+          type: 'Afternoon',
+          date: new Date(),
+          start: new Date(),
+          end: new Date(Date.now() + (5 * 60 * 60 * 1000)),
+          logs: logs[1]
+        }
+      ], { session });
+      for (let i in measurables) {
+        measurables[i].shiftIds.push(shifts[0]._id);
+        if (i < 2) {
+          measurables[i].shiftIds.push(shifts[1]._id);
+        }
+        await measurables[i].save({ session });
+      }
+      console.log('Successfully created shifts and logs for Fct0.Prcs0');
+    });
+  } catch(err) {
+    console.error('Error creating shifts: ', err);
+    process.exit();
+  }
   process.exit();
 }
 
