@@ -20,16 +20,15 @@ module.exports = (mongoose) => {
       ref: 'Shift'
     }],
   }, {
-    timestamps: true,
     toJSON: {
       transform: function (doc, ret) {
-        ret.id = ret._id;
+        // ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
         if (doc.populated('equipmentId')) {
           ret.equipment = ret.equipmentId;
-          delete ret.equipmentId;
         }
+        delete ret.equipmentId;
         if (doc.populated('shiftIds')) {
           ret.shifts = ret.shiftIds;
           delete ret.shiftIds;

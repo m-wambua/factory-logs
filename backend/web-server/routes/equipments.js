@@ -131,7 +131,7 @@ const handleErr500 = require('../utils/senderr500');
 
 const equipmentsRouter = express.Router();
 
-/** Function to check whether a provided equipment is already taken for a given factory */
+/** Function to check whether a provided equipment name is already taken for a given factory */
 async function equipmentNameTaken(factoryId, name) {
   const factory = await Factory.findById(factoryId)
     .populate({
@@ -147,9 +147,14 @@ async function equipmentNameTaken(factoryId, name) {
 /** To make sure all routes after this point require a login */
 equipmentsRouter.use(verifySession);
 
+/* Attaching the different equipment routes */
+const measurablesRouter = require('./measurables');
+
+equipmentsRouter.use('/:equipmentId/measurable', measurablesRouter);
+
 /**
  * @swagger
- * /api/equipments/decommision/{equipmentId}:
+ * /api/equipments/decommission/{equipmentId}:
  *   delete:
  *     summary: Marks an equipment as decommissioned to prevent adding of logs for it (Admins only)
  *     security:
@@ -181,7 +186,7 @@ equipmentsRouter.use(verifySession);
  *           text/plain; charset=utf-8:
  *             example: 'Error decommissioning equipment: ...'
  */
-equipmentsRouter.delete('/decommision/:equipmentId', async (req, res) => {
+equipmentsRouter.delete('/decommission/:equipmentId', async (req, res) => {
   if (req.user?.role !== 'Admin') {
     return res.status(403).send('Only admins can decommission equipment');
   }
@@ -221,7 +226,7 @@ equipmentsRouter.delete('/decommision/:equipmentId', async (req, res) => {
  *               $ref: '#/components/schemas/EquipmentCreateInfo'
  *     responses:
  *       200:
- *         description: The details of the created startup procedure
+ *         description: The details of the created equipment
  *         content:
  *           application/json:
  *             schema:
@@ -278,6 +283,45 @@ equipmentsRouter.post('/process/:processId', async (req, res) => {
   } catch (err) {
     return handleErr500(res, err, 'Error creating equipment');
   }
+});
+
+/**
+ * @swagger
+ * /api/equipments/downtimes/{equipmentId}:
+ *   get:
+ *     summary: Returns a list of the downtimes that the equipment has
+ *     security:
+ *       - BearerAuth: []
+ *     tags: [Equipments]
+ *     parameters:
+ *       - in: path
+ *         name: equipmentId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: the unique identifier of the equipment whose downtimes are being requested
+ *     responses:
+ *       200:
+ *         description: The list of the requested equipment downtimes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Downtime'
+ *       404:
+ *         description: The equipment does not exist
+ *       401:
+ *         $ref: '#/components/responses/Unauthorised'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ */
+equipmentsRouter.get('/downtimes/:equipmentId', async (req, res) => {
+  await req.equipment.populate({
+    path: 'downtimeIds',
+    sort: { start: -1 }
+  }).exec();
+  return res.json(req.equipment.downtimeIds);
 });
 
 /**

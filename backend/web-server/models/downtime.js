@@ -20,14 +20,14 @@ module.exports = (mongoose) => {
       },
       required: true
     },
-    start: [{
+    start: {
       type: Schema.Types.Date,
       required: true
-    }],
-    end: [{
+    },
+    end: {
       type: Schema.Types.Date,
       required: true
-    }],
+    },
     remark: {
       type: String
     }

@@ -162,7 +162,7 @@ async function main () {
       ], { session });
       const factory = await db.Factory.findById(factory0Id).exec();
       factory.processIds.push(...(processes.map((process)=>process._id)));
-      factory.save();
+      await factory.save({ session });
       console.log('Successfully created processes for Factory0:', processes.map((process)=>process.name));
     });
   } catch(err) {
@@ -232,9 +232,18 @@ async function main () {
           }
         }
       ], { session });
+      await equipments.forEach(async (equipment) => {
+        const measurables = await db.Measurable.create([{
+          equipmentId: equipment._id,
+          quantity: 'Current',
+          unit: 'Amps'
+        }], { session });
+        equipment.measurableIds.push(measurables[0]._id);
+        await equipment.save({ session });
+      });
       const process = await db.Process.findOne({ name: 'Fct0.Prcs0' }).exec();
       process.equipmentIds.push(...(equipments.map((equipment)=>equipment._id)));
-      process.save();
+      await process.save({ session });
       console.log('Successfully created equipments for Fct0.Prcs0:', equipments.map((equipment)=>equipment.name));
     });
   } catch(err) {
