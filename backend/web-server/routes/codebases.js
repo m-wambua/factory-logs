@@ -185,7 +185,7 @@ codebasesRouter.delete('/', async (req, res) => {
  *       201:
  *         description: Successfully added the codebase
  *       400:
- *         description: Bad Request. name or files not provided, or files is not an array.
+ *         description: Bad Request. name or files not provided, or files is not an array, or date is invalid.
  *         content:
  *           text/plain; charset=utf-8:
  *             example: 'Field "name" is missing in the body'
@@ -215,6 +215,10 @@ codebasesRouter.post('/', async (req, res) => {
   if (!Array.isArray(files)) {
     return res.status(400)
       .send('Field "files" is not an array');
+  }
+  if ((date) && (isNaN(Date.parse(date)))) {
+    return res.status(400)
+      .send('Field "date" is not a valid date entry');
   }
   const eqpt = await Equipment.findById(req.equipment._id).select('codebases').exec();
   if (await codebaseNameTaken(eqpt, name)) {
