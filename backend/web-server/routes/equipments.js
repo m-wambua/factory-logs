@@ -149,8 +149,12 @@ equipmentsRouter.use(verifySession);
 
 /* Attaching the different equipment routes */
 const measurablesRouter = require('./measurables');
+const manualsRouter = require('./manuals');
+const codebasesRouter = require('./codebases');
 
-equipmentsRouter.use('/:equipmentId/measurable', measurablesRouter);
+equipmentsRouter.use('/:equipmentId/measurables', measurablesRouter);
+equipmentsRouter.use('/:equipmentId/manuals', manualsRouter);
+equipmentsRouter.use('/:equipmentId/codebases', codebasesRouter);
 
 /**
  * @swagger

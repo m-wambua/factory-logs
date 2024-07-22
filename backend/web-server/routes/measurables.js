@@ -30,7 +30,7 @@ const measurablesRouter = express.Router();
 
 /** Function to check whether a provided measurable name is already taken for a given equipment */
 async function measurableNameTaken(equipment, name) {
-  const takenNames = equipment.measurableIds.map((meas) => (meas) => meas.quantity);
+  const takenNames = equipment.measurableIds.map((meas) => meas.quantity);
   return takenNames.includes(name);
 }
 
@@ -39,7 +39,7 @@ measurablesRouter.use(verifySession);
 
 /**
  * @swagger
- * /api/equipments/{equipmentId}/measurable/{measurableNum}/logs:
+ * /api/equipments/{equipmentId}/measurables/{measurableNum}/logs:
  *   get:
  *     summary: Returns a list of the logs that the measurable has 
  *     security:
@@ -98,7 +98,7 @@ measurablesRouter.get('/:measurableNum/logs', async (req, res) => {
 
 /**
  * @swagger
- * /api/equipments/{equipmentId}/measurable/{measurableNum}:
+ * /api/equipments/{equipmentId}/measurables:
  *   delete:
  *     summary: Removes a measurable if it has no corresponding logs (Admins and operators only)
  *     security:
@@ -111,15 +111,29 @@ measurablesRouter.get('/:measurableNum/logs', async (req, res) => {
  *           type: string
  *         required: true
  *         description: the unique identifier of the equipment whose measurable is to be deleted
- *       - in: path
- *         name: measurableNum
- *         schema:
- *           type: string
- *         required: true
- *         description: the index of the measurable to be deleted
+ *     requestBody:
+ *       description: The details of the measurable to be deleted
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - quantity
+ *             properties:
+ *               quantity:
+ *                 type: string
+ *                 description: The equipment-unique name of the quantity to be deleted
+ *             example:
+ *               quantity: Temperature
  *     responses:
  *       204:
  *         description: The measurable has been deleted successfully
+ *       400:
+ *         description: Bad Request. quantity not provided.
+ *         content:
+ *           text/plain; charset=utf-8:
+ *             example: 'Field "quantity" is missing in the body'
  *       401:
  *         $ref: '#/components/responses/Unauthorised'
  *       403:
@@ -134,24 +148,32 @@ measurablesRouter.get('/:measurableNum/logs', async (req, res) => {
  *           text/plain; charset=utf-8:
  *             example: 'Error deleting measurable: ...'
  */
-measurablesRouter.delete('/:measurableNum', async (req, res) => {
-  if (req.params.measurableNum >= req.equipment.measurableIds.length) {
-    return res.sendStatus(404);
-  }
+measurablesRouter.delete('/', async (req, res) => {
   if (!['Admin', 'Operator'].includes(req.user?.role)) {
     return res.status(403).send('Only admins and operators can delete measurables');
   }
-  const measurable = await Measurable.findById(
-    req.equipment.measurableIds[req.params.measurableNum]._id
-  ).select(['shiftIds']);
-  if (measurable.length) {
+  const { quantity } = req.body;
+  if (!quantity) {
+    return res.status(400)
+      .send('Field "quantity" is missing in the body');
+  }
+  let measurableIndex;
+  const foundMeasurable = req.equipment.measurableIds.find((val, index) => {
+    measurableIndex = index;
+    return val.quantity === quantity;
+  });
+  if (!foundMeasurable) {
+    return res.sendStatus(404);
+  }
+  const measurable = await Measurable.findById(foundMeasurable._id).select(['shiftIds']);
+  if (measurable.shiftIds.length) {
     return res.status(406).send('The measurable already has logs and may not be deleted');
   }
   try {
     const session = await req.app.db.startSession();
     await session.withTransaction(async (session) => {
-      await req.equipment.measurableIds[req.params.measurableNum].deleteOne({ session });
-      req.equipment.measurableIds.splice(req.params.measurableNum, 1);
+      await measurable.deleteOne({ session });
+      req.equipment.measurableIds.splice(measurableIndex, 1);
       await req.equipment.save({ session });
     });
     return res.sendStatus(204);
@@ -162,9 +184,9 @@ measurablesRouter.delete('/:measurableNum', async (req, res) => {
 
 /**
  * @swagger
- * /api/equipments/{equipmentId}/measurable:
+ * /api/equipments/{equipmentId}/measurables:
  *   post:
- *     summary: Adds a new equipment to a given process (only admins & operators)
+ *     summary: Adds a new measurable to a given equipment (only admins & operators)
  *     security:
  *       - BearerAuth: []
  *     tags: [Equipments]
@@ -221,7 +243,7 @@ measurablesRouter.post('/', async (req, res) => {
     const session = await req.app.db.startSession();
     await session.withTransaction(async (session) => {
       const measurables = await Measurable.create([{
-        quantity, unit
+        equipmentId: req.equipment._id, quantity, unit
       }], { session });
       req.equipment.measurableIds.push(measurables[0]._id);
       await req.equipment.save({ session });
