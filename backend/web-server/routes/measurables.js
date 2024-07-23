@@ -19,6 +19,62 @@
  *       example:
  *         quantity: Temperature
  *         unit: Celcius
+ *     MeasurableLog:
+ *       type: object
+ *       required:
+ *         - shiftId
+ *         - time
+ *         - value
+ *       properties:
+ *         shiftId:
+ *           type: string
+ *           description: The unique identifier of the shift to which the log belongs
+ *         time:
+ *           type: string
+ *           description: The time the measurement was taken
+ *         value:
+ *           type: string
+ *           description: The value of the measured quantity
+ *         remark:
+ *           type: string
+ *           description: An optional explanation for a discrepancy
+ *       example:
+ *         shiftId: 669ae6a3aeb6ecf601e0881a
+ *         time: 2024-07-19T22:20:19.276Z
+ *         value: 20
+ *         remark: Power surge caused lower current draw
+ *     MeasurableDetails:
+ *       type: object
+ *       required:
+ *         - quantity
+ *         - unit
+ *         - equipment
+ *       properties:
+ *         quantity:
+ *           type: string
+ *           description: The equipment-unique name of the quantity that can be measured
+ *         unit:
+ *           type: string
+ *           description: The measurement unit of the parameter
+ *         equipment:
+ *           type: object
+ *           description: Details of the equipment that the measurable belongs
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: The unique identifier of the equipment
+ *             name:
+ *               type: string
+ *               description: The factory-unique name of the equipment
+ *       example:
+ *         quantity: Temperature
+ *         unit: Celcius
+ *         equipment:
+ *           id: 669ae6a3aeb6ecf601e0881a
+ *           name: F0P0.Eqpt1
+ * tags:
+ *   name: Measurables
+ *   description: The measurables management API
  */
 
 const express = require('express');
@@ -26,7 +82,7 @@ const { Measurable } = require('../models');
 const { verifySession } = require('../controllers/auth');
 const handleErr500 = require('../utils/senderr500');
 
-const measurablesRouter = express.Router();
+const eqptMeasurablesRouter = express.Router();
 
 /** Function to check whether a provided measurable name is already taken for a given equipment */
 async function measurableNameTaken(equipment, name) {
@@ -35,7 +91,12 @@ async function measurableNameTaken(equipment, name) {
 }
 
 /** To make sure all routes after this point require a login */
-measurablesRouter.use(verifySession);
+eqptMeasurablesRouter.use(verifySession);
+
+/* Attaching the different shift routes */
+//const { measLogsRouter } = require('./logs');
+
+//shiftsRouter.use('/:shiftId/logs', measLogsRouter);
 
 /**
  * @swagger
@@ -44,7 +105,7 @@ measurablesRouter.use(verifySession);
  *     summary: Returns a list of the logs that the measurable has 
  *     security:
  *       - BearerAuth: []
- *     tags: [Equipments]
+ *     tags: [Measurables, Equipments]
  *     parameters:
  *       - in: path
  *         name: equipmentId
@@ -66,7 +127,7 @@ measurablesRouter.use(verifySession);
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Log'
+ *                 $ref: '#/components/schemas/MeasurableLog'
  *       404:
  *         description: The equipment does not exist
  *       401:
@@ -74,7 +135,7 @@ measurablesRouter.use(verifySession);
  *       403:
  *         $ref: '#/components/responses/Forbidden'
  */
-measurablesRouter.get('/:measurableNum/logs', async (req, res) => {
+eqptMeasurablesRouter.get('/:measurableNum/logs', async (req, res) => {
   if (req.params.measurableNum >= req.equipment.measurableIds.length) {
     return res.sendStatus(404);
   }
@@ -85,7 +146,7 @@ measurablesRouter.get('/:measurableNum/logs', async (req, res) => {
       path: 'shiftIds',
       select: ['_id', 'logs'],
       match: { 'logs.measurableId': measurableId },
-      sort: { start: -1 }
+      sort: { start: -1, 'logs.time': -1 }
     });
   const logs = [];
   measurable.shiftIds.forEach((shift) => {
@@ -103,7 +164,7 @@ measurablesRouter.get('/:measurableNum/logs', async (req, res) => {
  *     summary: Removes a measurable if it has no corresponding logs (Admins and operators only)
  *     security:
  *       - BearerAuth: []
- *     tags: [Equipments]
+ *     tags: [Measurables, Equipments]
  *     parameters:
  *       - in: path
  *         name: equipmentId
@@ -148,7 +209,7 @@ measurablesRouter.get('/:measurableNum/logs', async (req, res) => {
  *           text/plain; charset=utf-8:
  *             example: 'Error deleting measurable: ...'
  */
-measurablesRouter.delete('/', async (req, res) => {
+eqptMeasurablesRouter.delete('/', async (req, res) => {
   if (!['Admin', 'Operator'].includes(req.user?.role)) {
     return res.status(403).send('Only admins and operators can delete measurables');
   }
@@ -189,7 +250,7 @@ measurablesRouter.delete('/', async (req, res) => {
  *     summary: Adds a new measurable to a given equipment (only admins & operators)
  *     security:
  *       - BearerAuth: []
- *     tags: [Equipments]
+ *     tags: [Measurables, Equipments]
  *     parameters:
  *       - in: path
  *         name: equipmentId
@@ -224,7 +285,7 @@ measurablesRouter.delete('/', async (req, res) => {
  *           text/plain; charset=utf-8:
  *             example: 'Error creating measurable: ...'
  */
-measurablesRouter.post('/', async (req, res) => {
+eqptMeasurablesRouter.post('/', async (req, res) => {
   if (!['Admin', 'Operator'].includes(req.user?.role)) {
     return res.status(403).send('Only admins and operators can add measurables');
   }
@@ -254,4 +315,53 @@ measurablesRouter.post('/', async (req, res) => {
   }
 });
 
-module.exports = measurablesRouter;
+const measurablesRouter = express.Router();
+
+/** To make sure all routes after this point require a login */
+measurablesRouter.use(verifySession);
+
+/**
+ * @swagger
+ * /api/measurables/{measurableId}:
+ *   get:
+ *     summary: Retrieves the details of a measurable given its id (from shift logs)
+ *     security:
+ *       - BearerAuth: []
+ *     tags: [Measurables]
+ *     parameters:
+ *       - in: path
+ *         name: measurableId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: the unique identifier of the measurable whose details are being requested
+ *     responses:
+ *       200:
+ *         description: The details of the requested measurable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/MeasurableDetails'
+ *       404:
+ *         description: The measurable does not exist
+ *       401:
+ *         $ref: '#/components/responses/Unauthorised'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ */
+measurablesRouter.get('/:measurableId', async (req, res) => {
+  req.measurable = await Measurable.findById(req.params.measurableId)
+    .select(['quantity', 'unit', 'equipmentId'])
+    .populate({ path: 'equipmentId', select: ['name', '_factoryId'] }).exec();
+  if (!req.measurable) {
+    return res.sendStatus(404);
+  }
+  if (!req.measurable.equipmentId._factoryId.equals(req.user.factoryId)) {
+    return res.status(403).send('The measurable does not belong to the user\'s factory');
+  }
+  return res.json(req.measurable);
+});
+
+module.exports = { eqptMeasurablesRouter, measurablesRouter };

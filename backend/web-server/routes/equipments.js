@@ -148,13 +148,15 @@ async function equipmentNameTaken(factoryId, name) {
 equipmentsRouter.use(verifySession);
 
 /* Attaching the different equipment routes */
-const measurablesRouter = require('./measurables');
-const manualsRouter = require('./manuals');
-const codebasesRouter = require('./codebases');
+const { eqptMeasurablesRouter } = require('./measurables');
+const eqptManualsRouter = require('./manuals');
+const eqptCodebasesRouter = require('./codebases');
+const { eqptDowntimesRouter } = require('./downtimes');
 
-equipmentsRouter.use('/:equipmentId/measurables', measurablesRouter);
-equipmentsRouter.use('/:equipmentId/manuals', manualsRouter);
-equipmentsRouter.use('/:equipmentId/codebases', codebasesRouter);
+equipmentsRouter.use('/:equipmentId/measurables', eqptMeasurablesRouter);
+equipmentsRouter.use('/:equipmentId/manuals', eqptManualsRouter);
+equipmentsRouter.use('/:equipmentId/codebases', eqptCodebasesRouter);
+equipmentsRouter.use('/:equipmentId/downtimes', eqptDowntimesRouter);
 
 /**
  * @swagger
@@ -287,45 +289,6 @@ equipmentsRouter.post('/process/:processId', async (req, res) => {
   } catch (err) {
     return handleErr500(res, err, 'Error creating equipment');
   }
-});
-
-/**
- * @swagger
- * /api/equipments/downtimes/{equipmentId}:
- *   get:
- *     summary: Returns a list of the downtimes that the equipment has
- *     security:
- *       - BearerAuth: []
- *     tags: [Equipments]
- *     parameters:
- *       - in: path
- *         name: equipmentId
- *         schema:
- *           type: string
- *         required: true
- *         description: the unique identifier of the equipment whose downtimes are being requested
- *     responses:
- *       200:
- *         description: The list of the requested equipment downtimes
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Downtime'
- *       404:
- *         description: The equipment does not exist
- *       401:
- *         $ref: '#/components/responses/Unauthorised'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- */
-equipmentsRouter.get('/downtimes/:equipmentId', async (req, res) => {
-  await req.equipment.populate({
-    path: 'downtimeIds',
-    sort: { start: -1 }
-  }).exec();
-  return res.json(req.equipment.downtimeIds);
 });
 
 /**

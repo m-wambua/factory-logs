@@ -54,18 +54,16 @@ module.exports = (mongoose) => {
       },
       required: true
     },
-    date: [{
+    start: {
       type: Schema.Types.Date,
+      default: Schema.Types.Date.now,
       required: true
-    }],
-    start: [{
+    },
+    end: {
       type: Schema.Types.Date,
+      default:  () => new Date(Date.now() + (5 * 3600000)),
       required: true
-    }],
-    end: [{
-      type: Schema.Types.Date,
-      required: true
-    }],
+    },
     ODSs: [{
       type: String,
       required: true

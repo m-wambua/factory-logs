@@ -20,11 +20,11 @@ module.exports = (mongoose) => {
       },
       required: true
     },
-    start: {
+    downAt: {
       type: Schema.Types.Date,
       required: true
     },
-    end: {
+    resumedAt: {
       type: Schema.Types.Date,
       required: true
     },

@@ -280,7 +280,6 @@ async function main () {
           leadId: userIds[0],
           teammateIds: [...userIds.slice(1)],
           type: 'Morning',
-          date: new Date(),
           start: new Date(),
           end: new Date(Date.now() + (6 * 60 * 60 * 1000)),
           logs: logs[0]
@@ -290,7 +289,6 @@ async function main () {
           leadId: userIds[1],
           teammateIds: [...userIds.splice(1,1)],
           type: 'Afternoon',
-          date: new Date(),
           start: new Date(),
           end: new Date(Date.now() + (5 * 60 * 60 * 1000)),
           logs: logs[1]

@@ -35,7 +35,7 @@ const { Equipment } = require('../models');
 const { verifySession } = require('../controllers/auth');
 const handleErr500 = require('../utils/senderr500');
 
-const codebasesRouter = express.Router();
+const eqptCodebasesRouter = express.Router();
 
 /** Function to check whether a provided codebase name is already taken for a given equipment */
 async function codebaseNameTaken(equipment, name) {
@@ -44,7 +44,7 @@ async function codebaseNameTaken(equipment, name) {
 }
 
 /** To make sure all routes after this point require a login */
-codebasesRouter.use(verifySession);
+eqptCodebasesRouter.use(verifySession);
 
 /**
  * @swagger
@@ -77,7 +77,7 @@ codebasesRouter.use(verifySession);
  *       403:
  *         $ref: '#/components/responses/Forbidden'
  */
-codebasesRouter.get('/', async (req, res) => {
+eqptCodebasesRouter.get('/', async (req, res) => {
   const eqpt = await Equipment.findById(req.equipment._id).select('codebases').exec();
   return res.json(eqpt.codebases);
 });
@@ -132,7 +132,7 @@ codebasesRouter.get('/', async (req, res) => {
  *           text/plain; charset=utf-8:
  *             example: 'Error deleting codebase: ...'
  */
-codebasesRouter.delete('/', async (req, res) => {
+eqptCodebasesRouter.delete('/', async (req, res) => {
   if (!['Admin', 'Operator'].includes(req.user?.role)) {
     return res.status(403).send('Only admins and operators can delete codebases');
   }
@@ -201,7 +201,7 @@ codebasesRouter.delete('/', async (req, res) => {
  *           text/plain; charset=utf-8:
  *             example: 'Error creating codebase: ...'
  */
-codebasesRouter.post('/', async (req, res) => {
+eqptCodebasesRouter.post('/', async (req, res) => {
   if (!['Admin', 'Operator'].includes(req.user?.role)) {
     return res.status(403).send('Only admins and operators can add codebases');
   }
@@ -241,4 +241,4 @@ codebasesRouter.post('/', async (req, res) => {
   }
 });
 
-module.exports = codebasesRouter;
+module.exports = eqptCodebasesRouter;

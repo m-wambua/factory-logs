@@ -34,6 +34,8 @@ const factoriesRouter = require('./factories');
 const processesRouter = require('./processes');
 const startupPrcdsRouter = require('./startup_prcds');
 const equipmentsRouter = require('./equipments');
+const { measurablesRouter } = require('./measurables');
+const shiftsRouter = require('./shifts');
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', usersRouter);
@@ -41,6 +43,8 @@ apiRouter.use('/factories', factoriesRouter);
 apiRouter.use('/processes', processesRouter);
 apiRouter.use('/startup', startupPrcdsRouter);
 apiRouter.use('/equipments', equipmentsRouter);
+apiRouter.use('/measurables', measurablesRouter);
+apiRouter.use('/shifts', shiftsRouter);
 
 /** Middleware for retrieving a specific user's details for
  *  admin purposes */
@@ -97,6 +101,19 @@ async function equipmentIdParamCallback (req, res, next, equipmentId) {
   next();
 }
 
+/** Middleware for retrieving a specific shift's details */
+async function shiftIdParamCallback (req, res, next, shiftId) {
+  req.shift = await models.Shift.findById(shiftId)
+    .select(['-logs', '-ODSs', '-downtimeIds']).exec();
+  if (!req.shift) {
+    return res.sendStatus(404);
+  }
+  if (!req.shift._factoryId.equals(req.user.factoryId)) {
+    return res.status(403).send('The shift does not belong to the user\'s factory');
+  }
+  next();
+}
+
 usersRouter.param('userId', userIdParamCallback);
 
 processesRouter.param('processId', processIdParamCallback);
@@ -106,5 +123,7 @@ startupPrcdsRouter.param('startupId', startupIdParamCallback);
 
 equipmentsRouter.param('processId', processIdParamCallback);
 equipmentsRouter.param('equipmentId', equipmentIdParamCallback);
+
+shiftsRouter.param('shiftId', shiftIdParamCallback);
 
 module.exports = apiRouter;

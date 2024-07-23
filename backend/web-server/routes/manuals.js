@@ -26,7 +26,7 @@ const { Equipment } = require('../models');
 const { verifySession } = require('../controllers/auth');
 const handleErr500 = require('../utils/senderr500');
 
-const manualsRouter = express.Router();
+const eqptManualsRouter = express.Router();
 
 /** Function to check whether a provided manual name is already taken for a given equipment */
 async function manualNameTaken(equipment, name) {
@@ -35,7 +35,7 @@ async function manualNameTaken(equipment, name) {
 }
 
 /** To make sure all routes after this point require a login */
-manualsRouter.use(verifySession);
+eqptManualsRouter.use(verifySession);
 
 /**
  * @swagger
@@ -68,7 +68,7 @@ manualsRouter.use(verifySession);
  *       403:
  *         $ref: '#/components/responses/Forbidden'
  */
-manualsRouter.get('/', async (req, res) => {
+eqptManualsRouter.get('/', async (req, res) => {
   const eqpt = await Equipment.findById(req.equipment._id).select('manuals').exec();
   return res.json(eqpt.manuals);
 });
@@ -123,7 +123,7 @@ manualsRouter.get('/', async (req, res) => {
  *           text/plain; charset=utf-8:
  *             example: 'Error deleting manual: ...'
  */
-manualsRouter.delete('/', async (req, res) => {
+eqptManualsRouter.delete('/', async (req, res) => {
   if (!['Admin', 'Operator'].includes(req.user?.role)) {
     return res.status(403).send('Only admins and operators can delete manuals');
   }
@@ -192,7 +192,7 @@ manualsRouter.delete('/', async (req, res) => {
  *           text/plain; charset=utf-8:
  *             example: 'Error creating manual: ...'
  */
-manualsRouter.post('/', async (req, res) => {
+eqptManualsRouter.post('/', async (req, res) => {
   if (!['Admin', 'Operator'].includes(req.user?.role)) {
     return res.status(403).send('Only admins and operators can add manuals');
   }
@@ -222,4 +222,4 @@ manualsRouter.post('/', async (req, res) => {
   }
 });
 
-module.exports = manualsRouter;
+module.exports = eqptManualsRouter;
