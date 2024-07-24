@@ -19,30 +19,6 @@
  *       example:
  *         quantity: Temperature
  *         unit: Celcius
- *     MeasurableLog:
- *       type: object
- *       required:
- *         - shiftId
- *         - time
- *         - value
- *       properties:
- *         shiftId:
- *           type: string
- *           description: The unique identifier of the shift to which the log belongs
- *         time:
- *           type: string
- *           description: The time the measurement was taken
- *         value:
- *           type: string
- *           description: The value of the measured quantity
- *         remark:
- *           type: string
- *           description: An optional explanation for a discrepancy
- *       example:
- *         shiftId: 669ae6a3aeb6ecf601e0881a
- *         time: 2024-07-19T22:20:19.276Z
- *         value: 20
- *         remark: Power surge caused lower current draw
  *     MeasurableDetails:
  *       type: object
  *       required:
@@ -94,67 +70,15 @@ async function measurableNameTaken(equipment, name) {
 eqptMeasurablesRouter.use(verifySession);
 
 /* Attaching the different shift routes */
-//const { measLogsRouter } = require('./logs');
+const { measLogsRouter } = require('./logs');
 
-//shiftsRouter.use('/:shiftId/logs', measLogsRouter);
+eqptMeasurablesRouter.use('/:measurableNum/logs', measLogsRouter);
 
-/**
- * @swagger
- * /api/equipments/{equipmentId}/measurables/{measurableNum}/logs:
- *   get:
- *     summary: Returns a list of the logs that the measurable has 
- *     security:
- *       - BearerAuth: []
- *     tags: [Measurables, Equipments]
- *     parameters:
- *       - in: path
- *         name: equipmentId
- *         schema:
- *           type: string
- *         required: true
- *         description: the unique identifier of the equipment to which the measurable belongs
- *       - in: path
- *         name: measurableNum
- *         schema:
- *           type: string
- *         required: true
- *         description: the index of the measurable whose logs are being requested
- *     responses:
- *       200:
- *         description: The list of the requested measurable logs
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/MeasurableLog'
- *       404:
- *         description: The equipment does not exist
- *       401:
- *         $ref: '#/components/responses/Unauthorised'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- */
-eqptMeasurablesRouter.get('/:measurableNum/logs', async (req, res) => {
-  if (req.params.measurableNum >= req.equipment.measurableIds.length) {
+eqptMeasurablesRouter.param('measurableNum', async (req, res, next, measurableNum) => {
+  if (measurableNum >= req.equipment.measurableIds.length) {
     return res.sendStatus(404);
   }
-  const measurableId = req.equipment.measurableIds[req.params.measurableNum]._id;
-  const measurable = await Measurable.findById(measurableId)
-    .select(['shiftIds'])
-    .populate({
-      path: 'shiftIds',
-      select: ['_id', 'logs'],
-      match: { 'logs.measurableId': measurableId },
-      sort: { start: -1, 'logs.time': -1 }
-    });
-  const logs = [];
-  measurable.shiftIds.forEach((shift) => {
-    shift.logs.forEach((log) => {
-      logs.push({ ...log.toJSON(), shiftId: shift._id, measurableId: undefined });
-    });
-  });
-  return res.json(logs);
+  req.measurableId = req.equipment.measurableIds[measurableNum]._id;
 });
 
 /**

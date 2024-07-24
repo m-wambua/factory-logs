@@ -40,7 +40,7 @@
  *         downAt: 2024-07-10T17:30:12.015Z
  *         resumedAt: 2024-07-10T17:40:12.015Z
  *         remark: Caused by overheating after cooling system ran out of water
- *     ShifttDowntime:
+ *     ShiftDowntime:
  *       type: object
  *       required:
  *         - id
@@ -223,6 +223,8 @@ shftDowntimesRouter.use(verifySession);
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/ShiftDowntime'
+ *       400:
+ *         description: Bad Request. equipmentId and type not provided.
  *       404:
  *         description: The shift does not exist
  *       401:
@@ -236,7 +238,7 @@ shftDowntimesRouter.use(verifySession);
  *             example: 'Error creating downtime: ...'
  */
 shftDowntimesRouter.post('/', async (req, res) => {
-  if ((!req.shift.teammateIds.includes(req.user._id)) && (!req.shift.leadId.equals(req.user._id))) {
+  if (!req.isShiftMember()) {
     return res.status(403).send('Only team members and leads can add downtimes in their shift');
   }
   for (const required of ["equipmentId", "type"]) {
@@ -283,7 +285,7 @@ shftDowntimesRouter.post('/', async (req, res) => {
       return downtimes[0];
     });
     downtime.shiftId = undefined;
-    return res.json(downtime);
+    return res.status(201).json(downtime);
   } catch (err) {
     return handleErr500(res, err, 'Error creating downtime');
   }
@@ -388,7 +390,7 @@ shftDowntimesRouter.put('/:downtimeId', async (req, res) => {
   if ((!req.downtime) || (!req.downtime.shiftId.equals(req.shift._id))) {
     return res.status(404);
   }
-  if ((!req.shift.teammateIds.includes(req.user._id)) && (!req.shift.leadId.equals(req.user._id))) {
+  if (!req.isShiftMember()) {
     return res.status(403).send('Only team members and leads can edit downtimes of their shift');
   }
   const { resumedAt, remark } = req.body;

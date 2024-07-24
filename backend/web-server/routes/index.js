@@ -111,6 +111,12 @@ async function shiftIdParamCallback (req, res, next, shiftId) {
   if (!req.shift._factoryId.equals(req.user.factoryId)) {
     return res.status(403).send('The shift does not belong to the user\'s factory');
   }
+  req.isShiftMember = function() {
+    const isMate = req.shift.teammateIds.some(function (mate) {
+      return mate.equals(req.user._id);
+    });
+    return (isMate || (req.shift.leadId.equals(req.user._id)))
+  };
   next();
 }
 

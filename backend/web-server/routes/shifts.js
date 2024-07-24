@@ -177,16 +177,16 @@ shiftsRouter.use(verifySession);
 
 /* Attaching the different shift routes */
 const { shftDowntimesRouter } = require('./downtimes');
-//const { shftLogsRouter } = require('./logs');
+const { shftLogsRouter } = require('./logs');
 
 shiftsRouter.use('/:shiftId/downtimes', shftDowntimesRouter);
-//shiftsRouter.use('/:shiftId/logs', shftLogsRouter);
+shiftsRouter.use('/:shiftId/logs', shftLogsRouter);
 
 /**
  * @swagger
- * /api/shifts/{shiftId}/logs:
+ * /api/shifts/{shiftId}/ods:
  *   get:
- *     summary: Returns a list of the downtimes that occurred during a shift
+ *     summary: Returns a list of the occurences during a shift (ODS)
  *     security:
  *       - BearerAuth: []
  *     tags: [Shifts]
@@ -196,16 +196,20 @@ shiftsRouter.use('/:shiftId/downtimes', shftDowntimesRouter);
  *         schema:
  *           type: string
  *         required: true
- *         description: the unique identifier of the shift whose downtimes are being requested
+ *         description: the unique identifier of the shift whose ODSs are being requested
  *     responses:
  *       200:
- *         description: The list of the requested shift downtimes
+ *         description: The list of the requested shifts ODSs
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/ShiftDowntime'
+ *                 type: string
+ *                 description: Descriptive message of an occurence
+ *               example:
+ *                 - 'Power supply was fluctuating'
+ *                 - 'High humidity forced equipment to be run slightly slower'
  *       404:
  *         description: The shift does not exist
  *       401:
@@ -213,10 +217,73 @@ shiftsRouter.use('/:shiftId/downtimes', shftDowntimesRouter);
  *       403:
  *         $ref: '#/components/responses/Forbidden'
  */
-shiftsRouter.get('/:shiftId/logs', async (req, res) => {
+shiftsRouter.get('/:shiftId/ods', async (req, res) => {
   const shiftDet = await Shift.findById(req.shift._id)
-    .select('logs').sort({ 'logs.time': -1 }).exec();
-  return res.json(shiftDet.logs);
+    .select('ODSs').exec();
+  return res.json(shiftDet.ODSs);
+});
+
+/**
+ * @swagger
+ * /api/shifts/{shiftId}/ods:
+ *   post:
+ *     summary: Addds a new description of an occurence during a shift (ODS)
+ *     security:
+ *       - BearerAuth: []
+ *     tags: [Shifts]
+ *     parameters:
+ *       - in: path
+ *         name: shiftId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: the unique identifier of the shift to add the ODS to
+ *     requestBody:
+ *       description: The details of the occurence
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - desc
+ *             properties:
+ *               desc:
+ *                 type: string
+ *                 description: a descriptive message of the occurence
+ *             example:
+ *               desc: 'Power supply was fluctuating'
+ *     responses:
+ *       201:
+ *         description: The ODS has been successfully added
+ *       400:
+ *         description: Bad Request. desc not provided of is an empty string.
+ *       404:
+ *         description: The shift does not exist
+ *       401:
+ *         $ref: '#/components/responses/Unauthorised'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       500:
+ *         description: Server Error. Could not add the ODS.
+ *         content:
+ *           text/plain; charset=utf-8:
+ *             example: 'Error saving ODS: ...'
+ */
+shiftsRouter.post('/:shiftId/ods', async (req, res) => {
+  const { desc } = req.body;
+  if ((!desc) || (desc === '')) {
+    return res.status(400).send('Field "desc" is missing in the body or is empty');
+  }
+  const shiftDet = await Shift.findById(req.shift._id)
+    .select('ODSs').exec();
+  try {
+    shiftDet.ODSs.push(desc);
+    await shiftDet.save();
+    return res.sendStatus(201);
+  } catch (err) {
+    return handleErr500(res, err, 'Error saving ODS');
+  }
 });
 
 /**
