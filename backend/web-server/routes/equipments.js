@@ -112,6 +112,9 @@
  *         location:
  *           type: string
  *           description: The description of the physical location of the equipment in the plant
+ *         image:
+ *           type: string
+ *           description: A link to the image of where the equipment is located
  *       example:
  *         name: F0P0.Eqpt5
  *         type: PLC
@@ -264,7 +267,7 @@ equipmentsRouter.post('/process/:processId', async (req, res) => {
         .send(`Field "${required}" is missing in the body`);
     }
   }
-  const { name, type, manufacturer, serialNum, rating, location } = req.body;
+  const { name, type, manufacturer, serialNum, rating, location, image } = req.body;
   if (await equipmentNameTaken(req.user.factoryId, name)) {
     return res.status(400)
       .send('Provided name is already taken, name needs to be unique');
@@ -275,7 +278,7 @@ equipmentsRouter.post('/process/:processId', async (req, res) => {
       const equipments = await Equipment.create([{
         _factoryId: req.user.factoryId,
         name, type, manufacturer, serialNum, rating,
-        location: { description: location }
+        location: { description: location, image }
       }], { session });
       req.process.equipmentIds.push(equipments[0]._id);
       await req.process.save({ session });
@@ -321,7 +324,7 @@ equipmentsRouter.post('/process/:processId', async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Equipment'
  *       400:
- *         description: Bad Request. name, type, manufacturer, serialNum, rating and location not provided. At least one is required.
+ *         description: Bad Request. name, type, manufacturer, serialNum, rating, location and image not provided. At least one is required.
  *         content:
  *           text/plain; charset=utf-8:
  *             example: 'No supported field has been provided for edit'
@@ -341,8 +344,8 @@ equipmentsRouter.put('/:equipmentId', async (req, res) => {
   if (!['Admin', 'Operator'].includes(req.user?.role)) {
     return res.status(403).send('Only admins and operators can edit an equipment');
   }
-  const { name, type, manufacturer, serialNum, rating, location } = req.body;
-  if ((!name) && (!type) && (!manufacturer) && (!serialNum) && (!rating) && (!location)) {
+  const { name, type, manufacturer, serialNum, rating, location, image } = req.body;
+  if ((!name) && (!type) && (!manufacturer) && (!serialNum) && (!rating) && (!location) && (!image)) {
     return res.status(400)
       .send('No supported field has been provided for edit');
   }
@@ -368,6 +371,9 @@ equipmentsRouter.put('/:equipmentId', async (req, res) => {
     }
     if (location) {
       req.equipment.location.description = location;
+    }
+    if (image) {
+      req.equipment.location.image = image;
     }
     await req.equipment.save();
     return res.json(req.equipment);
