@@ -8,14 +8,14 @@
  *       type: object
  *       required:
  *         - id
- *         - userName
+ *         - username
  *         - role
  *         - factoryId
  *       properties:
  *         id:
  *           type: string
  *           description: The unique identifier of the user
- *         userName:
+ *         username:
  *           type: string
  *           description: The unique UserName of the user
  *         role:
@@ -34,7 +34,7 @@
  *           description: The last time the user details were edited
  *       example:
  *         id: 668ec52476e53805e7fa5cc6
- *         userName: Fct0.Admn0
+ *         username: Fct0.Admn0
  *         role: Admin
  *         factoryId: 668ec52476e53805e7fa5cc1
  *         createdAt: 2024-07-10T17:30:12.515Z
@@ -126,13 +126,13 @@ usersRouter.get('/me', (req, res) => {
  *             type: object
  *             required:
  *               - oneOf:
- *                 - userName
+ *                 - username
  *                 - role
  *                 - password
  *             properties:
- *               userName:
+ *               username:
  *                 type: string
- *                 description: The new userName to be saved for the user
+ *                 description: The new username to be saved for the user
  *               role:
  *                 type: string
  *                 description: The new role to be saved for the user. Acceptable options are ['Admin', 'Operator', 'Technician']
@@ -140,7 +140,7 @@ usersRouter.get('/me', (req, res) => {
  *                 type: string
  *                 description: The new password to be saved for the user
  *             example:
- *               userName: Fct0.Oprt0
+ *               username: Fct0.Oprt0
  *               role: Operator
  *               password: password0P0
  *     responses:
@@ -151,10 +151,10 @@ usersRouter.get('/me', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Bad Request. userName and role and password not provided. At least one is required.
+ *         description: Bad Request. username and role and password not provided. At least one is required.
  *         content:
  *           text/plain; charset=utf-8:
- *             example: 'Fields "userName" or "role" or "password" required for edit'
+ *             example: 'Fields "username" or "role" or "password" required for edit'
  *       406:
  *         description: Method Not Allowed. To prevent admin-less factories, Admins cannot edit their role.
  *         content:
@@ -195,13 +195,13 @@ usersRouter.get('/me', (req, res) => {
 usersRouter.route('/:userId')
   /* To update a specific user's details */
   .put(async (req, res) => {
-    const { userName, role, password } = req.body;
-    if (!userName && !role && !password) {
+    const { username, role, password } = req.body;
+    if (!username && !role && !password) {
       return res.status(400)
-        .send('Fields "userName" or "role" or "password" required for edit');
+        .send('Fields "username" or "role" or "password" required for edit');
     }
-    if (userName) {
-      req.subjUser.userName = userName;
+    if (username) {
+      req.subjUser.username = username;
     }
     if (role) {
       if ((req.subjUser._id === req.user._id) && (role !== 'Admin')) {

@@ -15,8 +15,8 @@ const ACCESS_TOKEN_LIFESPAN =
 
 /** To login a user */
 async function handleLogin (req, res) {
-  const { userName, password } = req.body;
-  const user = await User.findOne({ userName })
+  const { username, password } = req.body;
+  const user = await User.findOne({ username })
     .select('_id hashedPassword refreshToken')
     .exec();
   if (!user) {
@@ -29,7 +29,7 @@ async function handleLogin (req, res) {
       return res.status(401)
         .send('Provided credentials are incorrect');
     }
-    const accessToken = jwt.sign(
+    const access_token = jwt.sign(
       { userId: user._id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: ACCESS_TOKEN_LIFESPAN }
@@ -63,7 +63,7 @@ async function handleLogin (req, res) {
       secure: true,
       maxAge: cookieAge
     });
-    return res.json({ accessToken });
+    return res.json({ access_token });
   } catch (err) {
     return res.status(500)
       .send(`Authentication Error occured: ${err}`);
@@ -85,12 +85,12 @@ async function handleRefresh (req, res) {
       if (err || (tokenData.userId !== user._id)) {
         return res.sendStatus(403);
       }
-      const accessToken = jwt.sign(
+      const access_token = jwt.sign(
         { userId: user._id },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_TOKEN_LIFESPAN }
       );
-      return res.json({ accessToken });
+      return res.json({ access_token });
     }
   );
 }
@@ -163,11 +163,11 @@ async function handleAddUser (req, res) {
   if (req.user?.role !== 'Admin') {
     return res.status(403).send('Only admins can add new users');
   }
-  const { userName, role, password } = req.body;
+  const { username, role, password } = req.body;
   try {
     const hashedPassword = await hashPassword(password);
     const user = await User.create({
-      userName, role, hashedPassword, factoryId: req.user.factoryId
+      username, role, hashedPassword, factoryId: req.user.factoryId
     });
     return res.status(201).json(user);
   } catch (err) {

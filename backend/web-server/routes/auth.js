@@ -5,8 +5,10 @@
  * components:
  *   securitySchemes:
  *     BearerAuth:
- *       type: http
- *       scheme: bearer
+ *       type: oauth2
+ *       flows:
+ *         password:
+ *           tokenUrl: /api/auth/login
  *   responses:
  *     Unauthorised:
  *       description: Unauthorised. The user is currently not logged in
@@ -23,14 +25,11 @@ const auth = require('../controllers/auth');
 const authRouter = express.Router();
 
 function verifyLoginDetails (req, res, next) {
-  const { userName, password } = req.body;
-  if (!userName) {
-    return res.status(400)
-      .send('Field "userName" is missing in the body');
-  }
-  if (!password) {
-    return res.status(400)
-      .send('Field "password" is missing in the body');
+  for (const required of ["username", "password"]) {
+    if (!req.body[required]) {
+      return res.status(400)
+        .send(`Field "${required}" is missing in the body`);
+    }
   }
   next();
 }
@@ -54,18 +53,11 @@ async function verifyLogoutDetails (req, res, next) {
 }
 
 function verifyNewUserDetails (req, res, next) {
-  const { userName, role, password } = req.body;
-  if (!userName) {
-    return res.status(400)
-      .send('Field "userName" is missing in the body');
-  }
-  if (!password) {
-    return res.status(400)
-      .send('Field "password" is missing in the body');
-  }
-  if (!role) {
-    return res.status(400)
-      .send('Field "role" is missing in the body');
+  for (const required of ["username", "role", "password"]) {
+    if (!req.body[required]) {
+      return res.status(400)
+        .send(`Field "${required}" is missing in the body`);
+    }
   }
   next();
 }
@@ -85,17 +77,17 @@ function verifyNewUserDetails (req, res, next) {
  *           schema:
  *             type: object
  *             required:
- *               - userName
+ *               - username
  *               - password
  *             properties:
- *               userName:
+ *               username:
  *                 type: string
- *                 description: The UserName of the user
+ *                 description: The User Name of the user
  *               password:
  *                 type: string
  *                 description: The password of the user
  *             example:
- *               userName: Fct0.Admn0
+ *               username: Fct0.Admn0
  *               password: password0A0
  *     responses:
  *       200:
@@ -113,12 +105,12 @@ function verifyNewUserDetails (req, res, next) {
  *             example:
  *               accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MzNmOWM0Mi1hOWNhLTRiN2QtOTk1NC1iOTJlNmNmM2QxNmYiLCJpYXQiOjE3MDg4NzE2MjEsImV4cCI6MTcwODg3MjIyMX0.lLr7PfN5dZloel2uG_uaucBwvNJeghxb86ddFABOC_0'
  *       400:
- *         description: Bad Request. userName or password not provided.
+ *         description: Bad Request. username or password not provided.
  *         content:
  *           text/plain; charset=utf-8:
- *             example: 'Field "userName" is missing in the body'
+ *             example: 'Field "username" is missing in the body'
  *       401:
- *         description: Unauthorised. Provided credentials (userName or password) are not correct.
+ *         description: Unauthorised. Provided credentials (username or password) are not correct.
  *         content:
  *           text/plain; charset=utf-8:
  *             example: 'Provided credentials are incorrect'
@@ -152,13 +144,13 @@ authRouter.post('/login', verifyLoginDetails, auth.handleLogin);
  *             schema:
  *               type: object
  *               required:
- *                 - accessToken
+ *                 - access_token
  *             properties:
  *               accessToken:
  *                 type: string
  *                 description: The token to be used as the Bearer token for successive requests
  *             example:
- *               accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MzNmOWM0Mi1hOWNhLTRiN2QtOTk1NC1iOTJlNmNmM2QxNmYiLCJpYXQiOjE3MDg4NzE2MjEsImV4cCI6MTcwODg3MjIyMX0.lLr7PfN5dZloel2uG_uaucBwvNJeghxb86ddFABOC_0'
+ *               access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MzNmOWM0Mi1hOWNhLTRiN2QtOTk1NC1iOTJlNmNmM2QxNmYiLCJpYXQiOjE3MDg4NzE2MjEsImV4cCI6MTcwODg3MjIyMX0.lLr7PfN5dZloel2uG_uaucBwvNJeghxb86ddFABOC_0'
  *       401:
  *         description: Unauthorised. No refresh token has been provided.
  *       403:
@@ -211,13 +203,13 @@ authRouter.use(auth.verifySession);
  *           schema:
  *             type: object
  *             required:
- *               - userName
+ *               - username
  *               - role
  *               - password
  *             properties:
- *               userName:
+ *               username:
  *                 type: string
- *                 description: The unique UserName to be saved for the new user
+ *                 description: The unique User Name to be saved for the new user
  *               role:
  *                 type: string
  *                 description: The role the new user has in the factory. Acceptable options are ['Admin', 'Operator', 'Technician']
@@ -225,7 +217,7 @@ authRouter.use(auth.verifySession);
  *                 type: string
  *                 description: The password to be saved for the new user
  *             example:
- *               userName: Fct0.Tech0
+ *               username: Fct0.Tech0
  *               role: Technician
  *               password: password0T0
  *     responses:
@@ -236,10 +228,10 @@ authRouter.use(auth.verifySession);
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Bad Request. email or fullname or password or idNumber not provided.
+ *         description: Bad Request. username or role or password not provided.
  *         content:
  *           text/plain; charset=utf-8:
- *             example: 'email is missing in the body'
+ *             example: 'username is missing in the body'
  *       500:
  *         description: Server Error. Could not register the new user.
  *         content:

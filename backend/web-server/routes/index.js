@@ -77,7 +77,7 @@ async function processIdParamCallback (req, res, next, processId) {
 /** Middleware for retrieving a specific startup procedure's details */
 async function startupIdParamCallback (req, res, next, startupId) {
   req.startupPrcd = await models.StartupPrcd.findById(startupId)
-    .populate({ path: 'authorId', select: ['_id', 'userName'] }).exec();
+    .populate({ path: 'authorId', select: ['_id', 'username'] }).exec();
   if (!req.startupPrcd) {
     return res.sendStatus(404);
   }

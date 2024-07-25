@@ -27,6 +27,7 @@ const swaggerOptions = {
       description: 'A factory management API'
     },
     servers: [
+      { url: '/' },
       { url: 'http://localhost:3000' },
       { url: 'https://localhost:3001' }
     ]
@@ -40,6 +41,7 @@ const app = express();
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 

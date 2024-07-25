@@ -23,9 +23,9 @@
  *             id:
  *               type: string
  *               description: The unique identifier of the user
- *             userName:
+ *             username:
  *               type: string
- *               description: The unique userName of the user
+ *               description: The unique username of the user
  *         teammates:
  *           type: array
  *           description: List of the other users present during the shift
@@ -35,9 +35,9 @@
  *               id:
  *                 type: string
  *                 description: The unique identifier of a user
- *               userName:
+ *               username:
  *                 type: string
- *                 description: The unique userName of a user
+ *                 description: The unique username of a user
  *         type:
  *           type: string
  *           description: The type of shift ('Morning', 'Afternoon', 'Evening', 'Night', or 'Supervisory')
@@ -61,12 +61,12 @@
  *         id: 6778f8whfj5894bbhr883bb3
  *         lead:
  *           id: 666058acfd589890acb07e7f
- *           userName: Fct0.Oprt0
+ *           username: Fct0.Oprt0
  *         teammates:
  *           - id: 676058acfd5894bbfe458ab5
- *             userName: Fct0.Tech0
+ *             username: Fct0.Tech0
  *           - id: 6778f8acfd5894bbfe883bb3
- *             userName: Fct0.Tech1
+ *             username: Fct0.Tech1
  *         type: Morning
  *         start: 2024-07-10T17:30:12.015Z
  *         end: 2024-07-10T22:30:12.015Z
@@ -90,9 +90,9 @@
  *             id:
  *               type: string
  *               description: The unique identifier of the user
- *             userName:
+ *             username:
  *               type: string
- *               description: The unique userName of the user
+ *               description: The unique username of the user
  *         type:
  *           type: string
  *           description: The type of shift ('Morning', 'Afternoon', 'Evening', 'Night', or 'Supervisory')
@@ -104,7 +104,7 @@
  *         id: 6778f8whfj5894bbhr883bb3
  *         lead:
  *           id: 666058acfd589890acb07e7f
- *           userName: Fct0.Oprt0
+ *           username: Fct0.Oprt0
  *         type: Morning
  *         start: 2024-07-10T17:30:12.015Z
  *     ShiftCreateInfo:
@@ -117,7 +117,7 @@
  *           description: List of the other users present during the shift
  *           items:
  *             type: string
- *             description: The unique userName of a user on duty during the shift
+ *             description: The unique username of a user on duty during the shift
  *         type:
  *           type: string
  *           description: The type of shift ('Morning', 'Afternoon', 'Evening', 'Night', or 'Supervisory')
@@ -313,7 +313,7 @@ shiftsRouter.post('/:shiftId/ods', async (req, res) => {
 shiftsRouter.get('/', async (req, res) => {
   const shifts = await Shift.find()
     .select(['_id', 'leadId', 'type', 'start'])
-    .populate({ path: 'leadId', select: ['userName'] })
+    .populate({ path: 'leadId', select: ['username'] })
     .sort({ start: -1 });
   return res.json(shifts);
 });
@@ -368,12 +368,12 @@ shiftsRouter.post('/', async (req, res) => {
         .send('Field "teammates" is not an array');
     }
     teammateIds = await teammates.map(async (mateName) => {
-      return (await User.findOne({ userName: mateName })
+      return (await User.findOne({ username: mateName })
         .select('_id').exec())._id;
     });
     if (teammateIds.includes(undefined)) {
       return res.status(400)
-        .send('At least one of the teammate userNames is not in the system');
+        .send('At least one of the teammate usernames is not in the system');
     }
   }
   if (start || end) {
@@ -401,8 +401,8 @@ shiftsRouter.post('/', async (req, res) => {
     shift.logs = undefined;
     shift.downtimeIds = undefined;
     shift.ODSs = undefined;
-    await shift.populate({ path: 'teammateIds', select: ['userName'] })
-      .populate({ path: 'leadId', select: ['userName']});
+    await shift.populate({ path: 'teammateIds', select: ['username'] })
+      .populate({ path: 'leadId', select: ['username']});
     return res.json(shift);
   } catch (err) {
     return handleErr500(res, err, 'Error creating shift');
@@ -520,12 +520,12 @@ shiftsRouter.put('/:shiftId', async (req, res) => {
           .send('Field "teammates" is not an array');
       }
       const teammateIds = await teammates.map(async (mateName) => {
-        return (await User.findOne({ userName: mateName })
+        return (await User.findOne({ username: mateName })
           .select('_id').exec())._id;
       });
       if (teammateIds.includes(undefined)) {
         return res.status(400)
-          .send('One of the teammate userNames is not in the system');
+          .send('One of the teammate usernames is not in the system');
       }
       req.shift.teammateIds.splice(0, req.shift.teammateIds.length);
       req.shift.teammateIds.push(...teammateIds);
@@ -552,8 +552,8 @@ shiftsRouter.put('/:shiftId', async (req, res) => {
       req.shift.type = type;
     }
     await req.shift.save();
-    await req.shift.populate({ path: 'teammateIds', select: ['userName'] })
-      .populate({ path: 'leadId', select: ['userName']});
+    await req.shift.populate({ path: 'teammateIds', select: ['username'] })
+      .populate({ path: 'leadId', select: ['username']});
     return res.json(req.shift);
   } catch (err) {
     return handleErr500(res, err, 'Error updating shift');
@@ -590,8 +590,8 @@ shiftsRouter.put('/:shiftId', async (req, res) => {
  *         $ref: '#/components/responses/Forbidden'
  */
 shiftsRouter.get('/:shiftId', async (req, res) => {
-  await req.shift.populate({ path: 'teammateIds', select: ['userName'] });
-  await req.shift.populate({ path: 'leadId', select: ['userName']});
+  await req.shift.populate({ path: 'teammateIds', select: ['username'] });
+  await req.shift.populate({ path: 'leadId', select: ['username']});
   return res.json(req.shift);
 });
 

@@ -33,37 +33,37 @@ async function main () {
       }], { session });
       const users = await db.User.create([
         {
-          userName: 'Fct0.Admn0',
+          username: 'Fct0.Admn0',
           role: 'Admin',
           hashedPassword: await bcrypt.hash('password0A0', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct0.Oprt0',
+          username: 'Fct0.Oprt0',
           role: 'Operator',
           hashedPassword: await bcrypt.hash('password0P0', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct0.Oprt1',
+          username: 'Fct0.Oprt1',
           role: 'Operator',
           hashedPassword: await bcrypt.hash('password0P1', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct0.Tech0',
+          username: 'Fct0.Tech0',
           role: 'Technician',
           hashedPassword: await bcrypt.hash('password0T0', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct0.Tech1',
+          username: 'Fct0.Tech1',
           role: 'Technician',
           hashedPassword: await bcrypt.hash('password0T1', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct0.Tech2',
+          username: 'Fct0.Tech2',
           role: 'Technician',
           hashedPassword: await bcrypt.hash('password0T2', 10),
           factoryId: factories[0]._id
@@ -71,7 +71,7 @@ async function main () {
       ], { session });
       factory0Id = factories[0]._id;
       console.log('Successfully created factory:', factories[0].companyName);
-      console.log('And successfully created users:', users.map((user)=>user.userName));
+      console.log('And successfully created users:', users.map((user)=>user.username));
     });
   } catch(err) {
     console.error('Error creating first factory and its users: ', err);
@@ -87,44 +87,44 @@ async function main () {
       }], { session });
       const users = await db.User.create([
         {
-          userName: 'Fct1.Admn0',
+          username: 'Fct1.Admn0',
           role: 'Admin',
           hashedPassword: await bcrypt.hash('password1A0', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct1.Oprt0',
+          username: 'Fct1.Oprt0',
           role: 'Operator',
           hashedPassword: await bcrypt.hash('password1P0', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct1.Oprt1',
+          username: 'Fct1.Oprt1',
           role: 'Operator',
           hashedPassword: await bcrypt.hash('password1P1', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct1.Tech0',
+          username: 'Fct1.Tech0',
           role: 'Technician',
           hashedPassword: await bcrypt.hash('password1T0', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct1.Tech1',
+          username: 'Fct1.Tech1',
           role: 'Technician',
           hashedPassword: await bcrypt.hash('password1T1', 10),
           factoryId: factories[0]._id
         },
         {
-          userName: 'Fct1.Tech2',
+          username: 'Fct1.Tech2',
           role: 'Technician',
           hashedPassword: await bcrypt.hash('password1T2', 10),
           factoryId: factories[0]._id
         }
       ], { session });
       console.log('Successfully created factory:', factories[0].companyName);
-      console.log('And successfully created users:', users.map((user)=>user.userName));
+      console.log('And successfully created users:', users.map((user)=>user.username));
     });
   } catch(err) {
     console.error('Error creating second factory and its users: ', err);
@@ -137,7 +137,7 @@ async function main () {
       const startupPrcds = await db.StartupPrcd.create([
         {
           _factoryId: factory0Id,
-          authorId: (await db.User.findOne({userName: 'Fct0.Admn0'}).select('_id').exec())._id,
+          authorId: (await db.User.findOne({username: 'Fct0.Admn0'}).select('_id').exec())._id,
           changeLog: 'First startup Procedure for Process0',
           steps: [
             'Step1: apple boy cat dog',
@@ -147,7 +147,7 @@ async function main () {
         },
         {
           _factoryId: factory0Id,
-          authorId: (await db.User.findOne({userName: 'Fct0.Oprt0'}).select('_id').exec())._id,
+          authorId: (await db.User.findOne({username: 'Fct0.Oprt0'}).select('_id').exec())._id,
           changeLog: 'First startup Procedure for Process1',
           steps: [
             'Step1: man night oval potato',

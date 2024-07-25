@@ -21,9 +21,9 @@
  *             id:
  *               type: string
  *               description: The identifier of the author
- *             userName:
+ *             username:
  *               type: string
- *               description: The userName of the author
+ *               description: The username of the author
  *         prevPrcdId:
  *           type: string
  *           description: The identifier of the procedure that was overwritten by this one
@@ -48,7 +48,7 @@
  *         id: 66957454aa580a78c46a3017
  *         author:
  *           id: 65324h3kj3545565n23hu870
- *           userName: Fct0.Oprt0
+ *           username: Fct0.Oprt0
  *         changeLog: 'First published Startup Procedure'
  *         steps:
  *           - 'Step1: first step of startup'
@@ -112,7 +112,7 @@ startupPrcdRouter.delete('/cleanprev/:startupId', async (req, res) => {
     const session = await req.app.db.startSession();
     await session.withTransaction(async (session) => {
       let cleanIndicator = `\n\n===[Clean]===> ${(new Date).toISOString()}:`
-      cleanIndicator = `${cleanIndicator} ${req.user.userName} (id ${req.user._id}) ++\n`
+      cleanIndicator = `${cleanIndicator} ${req.user.username} (id ${req.user._id}) ++\n`
       /** Recursive function for cleaning up linked list of procedures */
       async function cleanupPrcd (prcd) {
         if (prcd.prevPrcdId){

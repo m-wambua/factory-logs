@@ -42,7 +42,7 @@ async function main () {
 function printUsage(args) {
   console.log(`Usage: ${args[0]} ${args[1]} <command> [<args>]`);
   console.log('\nThese are common factory management commands and their arguments list:\n');
-  console.log('\tadd <factory_name> <factory_location> <admin_userName> <admin_password>');
+  console.log('\tadd <factory_name> <factory_location> <admin_username> <admin_password>');
   console.log('\trm <factory_name>');
   console.log('\tls');
 }
@@ -56,7 +56,7 @@ async function addFactoryAndAdmin(args) {
         location: args[4]
       }], { session });
       const admins = await User.create([{
-        userName: args[5],
+        username: args[5],
         role: 'Admin',
         hashedPassword: await bcrypt.hash(args[6], 10),
         factoryId: factories[0]._id
