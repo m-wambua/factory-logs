@@ -69,7 +69,7 @@ async function measurableNameTaken(equipment, name) {
 /** To make sure all routes after this point require a login */
 eqptMeasurablesRouter.use(verifySession);
 
-/* Attaching the different shift routes */
+/* Attaching the different measurable routes */
 const { measLogsRouter } = require('./logs');
 
 eqptMeasurablesRouter.use('/:measurableNum/logs', measLogsRouter);
@@ -79,6 +79,7 @@ eqptMeasurablesRouter.param('measurableNum', async (req, res, next, measurableNu
     return res.sendStatus(404);
   }
   req.measurableId = req.equipment.measurableIds[measurableNum]._id;
+  next();
 });
 
 /**
@@ -219,7 +220,7 @@ eqptMeasurablesRouter.post('/', async (req, res) => {
         .send(`Field "${required}" is missing in the body`);
     }
   }
-  const { quantity, unit} = req.body;
+  const { quantity, unit } = req.body;
   if (await measurableNameTaken(req.equipment, quantity)) {
     return res.status(400)
       .send('Provided quantity already exists for the given equipment');
@@ -265,9 +266,7 @@ measurablesRouter.use(verifySession);
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/MeasurableDetails'
+ *               $ref: '#/components/schemas/MeasurableDetails'
  *       404:
  *         description: The measurable does not exist
  *       401:

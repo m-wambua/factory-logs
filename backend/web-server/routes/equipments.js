@@ -62,11 +62,11 @@
  *         createdAt:
  *           type: string
  *           format: date-time
- *           description: The time the procedure was added to the system
+ *           description: The time the equipment was added to the system
  *         updatedAt:
  *           type: string
  *           format: date-time
- *           description: The last time the procedure details were edited
+ *           description: The last time the equipment details were edited
  *       example:
  *         id: 6778f8whfj5894bbhr883bb3
  *         name: F0P0.Eqpt0
@@ -155,11 +155,13 @@ const { eqptMeasurablesRouter } = require('./measurables');
 const eqptManualsRouter = require('./manuals');
 const eqptCodebasesRouter = require('./codebases');
 const { eqptDowntimesRouter } = require('./downtimes');
+const { eqptCableSchedsRouter } = require('./cable_scheds');
 
 equipmentsRouter.use('/:equipmentId/measurables', eqptMeasurablesRouter);
 equipmentsRouter.use('/:equipmentId/manuals', eqptManualsRouter);
 equipmentsRouter.use('/:equipmentId/codebases', eqptCodebasesRouter);
 equipmentsRouter.use('/:equipmentId/downtimes', eqptDowntimesRouter);
+equipmentsRouter.use('/:equipmentId/cablescheds', eqptCableSchedsRouter);
 
 /**
  * @swagger
@@ -333,7 +335,7 @@ equipmentsRouter.post('/process/:processId', async (req, res) => {
  *       403:
  *         $ref: '#/components/responses/Forbidden'
  *       404:
- *         description: The startup procedure does not exist
+ *         description: The equipment does not exist
  *       500:
  *         description: Server Error. Could not edit the equipment.
  *         content:

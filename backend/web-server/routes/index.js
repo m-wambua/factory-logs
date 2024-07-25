@@ -36,6 +36,8 @@ const startupPrcdsRouter = require('./startup_prcds');
 const equipmentsRouter = require('./equipments');
 const { measurablesRouter } = require('./measurables');
 const shiftsRouter = require('./shifts');
+const { cableSchedsRouter } = require('./cable_scheds');
+const { cableDescsRouter } = require('./cable_descs');
 
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/users', usersRouter);
@@ -45,6 +47,8 @@ apiRouter.use('/startup', startupPrcdsRouter);
 apiRouter.use('/equipments', equipmentsRouter);
 apiRouter.use('/measurables', measurablesRouter);
 apiRouter.use('/shifts', shiftsRouter);
+apiRouter.use('/cablescheds', cableSchedsRouter);
+apiRouter.use('/cabledescs', cableDescsRouter);
 
 /** Middleware for retrieving a specific user's details for
  *  admin purposes */
@@ -120,6 +124,36 @@ async function shiftIdParamCallback (req, res, next, shiftId) {
   next();
 }
 
+/** Middleware for retrieving a specific cableSched's details */
+async function cableSchedIdParamCallback (req, res, next, cableSchedId) {
+  req.cableSched = await models.CableSched.findById(cableSchedId)
+    .populate({ path: 'equipmentId', select: ['_factoryId', 'name', 'location'] }).exec();
+  if (!req.cableSched) {
+    return res.sendStatus(404);
+  }
+  if (!req.cableSched.equipmentId._factoryId.equals(req.user.factoryId)) {
+    return res.status(403).send('The cableSched does not belong to the user\'s factory');
+  }
+  next();
+}
+
+/** Middleware for retrieving a specific cableSched's details */
+async function cableDescIdParamCallback (req, res, next, cableDescId) {
+  req.cableDesc = await models.CableDesc.findById(cableDescId)
+    .populate({
+      path: 'parentSchedId',
+      select: ['equipmentId', 'panel'],
+      populate: { path: 'equipmentId', select: ['_factoryId', 'name', 'location'] }
+    }).exec();
+  if (!req.cableDesc) {
+    return res.sendStatus(404);
+  }
+  if (!req.cableDesc.parentSchedId.equipmentId._factoryId.equals(req.user.factoryId)) {
+    return res.status(403).send('The cableDesc does not belong to the user\'s factory');
+  }
+  next();
+}
+
 usersRouter.param('userId', userIdParamCallback);
 
 processesRouter.param('processId', processIdParamCallback);
@@ -131,5 +165,9 @@ equipmentsRouter.param('processId', processIdParamCallback);
 equipmentsRouter.param('equipmentId', equipmentIdParamCallback);
 
 shiftsRouter.param('shiftId', shiftIdParamCallback);
+
+cableSchedsRouter.param('cableSchedId', cableSchedIdParamCallback);
+
+cableDescsRouter.param('cableDescId', cableDescIdParamCallback);
 
 module.exports = apiRouter;

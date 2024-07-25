@@ -8,7 +8,8 @@ module.exports = (mongoose) => {
       required: true
     },
     panel: {
-      type: String
+      type: String,
+      required: true
     },
     image: {
       type: String

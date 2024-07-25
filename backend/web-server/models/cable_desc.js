@@ -12,14 +12,10 @@ module.exports = (mongoose) => {
       ref: 'User',
       required: true
     },
-    changeLog: {
+    changeLogs: [{
       type: String
-    },
-    prevDescId: {
-      type: Schema.Types.ObjectId,
-      ref: 'CableDesc'
-    },
-    labelDesc: {
+    }],
+    labelDets: {
       type: String,
       required: true
     },
