@@ -160,7 +160,7 @@ eqptCableSchedsRouter.use(verifySession);
  */
 eqptCableSchedsRouter.get('/', async (req, res) => {
   const eqpt = await Equipment.findById(req.equipment._id).select('cableSchedIds')
-    .populate({ path: 'cableSchedIds', select: ['-cableIds', '-equipmentIds'] }).exec();
+    .populate({ path: 'cableSchedIds', select: ['-cableIds', '-equipmentId'] }).exec();
   return res.json(eqpt.cableSchedIds);
 });
 
@@ -171,7 +171,7 @@ eqptCableSchedsRouter.get('/', async (req, res) => {
  *     summary: Adds a new cable schedule to a given equipment (only admins & operators)
  *     security:
  *       - BearerAuth: []
- *     tags: [CableSched, Equipments]
+ *     tags: [CableScheds, Equipments]
  *     parameters:
  *       - in: path
  *         name: equipmentId
@@ -189,6 +189,16 @@ eqptCableSchedsRouter.get('/', async (req, res) => {
  *     responses:
  *       201:
  *         description: Successfully created the cable schedule
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: Unique identifier of the created cable schedule
+ *               example:
+ *                 id: 67fj5878f8w2ca26dfee9648
  *       400:
  *         description: Bad Request. panel not provided.
  *         content:
@@ -223,14 +233,15 @@ eqptCableSchedsRouter.post('/', async (req, res) => {
   }
   try {
     const session = await req.app.db.startSession();
-    await session.withTransaction(async (session) => {
+    const sched = await session.withTransaction(async (session) => {
       const scheds = await CableSched.create([{
         equipmentId: req.equipment._id, panel, image
       }], { session });
       eqptDets.cableSchedIds.push(scheds[0]._id);
       await eqptDets.save({ session });
+      return scheds[0];
     });
-    return res.sendStatus(201);
+    return res.status(201).send({ id: sched._id });
   } catch (err) {
     return handleErr500(res, err, 'Error creating cable schedule');
   }

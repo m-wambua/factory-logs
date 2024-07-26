@@ -284,7 +284,7 @@ schedCableDescsRouter.get('/', async (req, res) => {
       }
     }
   });
-  const descsDets = req.cableSched.cableIds.toJSON();
+  const descsDets = req.cableSched.cableIds.map((cable) => cable.toJSON());
   const descsRet = descsDets.map((descDets) => {
     return {
       ...descDets,
@@ -327,6 +327,16 @@ schedCableDescsRouter.get('/', async (req, res) => {
  *     responses:
  *       201:
  *         description: Successfully created the cable schedule
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: Unique identifier of the created cable descriptor
+ *               example:
+ *                 id: 67fj5878f8w2ca26dfee9648
  *       400:
  *         description: Bad Request. labelDets and purpose not provided.
  *         content:
@@ -359,7 +369,7 @@ schedCableDescsRouter.post('/', async (req, res) => {
   }
   try {
     const session = await req.app.db.startSession();
-    await session.withTransaction(async (session) => {
+    const desc = await session.withTransaction(async (session) => {
       const descs = await CableDesc.create([{
         parentSchedId: req.cableSched._id,
         authorId: req.user._id,
@@ -367,8 +377,9 @@ schedCableDescsRouter.post('/', async (req, res) => {
       }], { session });
       req.cableSched.cableIds.push(descs[0]._id);
       await req.cableSched.save({ session });
+      return descs[0];
     });
-    return res.sendStatus(201);
+    return res.status(201).send({ id: desc._id });
   } catch (err) {
     return handleErr500(res, err, 'Error creating cable descriptor');
   }
@@ -387,13 +398,6 @@ cableDescsRouter.use(verifySession);
  *     security:
  *       - BearerAuth: []
  *     tags: [CableDescs]
- *     parameters:
- *       - in: path
- *         name: cableDescId
- *         schema:
- *           type: string
- *         required: true
- *         description: the unique identifier of the cable descriptor to be edited
  *     requestBody:
  *       description: The new details of the cable descriptor
  *       required: true
@@ -440,19 +444,19 @@ cableDescsRouter.use(verifySession);
  *           text/plain; charset=utf-8:
  *             example: 'Error linking cable descriptors: ...'
  */
-equipmentsRouter.put('/link', async (req, res) => {
+cableDescsRouter.put('/link', async (req, res) => {
   const { firstDescId, secondDescId, changeLog } = req.body;
   if ((!firstDescId) || (!secondDescId)) {
     return res.status(400)
       .send('Two cable descriptors should be provided ("firstDescId" and "secondDescId")');
   }
   try {
-    const firstDesc = await models.CableDesc.findById(firstDescId)
+    const firstDesc = await CableDesc.findById(firstDescId)
       .select(['termDescId', 'changeLogs']).exec();
     if (!firstDesc) {
       return res.status(400).send('First descriptor does not exist');
     }
-    const secondDesc = await models.CableDesc.findById(secondDescId)
+    const secondDesc = await CableDesc.findById(secondDescId)
       .select(['termDescId', 'changeLogs']).exec();
     if (!secondDesc) {
       return res.status(400).send('Second descriptor does not exist');
@@ -465,7 +469,7 @@ equipmentsRouter.put('/link', async (req, res) => {
         return res.status(400)
           .send('A changeLog is required for descriptors that have been edited before');
       }
-      let changeLogSave = `${new Date()}: ${req.user.username}(${req.user._id}) edited:`;
+      let changeLogSave = `${(new Date).toISOString()}: ${req.user.username}(${req.user._id}) edited:`;
       firstDesc.changeLogs.push(`${changeLogSave}\n - linked to ${secondDescId}\n ++ ${changeLog}`);
       secondDesc.changeLogs.push(`${changeLogSave}\n - linked to ${firstDescId}\n ++ ${changeLog}`);
     }
@@ -524,14 +528,14 @@ equipmentsRouter.put('/link', async (req, res) => {
  *           text/plain; charset=utf-8:
  *             example: 'Error updating cable descriptor: ...'
  */
-equipmentsRouter.put('/:cableDescId', async (req, res) => {
+cableDescsRouter.put('/:cableDescId', async (req, res) => {
   const { labelDets, purpose, unlink, changeLog } = req.body;
   if ((!labelDets) && (!purpose) && (!unlink)) {
     return res.status(400)
       .send('No supported field has been provided for edit');
   }
   try {
-    let changeLogSave = `${new Date()}: ${req.user.username}(${req.user._id}) edited:`;
+    let changeLogSave = `${(new Date).toISOString()}: ${req.user.username}(${req.user._id}) edited:`;
     if (unlink) {
       if ((labelDets) || (purpose) || (!changeLog)) {
         return res.status(400)
@@ -540,7 +544,7 @@ equipmentsRouter.put('/:cableDescId', async (req, res) => {
       if (!req.cableDesc.termDescId) {
         return res.sendStatus(204);
       }
-      const termDesc = CableDesc.findById(req.cableDesc.termDescId)
+      const termDesc = await CableDesc.findById(req.cableDesc.termDescId)
         .select(['termDescId', 'changeLogs']).exec();
       termDesc.changeLogs.push(`${changeLogSave}\n - unlinked from ${termDesc.termDescId}\n ++ ${changeLog}`);
       termDesc.termDescId = undefined;
@@ -610,19 +614,21 @@ equipmentsRouter.put('/:cableDescId', async (req, res) => {
  *         $ref: '#/components/responses/Forbidden'
  */
 cableDescsRouter.get('/:cableDescId', async (req, res) => {
-  await req.cableDesc.populate({
-    path: 'termDescId',
-    select: ['labelDets', 'parentSchedId'],
-    populate: {
-      path: 'parentSchedId',
-      select: ['panel', 'equipmentId'],
-      populate: { path: 'equipmentId' , select: 'name' }
+  await req.cableDesc.populate([
+    {
+      path: 'termDescId',
+      select: ['labelDets', 'parentSchedId'],
+      populate: {
+        path: 'parentSchedId',
+        select: ['panel', 'equipmentId'],
+        populate: { path: 'equipmentId' , select: 'name' }
+      }
+    },
+    {
+      path: 'authorId',
+      select: ['username'],
     }
-  });
-  await req.cableDesc.populate({
-    path: 'authorId',
-    select: ['username'],
-  });
+  ]);
   const descDets = req.cableDesc.toJSON();
   const descRet = {
     ...descDets,

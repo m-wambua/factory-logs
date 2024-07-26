@@ -183,7 +183,7 @@ async function main () {
           rating: '8W',
           location: {
             description: 'Control Room top slot',
-            image: '/Factory0/F0P0.Eqpt0.jpg'
+            image: `/${factory0Id}/F0P0.Eqpt0/location.jpg`
           }
         },
         {
@@ -195,7 +195,7 @@ async function main () {
           rating: '10W',
           location: {
             description: 'Control Room second slot',
-            image: '/Factory0/F0P0.Eqpt1.jpg'
+            image: `/${factory0Id}/F0P0.Eqpt1/location.jpg`
           }
         },
         {
@@ -269,7 +269,7 @@ async function main () {
         if (i < 2) {
           logs[1].push({
             measurableId: measurables[i]._id,
-            time: new Date(Date.now() + 60000 + ((i + 1) * 60 * 60 * 1000)),
+            time: new Date(Date.now() + ((i + 7) * 60 * 60 * 1000)),
             value: 20 + i
           });
         }
@@ -289,8 +289,8 @@ async function main () {
           leadId: userIds[1],
           teammateIds: [...userIds.splice(1,1)],
           type: 'Afternoon',
-          start: new Date(),
-          end: new Date(Date.now() + (5 * 60 * 60 * 1000)),
+          start: new Date(Date.now() + (6 * 60 * 60 * 1000)),
+          end: new Date(Date.now() + (12 * 60 * 60 * 1000)),
           logs: logs[1]
         }
       ], { session });
@@ -305,6 +305,113 @@ async function main () {
     });
   } catch(err) {
     console.error('Error creating shifts: ', err);
+    process.exit();
+  }
+
+  try {
+    const session = await db.mongoose.startSession();
+    await session.withTransaction(async (session) => {
+      const shifts = (await db.Shift.find({ factoryId: factory0Id })
+        .limit(2).select(['start', 'downtimeIds']).sort({ start: -1 }).exec());
+      const equipments = (await db.Equipment.find({ _factoryId: factory0Id })
+        .limit(4).select(['downtimeIds']).exec());
+
+      for (let i in shifts) {
+        const downtimes = await db.Downtime.create([
+          {
+            shiftId: shifts[i]._id,
+            equipmentId: equipments[(i * 2)],
+            type: 'Failure',
+            downAt: new Date(Date.parse(shifts[i].start) + (2.5 * 60 * 60 * 1000)),
+            resumedAt: new Date(Date.parse(shifts[i].start) + (2.75 * 60 * 60 * 1000)),
+            remark: 'Overheating after fan stopped working'
+          },
+          {
+            shiftId: shifts[i]._id,
+            equipmentId: equipments[(i * 2) + 1],
+            type: 'Maintenance',
+            downAt: new Date(Date.parse(shifts[i].start) + (4.25 * 60 * 60 * 1000)),
+            resumedAt: new Date(Date.parse(shifts[i].start) + (4.5 * 60 * 60 * 1000)),
+            remark: 'Moving equipment to another location to allow more air flow'
+          }
+        ], { session });
+        equipments[(i * 2)].downtimeIds.push(downtimes[0]._id);
+        equipments[(i * 2) + 1].downtimeIds.push(downtimes[1]._id);
+        shifts[i].downtimeIds.push(downtimes[0]._id);
+        shifts[i].downtimeIds.push(downtimes[1]._id);
+        await equipments[(i * 2)].save({ session });
+        await equipments[(i * 2) + 1].save({ session });
+        await shifts[i].save({ session });
+      }
+      console.log('Successfully created downtimes');
+    });
+  } catch(err) {
+    console.error('Error creating downtimes: ', err);
+    process.exit();
+  }
+
+  try {
+    const session = await db.mongoose.startSession();
+    await session.withTransaction(async (session) => {
+      const users = (await db.User.find({ factoryId: factory0Id })
+        .limit(2).select(['username']).exec());
+      const equipments = (await db.Equipment.find({ _factoryId: factory0Id })
+        .limit(2).select(['name', 'cableSchedIds']).exec());
+
+      const descs = [undefined, undefined];
+      for (let i in equipments) {
+        const scheds = await db.CableSched.create([
+          {
+            equipmentId: equipments[i]._id,
+            panel: 'Rear right panel',
+            image: `/${factory0Id}/${equipments[i].name}/rear_right_panel.jpg`
+          },
+          {
+            equipmentId: equipments[i]._id,
+            panel: 'Rear left panel',
+            image: `/${factory0Id}/${equipments[i].name}/rear_left_panel.jpg`
+          }
+        ], { session });
+        equipments[i].cableSchedIds.push(scheds[0]._id);
+        equipments[i].cableSchedIds.push(scheds[1]._id);
+        await equipments[i].save({ session });
+
+        descs[i] = await db.CableDesc.create([
+          {
+            parentSchedId: scheds[0]._id,
+            authorId: users[i]._id,
+            labelDets: 'first cable from right',
+            purpose: 'Power'
+          },
+          {
+            parentSchedId: scheds[0]._id,
+            authorId: users[i]._id,
+            labelDets: 'second cable from right',
+            purpose: 'Ground'
+          },
+          {
+            parentSchedId: scheds[1]._id,
+            authorId: users[i]._id,
+            labelDets: 'first cable from left',
+            purpose: 'Control'
+          }
+        ], { session });
+        scheds[0].cableIds.push(descs[i][0]);
+        scheds[0].cableIds.push(descs[i][1]);
+        scheds[1].cableIds.push(descs[i][2]);
+        await scheds[0].save({ session });
+        await scheds[1].save({ session });
+      }
+      for (let i in descs[0]) {
+        descs[0][i].termDescId = descs[1][i]._id;
+        descs[1][i].termDescId = descs[0][i]._id;
+        await descs[0][i].save({ session });
+        await descs[1][i].save({ session });
+      }
+      console.log('Successfully created cable schedules and descriptors');
+    });
+  } catch(err) {
+    console.error('Error creating cable schedules and descriptors: ', err);
     process.exit();
   }
   process.exit();
