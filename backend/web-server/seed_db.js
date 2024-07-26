@@ -287,7 +287,7 @@ async function main () {
         {
           _factoryId: factory0Id,
           leadId: userIds[1],
-          teammateIds: [...userIds.splice(1,1)],
+          teammateIds: [...userIds.slice(2)],
           type: 'Afternoon',
           start: new Date(Date.now() + (6 * 60 * 60 * 1000)),
           end: new Date(Date.now() + (12 * 60 * 60 * 1000)),

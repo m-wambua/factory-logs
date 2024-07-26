@@ -79,14 +79,14 @@ If any errors come up or the container is unable to start up, the following
  command may be used to check the container's logs (StackOverflow is a
  friend):
 ```
-$   docker logs mongo-factory-log
+$   docker logs factory-db
 ```
 
 ## Mongosh Access to Database
 The following sequences of commands can be used to access the container's
  terminal and then open mongosh:
 ```
-$   docker exec -it mongo-factory-log bash
+$   docker exec -it factory-db bash
 #   mongosh --port 27017 \
         -u mongoadmin \
         -p secret \
@@ -97,7 +97,7 @@ Alternatively a temporary container may be created to access the database.
  The following command may be used to achieve this:
 ```
 $   docker run -it --rm --network factory-net mongo:8.0-rc \
-        mongosh --host rs0/mongo-factory-log:27017 \
+        mongosh --host rs0/factory-db:27017 \
         -u mongoadmin -p secret \
         --authenticationDatabase admin
 ```

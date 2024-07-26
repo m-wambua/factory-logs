@@ -1,7 +1,8 @@
+name: mongo-factory-log
 services:
-  mongo-factory-log:
+  db:
     image: mongo:8.0-rc
-    container_name: mongo-factory-log
+    container_name: factory-db
     command: [
       "--replSet", "rs0", "--bind_ip_all", "--port", "27017",
       "--config", "/etc/mongo/mongod.conf", "--keyFile", "/etc/mongo/rs0.key"]
@@ -25,6 +26,19 @@ services:
       - "./cfg:/etc/mongo"
       - "./logs:/var/log/mongodb"
       - "./data:/data/db"
+  adminGui:
+    image: mongo-express:1-20-alpine3.19
+    container_name: factory-db-admin
+    environment:
+      - ME_CONFIG_BASICAUTH=false
+      - ME_CONFIG_MONGODB_URL=mongodb://mongoadmin:secret@$DOCKER_HOST_IP:27017/?replicaSet=rs0
+    networks:
+      - factory-net
+    ports:
+      - 27000:8081
+    depends_on:
+      db:
+        condition: service_healthy
 
 networks:
   factory-net:

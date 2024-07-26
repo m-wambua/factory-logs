@@ -9,13 +9,12 @@ MONGO_CONF_FILE=${MONGO_CFG_FOLDER}/mongod.conf
 MONGO_KEY_FILE=${MONGO_CFG_FOLDER}/rs0.key
 
 DOCKER_BUILD_CMD=docker compose up -d
-DOCKER_RM_CMD=docker rm -f
-DOCKER_NET_RM_CMD=docker network rm -f
-DOCKER_START_CMD=docker start
-DOCKER_STOP_CMD=docker stop
-DOCKER_STATUS_CMD=docker ps -a
+DOCKER_RM_CMD=docker compose down --volumes
+DOCKER_START_CMD=docker compose start
+DOCKER_STOP_CMD=docker compose stop
+DOCKER_STATUS_CMD=docker compose ps -a
 DOCKER_EXEC_CMD=docker exec -it
-DOCKER_CONTAINER_NAME=mongo-factory-log
+DOCKER_CONTAINER_NAME=factory-db
 DOCKER_NETWORK_NAME=factory-net
 
 DOCKER_GET_HOST_IP_CMD=export DOCKER_HOST_IP=$(shell \
@@ -54,12 +53,10 @@ no_default:
 	@echo "No default make target configured. Please proceed as per acommpanying documentation."
 
 clean:
-	@echo ">>>>>>>>>>>> Removing the mongo-factory-log Docker Container <<<<<<<<<"
-	${DOCKER_RM_CMD} ${DOCKER_CONTAINER_NAME}
-	@echo ">>>>>>>>>>>> Removing the factory-net Docker Network <<<<<<<<<"
-	${DOCKER_NET_RM_CMD} ${DOCKER_NETWORK_NAME}
+	@echo ">>>>>>>>>>>> Removing the Docker Compose services <<<<<<<<<"
+	${DOCKER_GET_HOST_IP_CMD} && ${DOCKER_RM_CMD}
 	@echo ">>>>>>>>>>>> Removing the Docker persistent folders <<<<<<<<<"
-	sudo rm -r ${MONGO_PERSISTENT}
+	-sudo rm -r ${MONGO_PERSISTENT}
 
 setup:
 	@echo ">>>>>>>>>>>> Creating the Docker persistent folders <<<<<<<<<"
@@ -71,10 +68,10 @@ setup:
 	openssl rand -base64 756 > ${MONGO_KEY_FILE}
 	chmod 400 ${MONGO_KEY_FILE}
 	sudo chown 999:999 ${MONGO_KEY_FILE}
-	@echo ">>>>>>>>>>>> Spinning up docker container <<<<<<<<<"
+	@echo ">>>>>>>>>>>> Spinning up docker compose services <<<<<<<<<"
 	${DOCKER_GET_HOST_IP_CMD} && ${DOCKER_BUILD_CMD}
-	@echo ">>>>>>>>>>>> Waiting 2 seconds to check status <<<<<<<<<"
-	@sleep 2
+	@echo ">>>>>>>>>>>> Checking compose services status <<<<<<<<<"
+	@#sleep 2
 	@${DOCKER_STATUS_CMD}
 	@echo "\n.................................................................."
 	@echo ">>>>>>>>>>>>>>>>>>>>          Done!           <<<<<<<<<<<<<<<<<<<<"
@@ -85,10 +82,10 @@ setup:
 refresh: clean setup
 
 start:
-	@${DOCKER_START_CMD} ${DOCKER_CONTAINER_NAME}
+	@${DOCKER_START_CMD}
 
 stop:
-	@${DOCKER_STOP_CMD} ${DOCKER_CONTAINER_NAME}
+	@${DOCKER_STOP_CMD}
 
 enter_container:
 	@${DOCKER_EXEC_CMD} ${DOCKER_CONTAINER_NAME} bash
