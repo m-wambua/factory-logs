@@ -1,11 +1,8 @@
 import 'package:collector/pages/history/historypage.dart';
-import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
 import 'package:collector/pages/manuals/manuelspage.dart';
 import 'package:collector/pages/parameters/parameterspage.dart';
 import 'package:collector/pages/trends/trendspage.dart';
 import 'package:collector/pages/welcome_page.dart';
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -14,7 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -27,8 +24,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/history': (context) => const HistoryPage(),
         '/trends': (context) => const TrendsPage(),
-        '/manuals': (context) => ManualsPage(),
-        '/parameters': (context) => ParameterPage(),
+        '/manuals': (context) => const ManualsPage(),
+        '/parameters': (context) => const ParameterPage(),
         //'/history/mainentance':(context) => MyMaintenanceHistory(),
       },
       title: 'Flutter Demo',

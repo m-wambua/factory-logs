@@ -36,7 +36,7 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
   final TextEditingController _lrpRemarkController = TextEditingController();
 
   final Process4Data process4data = Process4Data();
-  List<NotificationModel> _sampleNotifications = [];
+  final List<NotificationModel> _sampleNotifications = [];
   @override
   void initState() {
     super.initState();
@@ -172,7 +172,7 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
                       savedValues.str = _strController.text.trim();
                     },
                     child: const Text('Saved as Draft')),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -183,8 +183,8 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
                               builder: (context) =>
                                   const Subprocess4DataDisplay()));
                     },
-                    child: Text('View saved Data')),
-                SizedBox(
+                    child: const Text('View saved Data')),
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -228,7 +228,7 @@ class _SubProcess4Page1State extends State<SubProcess4Page1> {
                         saveNotificationsToFile(_sampleNotifications);
                       });
                     },
-                    child: Text('Save and Submit All'))
+                    child: const Text('Save and Submit All'))
               ],
             )
           ]),

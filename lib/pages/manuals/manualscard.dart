@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 
 class ManualCard extends StatefulWidget {
   final String pdfFilePath;
-  const ManualCard({Key? key, required this.pdfFilePath}) : super(key: key);
+  const ManualCard({super.key, required this.pdfFilePath});
 
   @override
   State<ManualCard> createState() => _ManualCardState();
@@ -19,10 +19,10 @@ class _ManualCardState extends State<ManualCard> {
     
     return Card(
       
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: ListTile(
         autofocus: true,
-        leading: Icon(Icons.picture_as_pdf),
+        leading: const Icon(Icons.picture_as_pdf),
         title: Text(manualName),
         onTap: () {
           openPDF(context, widget.pdfFilePath);
@@ -45,8 +45,8 @@ class _ManualCardState extends State<ManualCard> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Column(
+          title: const Text('Error'),
+          content: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Failed to open PDF.'),
@@ -60,14 +60,14 @@ class _ManualCardState extends State<ManualCard> {
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('No'),
+              child: const Text('No'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
                 _openPDF(pdfFilePath);
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
           ],
         ),
@@ -87,18 +87,18 @@ class _ManualCardState extends State<ManualCard> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Login'),
+              title: const Text('Login'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Username'),
+                    decoration: const InputDecoration(labelText: 'Username'),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Password'),
+                    decoration: const InputDecoration(labelText: 'Password'),
                     obscureText: true,
                   )
                 ],
@@ -110,7 +110,7 @@ class _ManualCardState extends State<ManualCard> {
                       //Update widget with login information
                       Navigator.of(context).pop();
                     },
-                    child: Text('Login'))
+                    child: const Text('Login'))
               ],
             ));
   }

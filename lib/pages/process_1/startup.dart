@@ -32,8 +32,8 @@ class StartUpEntryData {
   List<StartUpEntry> startupData = [];
   Future<void> savingStartUpEntry(StartUpEntry newEntry) async {
     try {
-      final directory = 'pages/models/process_1/start_up';
-      final file = File('${directory}/startup.json');
+      const directory = 'pages/models/process_1/start_up';
+      final file = File('$directory/startup.json');
       if (!await file.exists()) {
         await file.create(recursive: true);
       }
@@ -53,7 +53,7 @@ class StartUpEntryData {
       //Append new data to existing entries
       existingStartUp.addAll(startupData);
       // Convert all entries to Json and write to the file with formatting
-      JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      JsonEncoder encoder = const JsonEncoder.withIndent('  ');
 
       String jsonString = encoder
           .convert(startupData.map((detail) => detail.toJson()).toList());

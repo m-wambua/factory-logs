@@ -1,0 +1,34 @@
+{
+  "development": {
+    "connectString": "mongodb://172.17.0.1:27017/?replicaSet=rs0",
+    "options": {
+      "user": "mongoadmin",
+      "pass": "secret",
+      "dbName": "factory-dev"
+    }
+  },
+  "test": {
+    "connectString": "mongodb://172.17.0.1:27017/?replicaSet=rs0",
+    "options": {
+      "user": "mongoadmin",
+      "pass": "secret",
+      "dbName": "factory-test"
+    }
+  },
+  "prod-test": {
+    "connectString": "mongodb://172.17.0.1:27017/?replicaSet=rs0",
+    "options": {
+      "user": "mongoadmin",
+      "pass": "secret",
+      "dbName": "factory-dbtest"
+    }
+  },
+  "production": {
+    "connectString": "mongodb://172.17.0.1:27017/?replicaSet=rs0",
+    "options": {
+      "user": "mongoadmin",
+      "pass": "secret",
+      "dbName": "factory-db"
+    }
+  }
+}

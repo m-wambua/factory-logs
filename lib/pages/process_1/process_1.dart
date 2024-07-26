@@ -1,7 +1,6 @@
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/process_1/cableSchedule/cablescheduleadd.dart';
 import 'package:collector/pages/process_1/codebase/codebase.dart';
-import 'package:collector/pages/process_1/codebase/codedata.dart';
 import 'package:collector/pages/process_1/codebase/codedetails.dart';
 import 'package:collector/pages/process_1/startup.dart';
 import 'package:collector/pages/process_1/startuppage.dart';
@@ -412,7 +411,7 @@ class _Process1PageState extends State<Process1Page> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('Add/Update Start-Up Procedure for TLL'),
+              title: const Text('Add/Update Start-Up Procedure for TLL'),
               content: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -427,19 +426,19 @@ class _Process1PageState extends State<Process1Page> {
                           children: [
                             IconButton(
                               onPressed: () {},
-                              icon: Icon(Icons.image),
+                              icon: const Icon(Icons.image),
                             ),
                           ],
                         ),
                       ),
                       onChanged: (value) {},
                     ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   TextField(
                     controller: lastUpdatePerson,
-                    decoration: InputDecoration(labelText: 'Updated By'),
+                    decoration: const InputDecoration(labelText: 'Updated By'),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   IconButton(
@@ -448,9 +447,9 @@ class _Process1PageState extends State<Process1Page> {
                         startUpController.add(TextEditingController());
                       });
                     },
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -466,21 +465,21 @@ class _Process1PageState extends State<Process1Page> {
                             startUpEntryData.savingStartUpEntry(startUpEntry);
                             Navigator.of(dialogContext).pop();
                           },
-                          child: Text('Save')),
+                          child: const Text('Save')),
                       ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        StartUpEntriesPage()));
+                                        const StartUpEntriesPage()));
                           },
-                          child: Text('View Saved Start-Up')),
+                          child: const Text('View Saved Start-Up')),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text('Cancel'),
+                        child: const Text('Cancel'),
                       ),
                     ],
                   ),
@@ -495,7 +494,7 @@ class _Process1PageState extends State<Process1Page> {
 
   Widget uploadOrNot(BuildContext context) {
     return AlertDialog(
-      title: Text('Code Base Storage'),
+      title: const Text('Code Base Storage'),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -507,19 +506,19 @@ class _Process1PageState extends State<Process1Page> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ExistingCodeBasesPage()));
+                        builder: (context) => const ExistingCodeBasesPage()));
               },
-              child: Text('View Existing Code Bases')),
-          SizedBox(
+              child: const Text('View Existing Code Bases')),
+          const SizedBox(
             height: 10,
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context); // Close the dialog first
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UploadScreen()));
+                  MaterialPageRoute(builder: (context) => const UploadScreen()));
             },
-            child: Text('Upload New Code Bases'),
+            child: const Text('Upload New Code Bases'),
           ),
         ],
       ),
@@ -549,9 +548,9 @@ class _Process1PageState extends State<Process1Page> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => UploadScreenCableSchedule()));
+                        builder: (context) => const UploadScreenCableSchedule()));
               },
-              child: Text('Upload New/Updated Cable Schedule'))
+              child: const Text('Upload New/Updated Cable Schedule'))
         ],
       ),
     );

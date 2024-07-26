@@ -1,5 +1,4 @@
 import 'package:collector/pages/models/notification.dart';
-import 'package:collector/pages/process_1/subprocess_1/subprocess_data_display.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess2Data.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_data_display.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_10_details_page2.dart';
@@ -15,7 +14,6 @@ import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subpro
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_7_details_page2.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_8_details_page2.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_details/subprocess_9_details_page2.dart';
-import 'package:collector/pages/process_2/subprocess_2/subprocess_details/subprocess_2_details_page2.dart';
 import 'package:flutter/material.dart';
 
 class SavedValues {
@@ -119,7 +117,7 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
       TextEditingController();
 
   final Process2Data process2data = Process2Data();
-  List<NotificationModel> _sampleNotifications = [];
+  final List<NotificationModel> _sampleNotifications = [];
 
   @override
   void initState() {
@@ -502,7 +500,7 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                           _unc_lub_motorController.text.trim();
                     },
                     child: const Text('Save as Draft')),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -513,8 +511,8 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                               builder: (context) =>
                                   const SubProcess2DataDisplay()));
                     },
-                    child: Text('View Saved Data')),
-                SizedBox(
+                    child: const Text('View Saved Data')),
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -624,7 +622,7 @@ class _SubProcess2Page1State extends State<SubProcess2Page1> {
                         saveNotificationsToFile(_sampleNotifications);
                       });
                     },
-                    child: Text('Save and Submit All'))
+                    child: const Text('Save and Submit All'))
               ],
             )
           ]),

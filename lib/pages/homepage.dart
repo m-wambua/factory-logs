@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:collector/pages/creatorspage.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +12,7 @@ import 'package:collector/pages/logout_page.dart';
 class LandingPage extends StatefulWidget {
   final String username;
 
-  const LandingPage({Key? key, required this.username}) : super(key: key);
+  const LandingPage({super.key, required this.username});
 
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -30,7 +28,7 @@ class _LandingPageState extends State<LandingPage> {
   };
 
   List<NotificationModel> _notifications = [];
-  List<String> _processes = [];
+  final List<String> _processes = [];
 
   @override
   void initState() {
@@ -63,11 +61,11 @@ class _LandingPageState extends State<LandingPage> {
     bool? confirmCreate = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Create New Process'),
+        title: const Text('Create New Process'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('You are about to create a new process.'),
+            const Text('You are about to create a new process.'),
             TextField(
               onChanged: (value) {
                 createDefault = false;
@@ -86,13 +84,13 @@ class _LandingPageState extends State<LandingPage> {
               processStatus = 'creation'; // Set status to finalized
               Navigator.pop(context, true); // Confirm creation
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context, false); // Cancel creation
             },
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
         ],
       ),

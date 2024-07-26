@@ -8,7 +8,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Manual {
   final String name;
@@ -18,6 +17,8 @@ class Manual {
 }
 
 class ManualsPage extends StatefulWidget {
+  const ManualsPage({super.key});
+
   @override
   State<ManualsPage> createState() => _ManualsPageState();
 }
@@ -54,7 +55,7 @@ class _ManualsPageState extends State<ManualsPage> {
         onPressed: () {
           _showAddManualDialog(context, subprocess);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -62,7 +63,7 @@ class _ManualsPageState extends State<ManualsPage> {
   Widget _buildManualCards(String subprocess) {
     List<String>? manuals = manualPathsMap[subprocess];
     if (manuals == null || manuals.isEmpty) {
-      return Center(
+      return const Center(
         child: Text('No manuals available'),
       );
     }
@@ -90,28 +91,28 @@ class _ManualsPageState extends State<ManualsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Add New Manual'),
+          title: const Text('Add New Manual'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Enter manual name'),
+                decoration: const InputDecoration(labelText: 'Enter manual name'),
                 onChanged: (value) {
                   manualName = value;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.attach_file),
+                    icon: const Icon(Icons.attach_file),
                     onPressed: () {
                       _uploadPDF(context, subprocess, manualName);
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.camera_alt),
+                    icon: const Icon(Icons.camera_alt),
                     onPressed: () {
                       _captureImage(context, subprocess, manualName);
                     },
@@ -125,14 +126,14 @@ class _ManualsPageState extends State<ManualsPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 // Save the manual and close the dialog
                 _saveManual(context, subprocess, manualName);
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -180,8 +181,8 @@ class _ManualsPageState extends State<ManualsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Success'),
-        content: Text('Manual saved successfully!'),
+        title: const Text('Success'),
+        content: const Text('Manual saved successfully!'),
         actions: [
           TextButton(
             onPressed: () {
@@ -189,7 +190,7 @@ class _ManualsPageState extends State<ManualsPage> {
 
               // Close the success dialog
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           )
         ],
       ),
@@ -202,7 +203,7 @@ class _ManualsPageState extends State<ManualsPage> {
     showDialog(
       context: context,
       barrierDismissible: false, // Prevent dismissing the dialog
-      builder: (context) => AlertDialog(
+      builder: (context) => const AlertDialog(
         title: Text('Uploading'),
         content: CircularProgressIndicator(),
       ),
@@ -210,7 +211,7 @@ class _ManualsPageState extends State<ManualsPage> {
 
     try {
       // Simulate uploading delay
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       // Move file to the desired directory
       String newPath = 'services/manuals_and_images/$subprocess/$manualName';
       await file.copy(newPath);
@@ -220,14 +221,14 @@ class _ManualsPageState extends State<ManualsPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Success'),
-          content: Text('File uploaded successfully!'),
+          title: const Text('Success'),
+          content: const Text('File uploaded successfully!'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the success dialog box
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             )
           ],
         ),
@@ -240,14 +241,14 @@ class _ManualsPageState extends State<ManualsPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Failed to upload file. Please try again.'),
+          title: const Text('Error'),
+          content: const Text('Failed to upload file. Please try again.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the error dialog box
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -270,15 +271,15 @@ class _ManualsPageState extends State<ManualsPage> {
 
 class ManualCard extends StatelessWidget {
   final String pdfFilePath;
-  const ManualCard({Key? key, required this.pdfFilePath}) : super(key: key);
+  const ManualCard({super.key, required this.pdfFilePath});
   @override
   Widget build(BuildContext context) {
     String manualName = basenameWithoutExtension(pdfFilePath);
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: ListTile(
         autofocus: true,
-        leading: Icon(Icons.picture_as_pdf),
+        leading: const Icon(Icons.picture_as_pdf),
         title: Text(manualName),
         onTap: () {
           openPDF(context, pdfFilePath);
@@ -300,8 +301,8 @@ class ManualCard extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Column(
+          title: const Text('Error'),
+          content: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Failed to open PDF.'),
@@ -315,14 +316,14 @@ class ManualCard extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('No'),
+              child: const Text('No'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
                 _openPDF(pdfFilePath);
               },
-              child: Text('Yes'),
+              child: const Text('Yes'),
             ),
           ],
         ),
@@ -342,18 +343,18 @@ class ManualCard extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Login'),
+              title: const Text('Login'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Username'),
+                    decoration: const InputDecoration(labelText: 'Username'),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Password'),
+                    decoration: const InputDecoration(labelText: 'Password'),
                     obscureText: true,
                   )
                 ],
@@ -365,7 +366,7 @@ class ManualCard extends StatelessWidget {
                       //Update widget with login information
                       Navigator.of(context).pop();
                     },
-                    child: Text('Login'))
+                    child: const Text('Login'))
               ],
             ));
   }

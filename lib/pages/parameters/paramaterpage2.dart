@@ -4471,13 +4471,13 @@ class _ParameterPageState extends State<ParameterPage> {
 */
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ParameterPage extends StatefulWidget {
+  const ParameterPage({super.key});
+
   @override
   _ParameterPageState createState() => _ParameterPageState();
 }
@@ -4503,10 +4503,10 @@ class _ParameterPageState extends State<ParameterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Parameters'),
+        title: const Text('Parameters'),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: () {
               _deleteAllParameters();
             },
@@ -4533,7 +4533,7 @@ class _ParameterPageState extends State<ParameterPage> {
         onPressed: () {
           _addParameter(context);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -4557,11 +4557,11 @@ Future<void> _loadSavedParameters() async {
 
   Widget _buildFileUploadedIndicator(Map<String, dynamic> parameterData) {
     if (parameterData['pdfPath'] != null && parameterData['pdfPath'].isNotEmpty) {
-      return Icon(Icons.picture_as_pdf, color: Colors.red);
+      return const Icon(Icons.picture_as_pdf, color: Colors.red);
     } else if (parameterData['imagePath'] != null && parameterData['imagePath'].isNotEmpty) {
-      return Icon(Icons.image, color: Colors.blue);
+      return const Icon(Icons.image, color: Colors.blue);
     } else {
-      return SizedBox(); // No file uploaded
+      return const SizedBox(); // No file uploaded
     }
   }
 
