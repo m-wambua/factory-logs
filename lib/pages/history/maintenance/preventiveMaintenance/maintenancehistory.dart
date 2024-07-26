@@ -4,7 +4,6 @@ import 'package:collector/pages/history/maintenance/preventiveMaintenance/detail
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenance_details.dart';
 import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenance_entry.dart'
     as MaintenanceEntry;
-import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistorysparecode.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,8 +14,8 @@ class MyMaintenanceHistory extends StatefulWidget {
   final String subprocess;
   final Function(NotificationModel) onNotificationAdded;
 
-  MyMaintenanceHistory(
-      {required this.subprocess, required this.onNotificationAdded});
+  const MyMaintenanceHistory(
+      {super.key, required this.subprocess, required this.onNotificationAdded});
 
   @override
   _MyMaintenanceHistoryState createState() => _MyMaintenanceHistoryState();
@@ -33,7 +32,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
   List<MaintenanceDetails> maintenanceDetailsList = [];
   MaintenanceData maintenanceData = MaintenanceData();
   MaintenanceDetails? details;
-  List<NotificationModel> _sampleNotification = [];
+  final List<NotificationModel> _sampleNotification = [];
   @override
   void initState() {
     super.initState();
@@ -60,13 +59,13 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SingleChildScrollView(
                 child: DataTable(
-                  columns: [
+                  columns: const [
                     DataColumn(label: Text('Equipment')),
                     DataColumn(label: Text('Inspection/Maintenance Task')),
                     DataColumn(label: Text('Last Update/Frequency')),
@@ -78,12 +77,12 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   border: TableBorder.all(),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                   height:
                       20), // Add spacing between the data table and the new entry form
               ElevatedButton(
                 onPressed: _addNewEntry,
-                child: Text('Add New Entry'),
+                child: const Text('Add New Entry'),
               ),
             ],
           ),
@@ -96,7 +95,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     List<DataRow> rows = [];
 
     // Iterate over each equipment entry in maintenanceEntriesByEquipment
-    Set<String> uniqueEntries = Set<String>();
+    Set<String> uniqueEntries = <String>{};
     maintenanceEntriesByEquipment.forEach((equipment, entries) {
       // Add a DataRow for each equipment with its grouped maintenance entries
       rows.add(
@@ -113,19 +112,19 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
             },
             child: Text(equipment),
           ))),
-          DataCell(SizedBox()), // Empty cell for task
-          DataCell(SizedBox()), // Empty cell for last update
-          DataCell(SizedBox()), // Empty cell for duration
-          DataCell(SizedBox()), // Empty cell for responsible person
+          const DataCell(SizedBox()), // Empty cell for task
+          const DataCell(SizedBox()), // Empty cell for last update
+          const DataCell(SizedBox()), // Empty cell for duration
+          const DataCell(SizedBox()), // Empty cell for responsible person
         ]),
       );
 
       // Add a DataRow for each maintenance entry of this equipment
-      entries.forEach((entry) {
+      for (var entry in entries) {
         bool checklistPresent = entry.checklistItems.isNotEmpty;
         rows.add(
           DataRow(cells: [
-            DataCell(SizedBox()), // Empty cell for equipment
+            const DataCell(SizedBox()), // Empty cell for equipment
             DataCell(TextButton(
               onPressed: () {
                 _addProcedure(context, entry, entry.checklistItems);
@@ -161,15 +160,15 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                         //Handle list icon on pressed action
                         //You can navigate to another page or show a dialog for checklist items here
                       },
-                      icon: Icon(Icons.list))
+                      icon: const Icon(Icons.list))
               ],
             )), // Display responsible person
           ]),
         );
-      });
+      }
 
       // Add an empty row as separator
-      rows.add(DataRow(cells: List.generate(5, (_) => DataCell(SizedBox()))));
+      rows.add(DataRow(cells: List.generate(5, (_) => const DataCell(SizedBox()))));
     });
 
     return rows;
@@ -190,7 +189,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Checklist Details'),
+          title: const Text('Checklist Details'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -207,18 +206,18 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                           });
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Expanded(child: Text(item['item'] ?? '')),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Expanded(
                         flex: 2,
                         child: TextField(
                           decoration:
-                              InputDecoration(hintText: 'Additional note'),
+                              const InputDecoration(hintText: 'Additional note'),
                           onChanged: (value) {
                             setState(() {
                               item['comment'] = value;
@@ -236,7 +235,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -249,19 +248,19 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     MaintenanceEntry.MaintenanceEntry entry,
   ) async {
     DateTime selectedDate = DateTime.now();
-    TimeOfDay selectedTime = TimeOfDay(hour: 8, minute: 0);
+    TimeOfDay selectedTime = const TimeOfDay(hour: 8, minute: 0);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Schedule Next Task'),
+          title: const Text('Schedule Next Task'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 title: Text('Date: ${selectedDate.toLocal()}'.split(' ')[0]),
-                trailing: Icon(Icons.keyboard_arrow_down),
+                trailing: const Icon(Icons.keyboard_arrow_down),
                 onTap: () async {
                   final DateTime? pickedDate = await showDatePicker(
                     context: context,
@@ -269,20 +268,22 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2101),
                   );
-                  if (pickedDate != null && pickedDate != selectedDate)
+                  if (pickedDate != null && pickedDate != selectedDate) {
                     selectedDate = pickedDate;
+                  }
                 },
               ),
               ListTile(
                 title: Text('Time: ${selectedTime.format(context)}'),
-                trailing: Icon(Icons.keyboard_arrow_down),
+                trailing: const Icon(Icons.keyboard_arrow_down),
                 onTap: () async {
                   final TimeOfDay? pickedTime = await showTimePicker(
                     context: context,
                     initialTime: selectedTime,
                   );
-                  if (pickedTime != null && pickedTime != selectedTime)
+                  if (pickedTime != null && pickedTime != selectedTime) {
                     selectedTime = pickedTime;
+                  }
                 },
               ),
             ],
@@ -292,7 +293,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -301,7 +302,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                 Navigator.of(context).pop();
                 setState(() {});
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -315,13 +316,13 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
-            title: Text('Add New Entry'),
+            title: const Text('Add New Entry'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
-                  title: Text('Create New Equipment'),
+                  title: const Text('Create New Equipment'),
                   leading: Radio(
                     value: false,
                     groupValue: _updateExisting,
@@ -333,7 +334,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   ),
                 ),
                 ListTile(
-                  title: Text('Update Existing Existing'),
+                  title: const Text('Update Existing Existing'),
                   leading: Radio(
                     value: true,
                     groupValue: _updateExisting,
@@ -351,7 +352,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () {
@@ -363,7 +364,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                         ''); // Pass an empty string as equipment name
                   }
                 },
-                child: Text('Next'),
+                child: const Text('Next'),
               ),
             ],
           );
@@ -377,7 +378,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Entry to Update'),
+          title: const Text('Select Entry to Update'),
           content: SingleChildScrollView(
             child: Column(
               children: maintenanceEntriesByEquipment.keys.map((equipment) {
@@ -401,13 +402,13 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Update Task or Add New Task'),
+          title: const Text('Update Task or Add New Task'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                title: Text('Add New Task'),
+                title: const Text('Add New Task'),
                 leading: Radio(
                   value: false,
                   groupValue: _updateExisting,
@@ -419,7 +420,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                 ),
               ),
               ListTile(
-                title: Text('Update Existing Task'),
+                title: const Text('Update Existing Task'),
                 leading: Radio(
                   value: true,
                   groupValue: _updateExisting,
@@ -437,7 +438,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -448,7 +449,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   _showEntryForm(equipment);
                 }
               },
-              child: Text('Next'),
+              child: const Text('Next'),
             ),
           ],
         );
@@ -461,7 +462,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Task to Update'),
+          title: const Text('Select Task to Update'),
           content: SingleChildScrollView(
             child: Column(
               children: maintenanceEntriesByEquipment[equipment]!.map((entry) {
@@ -506,35 +507,35 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   children: [
                     if (existingTask == null)
                       TextFormField(
-                        decoration: InputDecoration(labelText: 'Equipment'),
+                        decoration: const InputDecoration(labelText: 'Equipment'),
                         initialValue: equipment,
                         onChanged: (value) {
                           equipment = value;
                         },
                       ),
                     TextFormField(
-                      decoration: InputDecoration(labelText: 'Task'),
+                      decoration: const InputDecoration(labelText: 'Task'),
                       initialValue: task,
                       onChanged: (value) {
                         task = value;
                       },
                     ),
                     TextFormField(
-                      decoration: InputDecoration(labelText: 'Duration'),
+                      decoration: const InputDecoration(labelText: 'Duration'),
                       onChanged: (value) {
                         duration = value;
                       },
                     ),
                     TextFormField(
                       decoration:
-                          InputDecoration(labelText: 'Responsible Person'),
+                          const InputDecoration(labelText: 'Responsible Person'),
                       onChanged: (value) {
                         responsiblePerson = value;
                       },
                     ),
                     DropdownButtonFormField<MaintenanceEntry.TaskState>(
                       value: taskState,
-                      decoration: InputDecoration(labelText: 'Task State'),
+                      decoration: const InputDecoration(labelText: 'Task State'),
                       onChanged: (value) {
                         setState(() {
                           taskState = value!;
@@ -548,7 +549,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                         );
                       }).toList(),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         Checkbox(
@@ -573,15 +574,15 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                             }
                           },
                         ),
-                        Text('Do you wish to add a checklist?'),
+                        const Text('Do you wish to add a checklist?'),
                       ],
                     ),
                     if (checklistItems.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Checklist Items:'),
-                          SizedBox(height: 8),
+                          const Text('Checklist Items:'),
+                          const SizedBox(height: 8),
                           ...checklistItems
                               .map((item) => ListTile(title: Text(item.item))),
                         ],
@@ -594,7 +595,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
@@ -635,7 +636,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                     });
                     Navigator.of(context).pop();
                   },
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             );
@@ -656,10 +657,10 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit Checklist'),
+          title: const Text('Edit Checklist'),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Container(
+              return SizedBox(
                 width: double.maxFinite, // Set maximum width
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -672,7 +673,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                             ...checklistItems.map((item) => ListTile(
                                   title: Text(item),
                                   trailing: IconButton(
-                                    icon: Icon(Icons.delete),
+                                    icon: const Icon(Icons.delete),
                                     onPressed: () {
                                       setState(() {
                                         checklistItems.remove(item);
@@ -683,7 +684,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                             ...newItems.map((item) => ListTile(
                                   title: Text(item),
                                   trailing: IconButton(
-                                    icon: Icon(Icons.delete),
+                                    icon: const Icon(Icons.delete),
                                     onPressed: () {
                                       setState(() {
                                         newItems.remove(item);
@@ -697,7 +698,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                     ),
                     TextFormField(
                       controller: checklistController,
-                      decoration: InputDecoration(labelText: 'Checklist Item'),
+                      decoration: const InputDecoration(labelText: 'Checklist Item'),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -708,9 +709,9 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                           }
                         });
                       },
-                      child: Text('Add Item'),
+                      child: const Text('Add Item'),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                   ],
                 ),
               );
@@ -726,7 +727,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                 ];
                 Navigator.of(context).pop(updatedChecklistItems);
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -753,7 +754,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('List of Procedures'),
+              title: const Text('List of Procedures'),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -761,7 +762,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   children: [
                     TextField(
                       controller: situationBeforeController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Situation Before',
                       ),
                     ),
@@ -772,16 +773,16 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                           labelText: 'Step ${i + 1}',
                         ),
                       ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     TextButton(
                       onPressed: () {
                         setState(() {
                           stepsController.add(TextEditingController());
                         });
                       },
-                      child: Text('Add Step'),
+                      child: const Text('Add Step'),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -791,9 +792,9 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                               toolsController.add(TextEditingController());
                             });
                           },
-                          icon: Icon(Icons.build_circle),
+                          icon: const Icon(Icons.build_circle),
                         ),
-                        Text('List of Tools Used'),
+                        const Text('List of Tools Used'),
                       ],
                     ),
                     for (int i = 0; i < toolsController.length; i++)
@@ -803,16 +804,16 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                           labelText: 'Tool ${i + 1}',
                         ),
                       ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     TextButton(
                       onPressed: () {
                         setState(() {
                           toolsController.add(TextEditingController());
                         });
                       },
-                      child: Text('Add Tool'),
+                      child: const Text('Add Tool'),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -824,12 +825,12 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                             });
                           },
                         ),
-                        Text('Situation Resolved'),
+                        const Text('Situation Resolved'),
                       ],
                     ),
                     TextField(
                       controller: situationAfterController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Situation After',
                       ),
                     ),
@@ -841,7 +842,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   onPressed: () {
                     Navigator.of(dialogContext).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -884,7 +885,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                       setState(() {});
                     }
                   },
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             );
@@ -944,7 +945,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('List of Tools and Equipment Used'),
+              title: const Text('List of Tools and Equipment Used'),
               content: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -958,12 +959,12 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                  onPressed: () {}, icon: Icon(Icons.image))
+                                  onPressed: () {}, icon: const Icon(Icons.image))
                             ],
                           )),
                       onChanged: (value) {},
                     ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   IconButton(
@@ -972,19 +973,19 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                           apparatusController.add(TextEditingController());
                         });
                       },
-                      icon: Icon(Icons.add)),
-                  SizedBox(
+                      icon: const Icon(Icons.add)),
+                  const SizedBox(
                     height: 5,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TextButton(onPressed: () {}, child: Text('Save')),
+                      TextButton(onPressed: () {}, child: const Text('Save')),
                       TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text('Cancel'))
+                          child: const Text('Cancel'))
                     ],
                   )
                 ],
@@ -999,8 +1000,8 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Approver'),
-          content: SingleChildScrollView(
+          title: const Text('Add Approver'),
+          content: const SingleChildScrollView(
             child: Column(
               children: [
                 // Add your form fields here
@@ -1012,7 +1013,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -1021,7 +1022,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -1032,11 +1033,11 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
   Widget _getTaskStateIcon(MaintenanceEntry.TaskState taskState) {
     switch (taskState) {
       case MaintenanceEntry.TaskState.unactioned:
-        return Icon(Icons.warning, color: Colors.red);
+        return const Icon(Icons.warning, color: Colors.red);
       case MaintenanceEntry.TaskState.inProgress:
-        return Icon(Icons.work, color: Colors.orange);
+        return const Icon(Icons.work, color: Colors.orange);
       case MaintenanceEntry.TaskState.completed:
-        return Icon(Icons.check_circle, color: Colors.green);
+        return const Icon(Icons.check_circle, color: Colors.green);
     }
   }
 
@@ -1054,12 +1055,12 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
 
         // Rebuild maintenanceEntriesByEquipment based on loaded maintenanceEntries
         maintenanceEntriesByEquipment = {};
-        maintenanceEntries.forEach((entry) {
+        for (var entry in maintenanceEntries) {
           if (!maintenanceEntriesByEquipment.containsKey(entry.equipment)) {
             maintenanceEntriesByEquipment[entry.equipment] = [];
           }
           maintenanceEntriesByEquipment[entry.equipment]!.add(entry);
-        });
+        }
       }
     } catch (e) {
       print('Error loading maintenance entries: $e');
@@ -1094,12 +1095,12 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
 
   void _updateMaintenanceEntriesByEquipment() {
     maintenanceEntriesByEquipment.clear();
-    maintenanceEntries.forEach((entry) {
+    for (var entry in maintenanceEntries) {
       if (!maintenanceEntriesByEquipment.containsKey(entry.equipment)) {
         maintenanceEntriesByEquipment[entry.equipment] = [];
       }
       maintenanceEntriesByEquipment[entry.equipment]!.add(entry);
-    });
+    }
   }
 
   void _updateMaintenanceDetailsPage() async {

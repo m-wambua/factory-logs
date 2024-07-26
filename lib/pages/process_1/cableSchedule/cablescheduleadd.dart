@@ -4,12 +4,14 @@ import 'package:collector/pages/process_1/cableSchedule/cablescheduledata.dart';
 import 'package:flutter/material.dart';
 
 class UploadScreenCableSchedule extends StatefulWidget {
+  const UploadScreenCableSchedule({super.key});
+
   @override
   _UploadScreenState createState() => _UploadScreenState();
 }
 
 class _UploadScreenState extends State<UploadScreenCableSchedule> {
-  List<File> _uploadedFiles = [];
+  final List<File> _uploadedFiles = [];
   bool _uploadComplete = false;
   List<TextEditingController> notesController = [TextEditingController()];
   TextEditingController lastUpdatePerson = TextEditingController();
@@ -88,7 +90,7 @@ class _UploadScreenState extends State<UploadScreenCableSchedule> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
+                    const Text(
                       ' Upload Files and Folders',
                       style: TextStyle(color: Colors.green),
                     )

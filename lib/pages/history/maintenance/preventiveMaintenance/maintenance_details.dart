@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenance_entry.dart';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MaintenanceDetails {

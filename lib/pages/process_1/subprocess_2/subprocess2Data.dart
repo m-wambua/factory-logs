@@ -55,7 +55,7 @@ class Process2Data {
   List<Process2Entry> process2DataList = [];
   Future<void> loadSubprocess2Data() async {
     try {
-      final directory = 'pages/process_2/subprocess_2';
+      const directory = 'pages/process_2/subprocess_2';
       final file = File('$directory/Subprocess2_data.json');
 
       if (await file.exists()) {
@@ -71,7 +71,7 @@ class Process2Data {
 
   Future<void> saveSubprocess2Data() async {
     try {
-      final directory = 'pages/process_2/subprocess_2';
+      const directory = 'pages/process_2/subprocess_2';
       final file = File('$directory/Subprocess2_data.json');
       if (!await file.exists()) {
         await file.create(recursive: true);
@@ -90,7 +90,7 @@ class Process2Data {
       // Append new data to existing entries
       existingEntries.addAll(process2DataList);
       // Convert all entries to Json and write to the file with formatiing
-      JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      JsonEncoder encoder = const JsonEncoder.withIndent('  ');
       String jsonString = encoder
           .convert(existingEntries.map((detail) => detail.toJson()).toList());
       await file.writeAsString(jsonString, mode: FileMode.write, flush: true);

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 class FolderUploadPage extends StatefulWidget {
+  const FolderUploadPage({super.key});
+
   @override
   _FolderUploadPageState createState() => _FolderUploadPageState();
 }
@@ -28,7 +30,7 @@ class _FolderUploadPageState extends State<FolderUploadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Folder Upload'),
+        title: const Text('Folder Upload'),
       ),
       body: Center(
         child: Column(
@@ -47,11 +49,11 @@ class _FolderUploadPageState extends State<FolderUploadPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.folder, size: 100, color: Colors.blue),
-                    SizedBox(height: 10),
+                    const Icon(Icons.folder, size: 100, color: Colors.blue),
+                    const SizedBox(height: 10),
                     Text(
                       folderName ?? 'Upload Folder',
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                      style: const TextStyle(fontSize: 18, color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
                   ],

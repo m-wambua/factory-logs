@@ -1,5 +1,4 @@
 import 'package:collector/pages/models/notification.dart';
-import 'package:collector/pages/process_1/subprocess_4/subprocess4Data.dart';
 import 'package:collector/pages/process_1/subprocess_5/subprocess5Data.dart';
 import 'package:collector/pages/process_1/subprocess_5/subprocess_data_display.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,7 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
   final TextEditingController _pos_4ControllerRemark = TextEditingController();
   //TextEditingController _pos_5Controller = TextEditingController();
   Process5Data process5data = Process5Data();
-  List<NotificationModel> _sampleNotifications = [];
+  final List<NotificationModel> _sampleNotifications = [];
   @override
   void initState() {
     super.initState();
@@ -157,7 +156,7 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
                           _pos_4ControllerRemark.text.trim();
                     },
                     child: const Text('Saved as Draft')),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -165,16 +164,16 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Subprocess5DataDisplay()));
+                              builder: (context) => const Subprocess5DataDisplay()));
                     },
-                    child: Text('View saved data')),
-                SizedBox(
+                    child: const Text('View saved data')),
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
                     onPressed: () async {
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Data Saved as Draft')));
+                          const SnackBar(content: Text('Data Saved as Draft')));
                       // Create a list of categories for each component
                       List<Process5Category> categories = [
                         Process5Category(
@@ -219,7 +218,7 @@ class _SubProcess5Page1State extends State<SubProcess5Page1> {
                         saveNotificationsToFile(_sampleNotifications);
                       });
                     },
-                    child: Text('Save and Submit all'))
+                    child: const Text('Save and Submit all'))
               ],
             )
           ]),

@@ -5,7 +5,7 @@ import 'maintenance_details.dart';
 
 class MaintenanceDetailsPage extends StatefulWidget {
   final String subprocess;
-  MaintenanceDetailsPage({required this.subprocess});
+  const MaintenanceDetailsPage({super.key, required this.subprocess});
   @override
   _MaintenanceDetailsPageState createState() => _MaintenanceDetailsPageState();
 }
@@ -33,7 +33,7 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Maintenance Details')),
+      appBar: AppBar(title: const Text('Maintenance Details')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: details != null
@@ -41,7 +41,7 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Equipment: ${details!.equipment}'),
-                  SizedBox(
+                  const SizedBox(
                       height: 16), // Add some space between equipment and tasks
                   Expanded(
                     child: ListView.builder(
@@ -58,13 +58,13 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Task: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text: '${task.task}',
+                                      text: task.task,
                                     ),
                                   ],
                                 ),
@@ -73,14 +73,14 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Last Update:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
                                       text:
-                                          '${DateFormat('yyyy-MM-dd HH:mm:ss').format(task.lastUpdate)}',
+                                          DateFormat('yyyy-MM-dd HH:mm:ss').format(task.lastUpdate),
                                     ),
                                   ],
                                 ),
@@ -89,23 +89,23 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Situation Before: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text: '${task.situationBefore}',
+                                      text: task.situationBefore,
                                     ),
                                   ],
                                 ),
                               ),
-                              Text('Steps Taken:',
+                              const Text('Steps Taken:',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: task.stepsTaken.length,
                                 itemBuilder:
                                     (BuildContext context, int stepIndex) {
@@ -113,12 +113,12 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                       '${stepIndex + 1}. ${task.stepsTaken[stepIndex]}');
                                 },
                               ),
-                              Text('Tools Used:',
+                              const Text('Tools Used:',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: task.toolsUsed.length,
                                 itemBuilder:
                                     (BuildContext context, int toolIndex) {
@@ -131,14 +131,14 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Situation Resolved: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
                                       text:
-                                          '${task.situationResolved ? 'Yes' : 'No'}',
+                                          task.situationResolved ? 'Yes' : 'No',
                                     ),
                                   ],
                                 ),
@@ -148,13 +148,13 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Situation After: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text: '${task.situationAfter}',
+                                      text: task.situationAfter,
                                     ),
                                   ],
                                 ),
@@ -164,25 +164,25 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Person Responsible: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text: '${task.personResponsible}',
+                                      text: task.personResponsible,
                                     ),
                                   ],
                                 ),
                               ),
 
-                              SizedBox(height: 16),
-                              Text('Checklist Issued:',
+                              const SizedBox(height: 16),
+                              const Text('Checklist Issued:',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: task.checklist.length,
                                 itemBuilder:
                                     (BuildContext context, int checklistIndex) {
@@ -196,7 +196,7 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                                           '${checklistIndex + 1}. ${checklistItem.item}'),
                                       Row(
                                         children: [
-                                          Text('Checked: '),
+                                          const Text('Checked: '),
                                           Checkbox(
                                             value: checklistItem.isChecked,
                                             onChanged: (value) {
@@ -219,7 +219,7 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
                   ),
                 ],
               )
-            : Center(child: Text('No maintenance details available')),
+            : const Center(child: Text('No maintenance details available')),
       ),
     );
   }
