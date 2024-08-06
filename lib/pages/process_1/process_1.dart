@@ -1,25 +1,54 @@
-import 'package:collector/pages/models/notification.dart';
-import 'package:collector/pages/process_1/cableSchedule/cablescheduleadd.dart';
-import 'package:collector/pages/process_1/codebase/codebase.dart';
-import 'package:collector/pages/process_1/codebase/codedata.dart';
 import 'package:collector/pages/process_1/codebase/codedetails.dart';
 import 'package:collector/pages/process_1/startup.dart';
 import 'package:collector/pages/process_1/startuppage.dart';
-import 'package:collector/pages/process_1/subprocess_1/subprocess_1_np.dart';
-import 'package:collector/pages/process_1/subprocess_2/subprocess_2_np.dart';
-import 'package:collector/pages/process_1/subprocess_3/subprocess_3_np.dart';
-import 'package:collector/pages/process_1/subprocess_4/subprocess_4_np.dart';
-import 'package:collector/pages/process_1/subprocess_5/subprocess_5_np.dart';
-import 'package:collector/pages/process_1/subprocess_6/subprocess_6_np.dart';
-import 'package:collector/pages/process_1/subprocess_7/subprocess_7.dart';
-import 'package:collector/pages/process_1/subprocess_7/subprocess_7_np.dart';
 import 'package:flutter/material.dart';
+import 'package:collector/pages/models/notification.dart';
+
 import 'package:collector/pages/process_1/subprocess_1/subprocess_1.dart';
 import 'package:collector/pages/process_1/subprocess_2/subprocess_2.dart';
 import 'package:collector/pages/process_1/subprocess_3/subprocess_3.dart';
 import 'package:collector/pages/process_1/subprocess_4/subprocess_4.dart';
 import 'package:collector/pages/process_1/subprocess_5/subprocess_5.dart';
 import 'package:collector/pages/process_1/subprocess_6/subprocess_6.dart';
+import 'package:collector/pages/process_1/subprocess_7/subprocess_7.dart';
+import 'package:collector/pages/process_1/subprocess_1/subprocess_1_np.dart';
+import 'package:collector/pages/process_1/subprocess_2/subprocess_2_np.dart';
+import 'package:collector/pages/process_1/subprocess_3/subprocess_3_np.dart';
+import 'package:collector/pages/process_1/subprocess_4/subprocess_4_np.dart';
+import 'package:collector/pages/process_1/subprocess_5/subprocess_5_np.dart';
+import 'package:collector/pages/process_1/subprocess_6/subprocess_6_np.dart';
+import 'package:collector/pages/process_1/subprocess_7/subprocess_7_np.dart';
+import 'package:collector/pages/process_1/cableSchedule/cablescheduleadd.dart';
+import 'package:collector/pages/process_1/codebase/codebase.dart';
+
+class FileManager {
+  final String processName;
+  final List<String> subprocessNames;
+
+  FileManager({required this.processName, required this.subprocessNames});
+
+  factory FileManager.fromProcess(String processName) {
+    List<String> subprocessNames = [];
+    switch (processName) {
+      case 'Trimming Cum Tension Leveler Line':
+        subprocessNames = [
+          'Drives',
+          'MCC Motors',
+          'Cranes',
+          'TLL Positions (MM)',
+          'TLL Crowning Position (MM)',
+          'Tensions',
+          'Currents',
+        ];
+        break;
+      // Add cases for other processes as needed
+      default:
+        subprocessNames = [];
+    }
+    return FileManager(
+        processName: processName, subprocessNames: subprocessNames);
+  }
+}
 
 class Process1Page extends StatefulWidget {
   const Process1Page({super.key});
@@ -35,6 +64,22 @@ class _Process1PageState extends State<Process1Page> {
   String? _eventDescription;
   final List<NotificationModel> notifications = [];
   StartUpEntryData startUpEntryData = StartUpEntryData();
+
+  // FileManager instance to manage process and subprocess names
+  final FileManager fileManager = FileManager(
+    processName:
+        'Trimming Cum Tension Leveler Line', // Update with dynamic process name
+    subprocessNames: [
+      'Drives',
+      'MCC Motors',
+      'Cranes',
+      'TLL Positions (MM)',
+      'TLL Crowning Position (MM)',
+      'Tensions',
+      'Currents',
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,17 +89,21 @@ class _Process1PageState extends State<Process1Page> {
           Row(
             children: [
               IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.chrome_reader_mode)),
+                onPressed: () {},
+                icon: const Icon(Icons.chrome_reader_mode),
+              ),
               IconButton(
-                  onPressed: () {
-                    _showCableScheduleDialog(context);
-                  },
-                  icon: const Icon(Icons.cable_outlined)),
+                onPressed: () {
+                  _showCableScheduleDialog(context);
+                },
+                icon: const Icon(Icons.cable_outlined),
+              ),
               IconButton(
-                  onPressed: () {
-                    _showOptionsDialog(context);
-                  },
-                  icon: const Icon(Icons.code)),
+                onPressed: () {
+                  _showOptionsDialog(context);
+                },
+                icon: const Icon(Icons.code),
+              ),
               IconButton(
                 onPressed: () {
                   _addStartUpProcedure(context);
@@ -100,307 +149,251 @@ class _Process1PageState extends State<Process1Page> {
               // Display subprocess buttons only if production was selected
               if (_productionSelected)
                 Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubProcess1Page1(
-                              onNotificationAdded: (notification) {
-                                setState(() {
-                                  notifications.add(notification);
-                                });
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('Drives'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubProcess2Page1(
-                              onNotificationAdded: (notification) {
-                                setState(() {
-                                  notifications.add(notification);
-                                });
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('MCC Motors'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubProcess3Page1(
-                              onNotificationAdded: (notification) {
-                                setState(() {
-                                  notifications.add(notification);
-                                });
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('Cranes'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubProcess4Page1(
-                              onNotificationAdded: (notification) {
-                                setState(() {
-                                  notifications.add(notification);
-                                });
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('TLL Positions (MM)'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubProcess5Page1(
-                              onNotificationAdded: (notification) {
-                                setState(() {
-                                  notifications.add(notification);
-                                });
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('TLL Crowning Position (MM)'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess6Page1(),
-                          ),
-                        );
-                      },
-                      child: const Text('Tensions'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess7Page1(),
-                          ),
-                        );
-                      },
-                      child: const Text('Currents'),
-                    ),
-                    const SizedBox(height: 100),
-                    const Text(
-                        'ODS Occurrence During Shift (Delay please indicate time)'),
-                    TextFormField(
-                      maxLines: 20,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          saveButtonClickTime = DateTime.now();
-                        });
-                      },
-                      child: const Text('Save Current Values'),
-                    ),
-                    if (saveButtonClickTime != null)
-                      Text('The data was saved at $saveButtonClickTime'),
-                    const SizedBox(height: 30),
-                    CheckboxListTile(
-                      title: const Text('Was the shift eventful?'),
-                      value: _eventfulShift,
-                      onChanged: (value) {
-                        setState(() {
-                          _eventfulShift = value!;
-                        });
-                      },
-                    ),
-                    if (_eventfulShift)
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Describe the event....',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            _eventDescription = value;
-                          });
-                        },
-                      ),
-                  ],
+                  children: _buildElevatedButtonsForSubprocesses(
+                      fileManager.subprocessNames),
                 ),
               if (!_productionSelected)
                 Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess1Page1_Np(),
-                          ),
-                        );
-                      },
-                      child: const Text('Drives'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess2Page1_Np(),
-                          ),
-                        );
-                      },
-                      child: const Text('MCC Motors'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess3Page1_NP(),
-                          ),
-                        );
-                      },
-                      child: const Text('Cranes'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess4Page1_NP(),
-                          ),
-                        );
-                      },
-                      child: const Text('TLL Positions (MM)'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess5Page1_NP(),
-                          ),
-                        );
-                      },
-                      child: const Text('TLL Crowning Position (MM)'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess6Page1_NP(),
-                          ),
-                        );
-                      },
-                      child: const Text('Tensions'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SubProcess7Page1_NP(),
-                          ),
-                        );
-                      },
-                      child: const Text('Currents'),
-                    ),
-                    const SizedBox(height: 100),
-                    const Text(
-                        'ODS Occurrence During Shift (Delay please indicate time)'),
-                    TextFormField(
-                      maxLines: 20,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          saveButtonClickTime = DateTime.now();
-                        });
-                      },
-                      child: const Text('Save Current Values'),
-                    ),
-                    if (saveButtonClickTime != null)
-                      Text('The data was saved at $saveButtonClickTime'),
-                    const SizedBox(height: 30),
-                    CheckboxListTile(
-                      title: const Text('Was the shift eventful?'),
-                      value: _eventfulShift,
-                      onChanged: (value) {
-                        setState(() {
-                          _eventfulShift = value!;
-                        });
-                      },
-                    ),
-                    if (_eventfulShift)
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Describe the event....',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            _eventDescription = value;
-                          });
-                        },
-                      ),
-                  ],
+                  children: _buildElevatedButtonsForNonProductionSubprocesses(
+                      fileManager.subprocessNames),
+                ),
+              const SizedBox(height: 100),
+              const Text(
+                  'ODS Occurrence During Shift (Delay please indicate time)'),
+              TextFormField(
+                maxLines: 20,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    saveButtonClickTime = DateTime.now();
+                  });
+                },
+                child: const Text('Save Current Values'),
+              ),
+              if (saveButtonClickTime != null)
+                Text('The data was saved at $saveButtonClickTime'),
+              const SizedBox(height: 30),
+              CheckboxListTile(
+                title: const Text('Was the shift eventful?'),
+                value: _eventfulShift,
+                onChanged: (value) {
+                  setState(() {
+                    _eventfulShift = value!;
+                  });
+                },
+              ),
+              if (_eventfulShift)
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Describe the event....',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _eventDescription = value;
+                    });
+                  },
                 ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildElevatedButtonsForSubprocesses(
+      List<String> subprocessNames) {
+    return subprocessNames.map((subprocess) {
+      return Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              _navigateToSubprocess(subprocess);
+            },
+            child: Text(subprocess),
+          ),
+          const SizedBox(height: 20),
+        ],
+      );
+    }).toList();
+  }
+
+  List<Widget> _buildElevatedButtonsForNonProductionSubprocesses(
+      List<String> subprocessNames) {
+    return subprocessNames.map((subprocess) {
+      return Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              _navigateToNonProductionSubprocess(subprocess);
+            },
+            child: Text(subprocess),
+          ),
+          const SizedBox(height: 20),
+        ],
+      );
+    }).toList();
+  }
+
+  void _navigateToSubprocess(String subprocess) {
+    switch (subprocess) {
+      case 'Drives':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SubProcess1Page1(
+              onNotificationAdded: (notification) {
+                setState(() {
+                  notifications.add(notification);
+                });
+              },
+            ),
+          ),
+        );
+        break;
+      case 'MCC Motors':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SubProcess2Page1(
+              onNotificationAdded: (notification) {
+                setState(() {
+                  notifications.add(notification);
+                });
+              },
+            ),
+          ),
+        );
+        break;
+      case 'Cranes':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SubProcess3Page1(
+              onNotificationAdded: (notification) {
+                setState(() {
+                  notifications.add(notification);
+                });
+              },
+            ),
+          ),
+        );
+        break;
+      case 'TLL Positions (MM)':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SubProcess4Page1(
+              onNotificationAdded: (notification) {
+                setState(() {
+                  notifications.add(notification);
+                });
+              },
+            ),
+          ),
+        );
+        break;
+      case 'TLL Crowning Position (MM)':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SubProcess5Page1(
+              onNotificationAdded: (notification) {
+                setState(() {
+                  notifications.add(notification);
+                });
+              },
+            ),
+          ),
+        );
+        break;
+      case 'Tensions':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess6Page1(),
+          ),
+        );
+        break;
+      case 'Currents':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess7Page1(),
+          ),
+        );
+        break;
+    }
+  }
+
+  void _navigateToNonProductionSubprocess(String subprocess) {
+    switch (subprocess) {
+      case 'Drives':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess1Page1_Np(),
+          ),
+        );
+        break;
+      case 'MCC Motors':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess2Page1_Np(),
+          ),
+        );
+        break;
+      case 'Cranes':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess3Page1_NP(),
+          ),
+        );
+        break;
+      case 'TLL Positions (MM)':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess4Page1_NP(),
+          ),
+        );
+        break;
+      case 'TLL Crowning Position (MM)':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess5Page1_NP(),
+          ),
+        );
+        break;
+      case 'Tensions':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess6Page1_NP(),
+          ),
+        );
+        break;
+      case 'Currents':
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SubProcess7Page1_NP(),
+          ),
+        );
+        break;
+    }
   }
 
   Future<void> _addStartUpProcedure(BuildContext context) async {

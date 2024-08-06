@@ -1,11 +1,17 @@
+import 'package:collector/pages/file_manager.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/subprocesscreator.dart';
 import 'package:flutter/material.dart';
 
 class CreatorPage extends StatefulWidget {
   final String processName;
+  final void Function(String processName, String newState) updateButtonState;
 
-  const CreatorPage({Key? key, required this.processName}) : super(key: key);
+  const CreatorPage({
+    Key? key,
+    required this.processName,
+    required this.updateButtonState, // Accept the call back
+  }) : super(key: key);
 
   @override
   _CreatorPageState createState() => _CreatorPageState();
@@ -23,6 +29,7 @@ class _CreatorPageState extends State<CreatorPage> {
   ];
 
   List<NotificationModel> _notifications = [];
+  bool _isSaving = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +40,7 @@ class _CreatorPageState extends State<CreatorPage> {
           IconButton(
             onPressed: () {
               // Save functionality if needed
+              _saveProcessAndSubprocesses();
             },
             icon: Icon(Icons.save),
           ),
@@ -61,7 +69,9 @@ class _CreatorPageState extends State<CreatorPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => SubprocessCreatorPage(
-                                  subprocessName: _subprocesses[index])));
+                                  subprocessName: _subprocesses[index])
+                                  
+                                  ));
                     },
                     onLongPress: () {
                       _renameSubprocess(index);
@@ -177,6 +187,46 @@ class _CreatorPageState extends State<CreatorPage> {
     if (newSubprocessName != null && newSubprocessName.isNotEmpty) {
       setState(() {
         _subprocesses[index] = newSubprocessName!;
+      });
+    }
+  }
+
+  void _saveProcessAndSubprocesses() async {
+    setState(() {
+      _isSaving = true;
+    });
+    try {
+      await FileManager.createProcessFolders(widget.processName);
+      await FileManager.createProcessFiles(widget.processName);
+      await FileManager.createSubprocessFolders(
+          widget.processName, _subprocesses);
+      for (final subprocess in _subprocesses) {
+        await FileManager.createSubprocessFiles(widget.processName, subprocess);
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Process and Subprocesses saved Successfully!')));
+
+      // Update Landing
+      Navigator.pop(context); // Go back to landingPage
+      widget.updateButtonState(
+          widget.processName, 'finalized'); // Update process state
+
+      // Navigate to the dynamic page with subprocess data
+      Navigator.pushNamed(
+        context,
+        '/${widget.processName}',
+        arguments: {
+          'processName': widget.processName,
+          'subprocesses': _subprocesses,
+        },
+      );
+    } catch (e) {
+      print('Error creating folders and files: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save process and subprocess')));
+    } finally {
+      setState(() {
+        _isSaving = false;
       });
     }
   }

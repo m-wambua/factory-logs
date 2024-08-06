@@ -1,14 +1,15 @@
-import 'package:collector/pages/history/historypage.dart';
-import 'package:collector/pages/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
-import 'package:collector/pages/manuals/manuelspage.dart';
-import 'package:collector/pages/parameters/parameterspage.dart';
-import 'package:collector/pages/trends/trendspage.dart';
-import 'package:collector/pages/welcome_page.dart';
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+
+import 'package:collector/pages/homepage.dart';
+import 'package:collector/pages/tableloader.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+
+import 'package:collector/pages/history/historypage.dart';
+import 'package:collector/pages/trends/trendspage.dart';
+import 'package:collector/pages/manuals/manuelspage.dart';
+import 'package:collector/pages/parameters/parameterspage.dart';
+import 'package:collector/pages/welcome_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,39 +21,257 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        '/history': (context) => const HistoryPage(),
-        '/trends': (context) => const TrendsPage(),
-        '/manuals': (context) => ManualsPage(),
-        '/parameters': (context) => ParameterPage(),
-        //'/history/mainentance':(context) => MyMaintenanceHistory(),
+      onGenerateRoute: (settings) {
+        final routeName = settings.name;
+
+        // Handle dynamic routes
+        if (routeName != null && routeName.startsWith('/')) {
+          final args = settings.arguments as Map<String, dynamic>?;
+
+          if (args != null) {
+            final processName = args['processName'] as String;
+            final subprocesses = args['subprocesses'] as List<String>;
+
+            return MaterialPageRoute(
+              builder: (context) => DynamicPageLoader(
+                processName: processName,
+                subprocesses: subprocesses,
+              ),
+            );
+          }
+        }
+
+        // Handle static routes
+        final routes = {
+          '/history': (context) => const HistoryPage(),
+          '/trends': (context) => const TrendsPage(),
+          '/manuals': (context) => ManualsPage(),
+          '/parameters': (context) => ParameterPage(),
+        };
+
+        if (routes.containsKey(routeName)) {
+          return MaterialPageRoute(builder: routes[routeName]!);
+        }
+
+        // Fallback if route is not found
+        return MaterialPageRoute(
+          builder: (context) => const LandingPage(username: ''),
+        );
       },
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
       home: const WelcomePage(),
     );
+  }
+}
+
+class DynamicPageLoader extends StatefulWidget {
+  final String processName;
+  final List<String> subprocesses; // Add subprocesses as a parameter
+
+  DynamicPageLoader({
+    required this.processName,
+    required this.subprocesses, // Initialize subprocesses
+  });
+
+  @override
+  State<DynamicPageLoader> createState() => _DynamicPageLoaderState();
+}
+
+class _DynamicPageLoaderState extends State<DynamicPageLoader> {
+  bool _productionSelected = false;
+  DateTime? saveButtonClickTime;
+  bool _eventfulShift = false;
+  String? _eventDescription;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.processName),
+      ),
+      body: FutureBuilder<Widget>(
+        future: _loadDynamicPage(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading page'));
+          } else {
+            return snapshot.data ?? Center(child: Text('Page not found'));
+          }
+        },
+      ),
+    );
+  }
+
+  Future<Widget> _loadDynamicPage() async {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Loaded Page for ${widget.processName}'),
+        actions: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.chrome_reader_mode),
+              ),
+              IconButton(onPressed: () {}, icon: Icon(Icons.cable_outlined)),
+              IconButton(
+                  onPressed: () {}, icon: Icon(Icons.power_settings_new)),
+            ],
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Radio Buttons for production selection
+              Row(
+                children: [
+                  Radio(
+                      value: true,
+                      groupValue: _productionSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          _productionSelected = value!;
+                        });
+                      }),
+                  const Text('Production'),
+                  Radio(
+                      value: false,
+                      groupValue: _productionSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          _productionSelected = value!;
+                        });
+                      }),
+                  const Text('No Production'),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              // Display subprocess buttons only if production was selected
+              if (_productionSelected)
+                Column(
+                  children: _buildElevatedButtonsForSubprocesses(),
+                ),
+              if (!_productionSelected)
+                Column(
+                  children: _buildElevatedButtonsForSubprocessesNoProduction(),
+                ),
+              const SizedBox(
+                height: 100,
+              ),
+              const Text(
+                  ' ODS Occurrence During Shift (Delay Please Indicate time)'),
+              TextFormField(
+                maxLines: 20,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                    filled: true,
+                    fillColor: Colors.grey[200]),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      saveButtonClickTime = DateTime.now();
+                    });
+                  },
+                  child: const Text('Save Current Values')),
+              if (saveButtonClickTime != null)
+                Text('The Data was Saved at$saveButtonClickTime'),
+              const SizedBox(
+                height: 50,
+              ),
+              CheckboxListTile(
+                  title: const Text(' Was the Shift eventfull'),
+                  value: _eventfulShift,
+                  onChanged: (value) {
+                    setState(() {
+                      _eventfulShift = value!;
+                    });
+                  }),
+              if (_eventfulShift)
+                TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Describe the event...',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _eventDescription = value;
+                    });
+                  },
+                )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildElevatedButtonsForSubprocesses() {
+    return widget.subprocesses.map((subprocess) {
+      return Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              _navigateToSubprocess(subprocess);
+            },
+            child: Text(subprocess),
+          ),
+          const SizedBox(height: 20),
+        ],
+      );
+    }).toList();
+  }
+
+  void _navigateToSubprocess(String subprocess) {
+    // Navigate to the specific subprocess page
+    print("Navigating to subprocess: $subprocess");
+  }
+
+  ///////////////////////////////////////////////////////////////
+
+  List<Widget> _buildElevatedButtonsForSubprocessesNoProduction() {
+    return widget.subprocesses.map((subprocess) {
+      return Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              _navigateToSubprocessNoProduction(subprocess);
+            },
+            child: Text(subprocess),
+          ),
+          const SizedBox(height: 20),
+        ],
+      );
+    }).toList();
+  }
+
+  void _navigateToSubprocessNoProduction(String subprocess) {
+    // Navigate to the specific subprocess page
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TableLoaderPage(
+                
+                subprocessName: subprocess)));
+    print("Navigating to subprocess: $subprocess");
   }
 }

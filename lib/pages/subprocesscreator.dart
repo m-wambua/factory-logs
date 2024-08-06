@@ -1,5 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+
+enum ColumnDataType {
+  integer,
+  string,
+}
+
+class ColumnInfo {
+  String name;
+  ColumnDataType type;
+  bool isFixed;
+  String unit;
+  ColumnInfo(
+      {required this.name,
+      this.type = ColumnDataType.string,
+      this.isFixed = false,
+      this.unit = ''});
+}
 
 class SubprocessCreatorPage extends StatefulWidget {
   final String subprocessName;
@@ -11,10 +29,11 @@ class SubprocessCreatorPage extends StatefulWidget {
 }
 
 class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
-  List<String> _columns = ['Equipment'];
+  List<ColumnInfo> _columns = [
+    ColumnInfo(name: 'Equipment')
+  ]; // Ensure default column
   int _numRows = 5;
   List<List<String>> _tableData = [];
-  List<bool> _isFixedColumn = [];
 
   @override
   void initState() {
@@ -24,36 +43,70 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
   }
 
   void _initializeTable() {
-    _tableData = List.generate(_numRows, (index) => List.generate(_columns.length, (colIndex) => ''));
-    _isFixedColumn = List.generate(_columns.length, (index) => false);
+    _tableData = List.generate(
+        _numRows, (index) => List.generate(_columns.length, (colIndex) => ''));
   }
 
   Future<void> _saveTableTemplate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('${widget.subprocessName}_numRows', _numRows);
-    prefs.setStringList('${widget.subprocessName}_columns', _columns);
-    prefs.setStringList('${widget.subprocessName}_isFixedColumn', _isFixedColumn.map((e) => e.toString()).toList());
-    for (int i = 0; i < _numRows; i++) {
-      prefs.setStringList('${widget.subprocessName}_row_$i', _tableData[i]);
-    }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Template saved!')));
+
+    // Convert table structure to JSON
+    Map<String, dynamic> tableJson = {
+      'columns': _columns
+          .map((column) => {
+                'name': column.name,
+                'type': column.type.index,
+                'isFixed': column.isFixed,
+                'unit': column.unit
+              })
+          .toList(),
+      'numRows': _numRows,
+      'tableData': _tableData,
+    };
+
+    String tableJsonString = json.encode(tableJson);
+
+    // Save JSON to SharedPreferences
+    prefs.setString('${widget.subprocessName}_table', tableJsonString);
+
+    // Debugging: Print JSON structure
+    print('Saved JSON: $tableJsonString');
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Template saved!')));
   }
 
   Future<void> _loadTableTemplate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _numRows = prefs.getInt('${widget.subprocessName}_numRows') ?? _numRows;
-      _columns = prefs.getStringList('${widget.subprocessName}_columns') ?? _columns;
-      List<String>? fixedColumnList = prefs.getStringList('${widget.subprocessName}_isFixedColumn');
-      if (fixedColumnList != null) {
-        _isFixedColumn = fixedColumnList.map((e) => e == 'true').toList();
+      // Load JSON from SharedPreferences
+      String? tableJsonString =
+          prefs.getString('${widget.subprocessName}_table');
+
+      if (tableJsonString != null) {
+        Map<String, dynamic> tableJson = json.decode(tableJsonString);
+        _columns = (tableJson['columns'] as List<dynamic>).map((columnJson) {
+          return ColumnInfo(
+            name: columnJson['name'],
+            type: ColumnDataType.values[columnJson['type']],
+            isFixed: columnJson['isFixed'],
+            unit: columnJson['unit'] ?? '',
+          );
+        }).toList();
+        _numRows = tableJson['numRows'];
+        _tableData = List<List<String>>.from(
+            tableJson['tableData'].map((row) => List<String>.from(row)));
+
+        // Debugging: Print loaded JSON
+        print('Loaded JSON: $tableJsonString');
       } else {
-        _isFixedColumn = List.generate(_columns.length, (index) => false);
+        // Handle case where no JSON is found
+        _initializeTable(); // Default initialization
       }
-      _tableData = List.generate(
-        _numRows,
-        (index) => prefs.getStringList('${widget.subprocessName}_row_$index') ?? List.generate(_columns.length, (colIndex) => ''),
-      );
+
+      // Debugging: Print loaded table structure
+      print('Loaded Columns: $_columns');
+      print('Loaded Table Data: $_tableData');
     });
   }
 
@@ -62,81 +115,106 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.subprocessName),
+        backgroundColor: Colors.blueAccent, // AppBar theme color
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                _showTableSizeDialog();
+      body: Column(
+        children: [
+          // Dynamic button bar
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return Wrap(
+                  spacing: constraints.maxWidth / 30,
+                  runSpacing: 10,
+                  children: [
+                    _buildIconButton(Icons.table_rows, 'Set Table Size',
+                        Colors.teal, _showTableSizeDialog),
+                    _buildIconButton(
+                        Icons.add, 'Add Column', Colors.teal, _addColumn),
+                    _buildIconButton(Icons.delete, 'Delete Column',
+                        Colors.redAccent, _deleteColumn),
+                    _buildIconButton(
+                        Icons.lock,
+                        'Mark Column as Fixed/User-Fillable',
+                        Colors.orangeAccent,
+                        _markFixedColumn),
+                    _buildIconButton(Icons.save, 'Save Template', Colors.green,
+                        _saveTableTemplate),
+                  ],
+                );
               },
-              child: Text('Set Table Size'),
             ),
-            SingleChildScrollView(
+          ),
+          Expanded(
+            child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: _columns.map((col) {
-                  return DataColumn(
-                    label: GestureDetector(
-                      onLongPress: () {
-                        _renameColumn(col);
-                      },
-                      child: Text(col),
-                    ),
-                  );
-                }).toList(),
-                rows: List<DataRow>.generate(
-                  _numRows,
-                  (index) {
-                    return DataRow(
-                      cells: List<DataCell>.generate(
-                        _columns.length,
-                        (colIndex) {
-                          return DataCell(
-                            _isFixedColumn[colIndex]
-                                ? Text(_tableData[index][colIndex])
-                                : TextFormField(
-                                    initialValue: _tableData[index][colIndex],
-                                    onChanged: (value) {
-                                      _tableData[index][colIndex] = value;
-                                    },
-                                  ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
+              child: _buildDataTable(), // Method to build the table
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _addColumn();
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIconButton(
+      IconData icon, String tooltip, Color color, VoidCallback onPressed) {
+    return IconButton(
+      icon: Icon(icon, color: color, size: 30),
+      tooltip: tooltip,
+      onPressed: onPressed,
+    );
+  }
+
+  Widget _buildDataTable() {
+    if (_columns.isEmpty) {
+      return Center(child: Text('No columns available.'));
+    }
+
+    return DataTable(
+      columns: _columns.map((column) {
+        return DataColumn(
+          label: GestureDetector(
+            onLongPress: () {
+              _renameColumn(column);
+            },
+            child: Text(column.name),
+          ),
+        );
+      }).toList(),
+      rows: List<DataRow>.generate(
+        _numRows,
+        (index) {
+          return DataRow(
+            cells: List<DataCell>.generate(
+              _columns.length,
+              (colIndex) {
+                ColumnInfo column = _columns[colIndex];
+                return DataCell(
+                  column.isFixed
+                      ? Text(_tableData[index][colIndex])
+                      : TextFormField(
+                          initialValue: _tableData[index][colIndex],
+                          keyboardType: column.type == ColumnDataType.integer
+                              ? TextInputType.number
+                              : TextInputType.text,
+                          onChanged: (value) {
+                            if (column.type == ColumnDataType.integer) {
+                              // Ensure only numbers are accepted
+                              if (int.tryParse(value) != null ||
+                                  value.isEmpty) {
+                                _tableData[index][colIndex] = value;
+                              }
+                            } else {
+                              _tableData[index][colIndex] = value;
+                            }
+                          },
+                        ),
+                );
               },
-              child: Text('Add Column'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                _deleteColumn();
-              },
-              child: Text('Delete Column'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _markFixedColumn();
-              },
-              child: Text('Mark Column as Fixed/User-Fillable'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _saveTableTemplate();
-              },
-              child: Text('Save Template'),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -182,13 +260,142 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
     showDialog<String>(
       context: context,
       builder: (context) {
+        // Initial column name and data type
         String newColumnName = 'New Column';
+        ColumnDataType selectedDataType = ColumnDataType.string;
+        TextEditingController unitController = TextEditingController();
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              title: Row(
+                children: [
+                  Icon(Icons.add, color: Colors.blueAccent),
+                  SizedBox(width: 8),
+                  Text(
+                    'Add Column',
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Enter column name',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.text_fields),
+                    ),
+                    onChanged: (value) {
+                      newColumnName = value;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  DropdownButtonFormField<ColumnDataType>(
+                    value: selectedDataType,
+                    decoration: InputDecoration(
+                      labelText: 'Select Data Type',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.data_usage),
+                    ),
+                    items: ColumnDataType.values.map((ColumnDataType type) {
+                      return DropdownMenuItem<ColumnDataType>(
+                        value: type,
+                        child: Text(
+                          type == ColumnDataType.integer ? 'Integer' : 'String',
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (ColumnDataType? newValue) {
+                      setState(() {
+                        selectedDataType = newValue!;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  if (selectedDataType == ColumnDataType.integer)
+                    TextField(
+                      controller: unitController,
+                      decoration: InputDecoration(
+                        labelText: 'Enter unit (optional)',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.straighten),
+                      ),
+                    ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (newColumnName.isNotEmpty) {
+                      setState(() {
+                        _columns.add(ColumnInfo(
+                          name: newColumnName +
+                              (selectedDataType == ColumnDataType.integer
+                                  ? ' (${unitController.text})'
+                                  : ''),
+                          type: selectedDataType,
+                          isFixed: false,
+                          unit: unitController.text,
+                        ));
+
+                        // Add default values for the new column in each row
+                        for (var row in _tableData) {
+                          row.add(''); // Add an empty value for new column
+                        }
+                      });
+                      Navigator.of(context).pop(); // Close the dialog
+                    }
+                  },
+                  child: Text('Add'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    ).then((_) {
+      // This is where you can trigger a rebuild or refresh of the main page
+      setState(
+          () {}); // Ensure to call setState here to update the UI with the new column
+    });
+  }
+
+  void _deleteColumn() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        String columnNameToDelete = '';
         return AlertDialog(
-          title: Text('Add Column'),
-          content: TextField(
-            decoration: InputDecoration(hintText: 'Enter column name'),
+          title: Text('Delete Column'),
+          content: DropdownButtonFormField<String>(
+            value: columnNameToDelete.isNotEmpty ? columnNameToDelete : null,
+            hint: Text('Select column to delete'),
+            items: _columns
+                .where((column) => column.name != 'Equipment')
+                .map((column) {
+              return DropdownMenuItem<String>(
+                value: column.name,
+                child: Text(column.name),
+              );
+            }).toList(),
             onChanged: (value) {
-              newColumnName = value;
+              columnNameToDelete = value ?? '';
             },
           ),
           actions: [
@@ -200,16 +407,21 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                setState(() {
-                  _columns.add(newColumnName);
-                  for (var row in _tableData) {
-                    row.add('');
-                  }
-                  _isFixedColumn.add(false);
-                });
-                Navigator.pop(context);
+                if (columnNameToDelete.isNotEmpty) {
+                  setState(() {
+                    int indexToRemove = _columns.indexWhere(
+                        (column) => column.name == columnNameToDelete);
+                    if (indexToRemove != -1) {
+                      _columns.removeAt(indexToRemove);
+                      for (var row in _tableData) {
+                        row.removeAt(indexToRemove);
+                      }
+                    }
+                  });
+                  Navigator.pop(context);
+                }
               },
-              child: Text('Add'),
+              child: Text('Delete'),
             ),
           ],
         );
@@ -217,30 +429,17 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
     );
   }
 
-  void _deleteColumn() {
-    showDialog<String>(
+  void _renameColumn(ColumnInfo column) {
+    showDialog(
       context: context,
       builder: (context) {
+        TextEditingController controller =
+            TextEditingController(text: column.name);
         return AlertDialog(
-          title: Text('Delete Column'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _columns.map((col) {
-              return ListTile(
-                title: Text(col),
-                onTap: () {
-                  setState(() {
-                    int colIndex = _columns.indexOf(col);
-                    _columns.removeAt(colIndex);
-                    for (var row in _tableData) {
-                      row.removeAt(colIndex);
-                    }
-                    _isFixedColumn.removeAt(colIndex);
-                  });
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
+          title: Text('Rename Column'),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(hintText: 'Enter new column name'),
           ),
           actions: [
             TextButton(
@@ -248,6 +447,15 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                 Navigator.pop(context);
               },
               child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  column.name = controller.text;
+                });
+                Navigator.pop(context);
+              },
+              child: Text('Rename'),
             ),
           ],
         );
@@ -259,71 +467,48 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
     showDialog<String>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('Mark Column as Fixed/User-Fillable'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _columns.map((col) {
-              return ListTile(
-                title: Text(col),
-                trailing: Switch(
-                  value: _isFixedColumn[_columns.indexOf(col)],
-                  onChanged: (value) {
-                    setState(() {
-                      int colIndex = _columns.indexOf(col);
-                      _isFixedColumn[colIndex] = value;
-                    });
-                    Navigator.pop(context);
-                    _markFixedColumn();
-                  },
-                ),
-              );
-            }).toList(),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+        // Temporary list to hold the state of each column's fix status
+        List<bool> isFixedColumn =
+            _columns.map((column) => column.isFixed).toList();
 
-  void _renameColumn(String oldColumn) {
-    showDialog<String>(
-      context: context,
-      builder: (context) {
-        String newColumnName = oldColumn;
-        return AlertDialog(
-          title: Text('Rename Column'),
-          content: TextField(
-            decoration: InputDecoration(hintText: 'Enter new column name'),
-            onChanged: (value) {
-              newColumnName = value;
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  int columnIndex = _columns.indexOf(oldColumn);
-                  _columns[columnIndex] = newColumnName;
-                });
-                Navigator.pop(context);
-              },
-              child: Text('Rename'),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Mark Column as Fixed/User-Fillable'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: _columns.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  var column = entry.value;
+                  return ListTile(
+                    title: Text(column.name),
+                    trailing: Switch(
+                      value: isFixedColumn[index],
+                      onChanged: (value) {
+                        setState(() {
+                          // Update the temporary list
+                          isFixedColumn[index] = value;
+                          // Update the actual _columns list
+                          _columns[index].isFixed = value;
+                        });
+                        // Optionally, update the dialog immediately
+                        Navigator.pop(context);
+                        _markFixedColumn();
+                      },
+                    ),
+                  );
+                }).toList(),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
