@@ -20,6 +20,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
   List<ColumnInfo> _columns = [];
   int _numRows = 0;
   List<List<String>> _tableData = [];
+  List<List<String>> _additionalRows = [];
 
   @override
   void initState() {
@@ -150,6 +151,8 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                 ),
               ],
             ),
+            SizedBox(height: 20),
+            _buildDummyTable(), // Add dummy table below the main table
           ],
         ),
       ),
@@ -222,5 +225,74 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         },
       ),
     );
+  }
+
+  // Method to build the dummy table
+  Widget _buildDummyTable() {
+    if (_columns.isEmpty) {
+      return Center(child: Text('No data available for dummy table.'));
+    }
+
+    // Extract headers from the first column of the original table
+// Identify columns that are both fixed and integer type
+    List<int> fixedIntegerColumnIndices = _columns
+        .asMap()
+        .entries
+        .where((entry) =>
+            entry.value.isFixed && entry.value.type == ColumnDataType.integer)
+        .map((entry) => entry.key)
+        .toList();
+    print('Fixed Integer Column Indices: $fixedIntegerColumnIndices');
+
+    List<int> nonFixedIntegerColumnIndices = _columns
+        .asMap()
+        .entries
+        .where((entry) =>
+            !entry.value.isFixed && entry.value.type == ColumnDataType.integer)
+        .map((entry) => entry.key)
+        .toList();
+    print('Non Fixed Integer COlumn: $nonFixedIntegerColumnIndices');
+    List<String> dummyHeaders = _tableData.map((row) => row[0]).toList();
+    print(dummyHeaders);
+
+    // Extract values from these columns for each row
+    List<String> dummyValues = [];
+    for (var row in _tableData) {
+      List<String> rowValues = fixedIntegerColumnIndices.map((colIndex) {
+        // Handle cases where colIndex might be out of bounds
+        return colIndex < row.length ? row[colIndex] : '';
+      }).toList();
+      dummyValues.add(
+          rowValues.join(', ')); // Join values for the row as a single string
+    }
+    print('Dummy Values: $dummyValues');
+    List<String> loadedDummyValues = [];
+    for (var row in _tableData) {
+      List<String> rowValues = nonFixedIntegerColumnIndices.map((colIndex) {
+        // Handle casses where colIndex might be out of bounds
+        return colIndex < row.length ? row[colIndex] : '';
+      }).toList();
+      loadedDummyValues.add(
+          rowValues.join(', ')); // join Valuse for the row as a single string
+    }
+
+    print('Loaded Values$loadedDummyValues');
+    return DataTable(
+        columns: dummyHeaders.map((header) {
+          return DataColumn(
+            label: Text(header),
+          );
+        }).toList(),
+        rows: [
+          DataRow(
+              cells: dummyValues.map((value) {
+            return DataCell(Text(value));
+          }).toList()),
+          //You can add more rows here if needed
+          DataRow(
+              cells: loadedDummyValues.map((value) {
+            return DataCell(Text(value));
+          }).toList()),
+        ]);
   }
 }
