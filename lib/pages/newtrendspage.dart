@@ -13,8 +13,7 @@ class TrendsPage2 extends StatefulWidget {
 }
 
 class _TrendsPage2State extends State<TrendsPage2> {
-  List<String> _headers = [];
-  List<List<String>> _summaryData = [];
+  List<Map<String, dynamic>> _savedDataList = [];
 
   @override
   void initState() {
@@ -48,18 +47,24 @@ class _TrendsPage2State extends State<TrendsPage2> {
       }
     }
 
-    _processData(tempList);
+    setState(() {
+      _savedDataList = tempList;
+    });
   }
 
-  void _processData(List<Map<String, dynamic>> dataList) {
-    List<String> headers = [];
-    List<List<String>> summaryData = [];
+  // Function to extract and group data by timestamps
+  List<List<String>> extractAndGroupDataByTimestamps() {
+    Map<String, List<List<String>>> groupedData = {};
 
-    for (var savedData in dataList) {
+    for (var savedData in _savedDataList) {
+      // Extract the timestamp
       String timestamp = savedData['timestamp'] ?? 'Unknown';
+
+      // Extract columns and tableData
       List<dynamic> columnsJson = savedData['columns'] ?? [];
       List<dynamic> tableDataJson = savedData['tableData'] ?? [];
 
+      // Convert columnsJson to List<ColumnInfo>
       List<ColumnInfo> columns = columnsJson.map((columnJson) {
         return ColumnInfo(
           name: columnJson['name'],
@@ -69,63 +74,113 @@ class _TrendsPage2State extends State<TrendsPage2> {
         );
       }).toList();
 
-      // Extract headers from the first column of each table
-      if (headers.isEmpty) {
-        headers.add('Timestamp');
-        headers.addAll(
-            columns.where((col) => !col.isFixed).map((col) => col.name));
-      }
+      // Find non-fixed integer column indices
+      List<int> nonFixedIntegerColumnIndices = columns
+          .asMap()
+          .entries
+          .where((entry) =>
+              !entry.value.isFixed &&
+              entry.value.type == ColumnDataType.integer)
+          .map((entry) => entry.key)
+          .toList();
 
+      // Iterate through each row in the tableData
       for (var row in tableDataJson) {
-        List<String> newRow = [timestamp];
-        for (int i = 0; i < columns.length; i++) {
-          if (!columns[i].isFixed) {
-            newRow.add((row[i] ?? 'NaN').toString());
-          }
+        // Ensure that the row is a List<dynamic> and then map it to a List<String>
+        List<String> rowValues = nonFixedIntegerColumnIndices.map((colIndex) {
+          return colIndex < (row as List<dynamic>).length
+              ? row[colIndex].toString()
+              : '';
+        }).toList();
+
+        // Add the row values to the grouped data under the appropriate timestamp
+        if (!groupedData.containsKey(timestamp)) {
+          groupedData[timestamp] = [];
         }
-        // Ensure the row has the same number of cells as headers
-        while (newRow.length < headers.length) {
-          newRow.add(''); // Add empty cells if needed
-        }
-        summaryData.add(newRow);
+        groupedData[timestamp]!.add(rowValues);
       }
     }
 
-    setState(() {
-      _headers = headers;
-      _summaryData = summaryData;
+    // Convert the grouped data into a 2D matrix
+    List<List<String>> resultMatrix = [];
+    groupedData.forEach((timestamp, rows) {
+      // Combine rows into a single row per timestamp
+      List<String> combinedRow = [timestamp];
+      for (var row in rows) {
+        combinedRow.addAll(row);
+      }
+      resultMatrix.add(combinedRow);
     });
+
+    return resultMatrix;
+  }
+
+  // Build the table widget
+  Widget _buildDataTable() {
+    List<List<String>> groupedData = extractAndGroupDataByTimestamps();
+    if (groupedData.isEmpty) {
+      return Center(child: Text('No data available.'));
+    }
+
+    // Extract custom headers from _savedDataList
+    List<String> dummyHeaders = [];
+    if (_savedDataList.isNotEmpty) {
+      var firstSavedData = _savedDataList.first;
+      var columnsJson = firstSavedData['columns'] ?? [];
+
+      // Ensure columnsJson is a List<dynamic>
+      if (columnsJson is List<dynamic>) {
+        dummyHeaders = columnsJson.map((columnJson) {
+          // Ensure columnJson is a Map<String, dynamic>
+          if (columnJson is Map<String, dynamic>) {
+            return (columnJson['name'] ?? '')
+                .toString(); // Ensure conversion to String
+          }
+          return ''; // Return empty string if columnJson is not a Map
+        }).toList();
+      }
+
+      // Add your custom header name for timestamp
+      dummyHeaders.insert(0, 'Timestamp');
+    }
+
+    // Ensure that the headers match the number of columns in the data
+    if (groupedData.isNotEmpty && groupedData[0].length < dummyHeaders.length) {
+      // Adjust the dummyHeaders length to match the data columns
+      dummyHeaders = dummyHeaders.sublist(0, groupedData[0].length);
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: DataTable(
+          columns: dummyHeaders.map((header) {
+            return DataColumn(
+              label: Text(header),
+            );
+          }).toList(),
+          rows: groupedData.map((row) {
+            return DataRow(
+              cells: row.map((cell) {
+                return DataCell(
+                  Text(cell),
+                );
+              }).toList(),
+            );
+          }).toList(),
+        ),
+      ),
+    ); 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Summary Table'),
+        title: Text('Saved Data'),
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: _headers.isNotEmpty
-            ? DataTable(
-                columns: _headers.map((header) {
-                  return DataColumn(
-                    label: Text(header),
-                  );
-                }).toList(),
-                rows: _summaryData.map((row) {
-                  return DataRow(
-                    cells: row.map((cell) {
-                      return DataCell(
-                        Text(cell),
-                      );
-                    }).toList(),
-                  );
-                }).toList(),
-              )
-            : Center(
-                child: Text('No data available'),
-              ),
-      ),
+      body: _buildDataTable(),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:collector/pages/equipmentmenu.dart';
 import 'package:collector/pages/newtrendspage.dart';
 import 'package:collector/pages/saveddatapage.dart';
 import 'package:collector/pages/subprocesscreator.dart';
@@ -21,11 +22,45 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
   int _numRows = 0;
   List<List<String>> _tableData = [];
   List<List<String>> _additionalRows = [];
+  List<Map<String, dynamic>> _savedDataList = [];
 
   @override
   void initState() {
     super.initState();
     _loadTableFromPreferences();
+    _loadSavedData();
+  }
+
+  Future<void> _loadSavedData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Set<String> keys = prefs.getKeys();
+    List<Map<String, dynamic>> tempList = [];
+
+    for (String key in keys) {
+      if (key.startsWith('${widget.subprocessName}_saved_')) {
+        String? tableJsonString = prefs.getString(key);
+        if (tableJsonString != null) {
+          try {
+            // Decode the JSON into a Map
+            Map<String, dynamic> tableJson = json.decode(tableJsonString);
+
+            // Verify that the tableJson contains all necessary keys
+            if (tableJson.containsKey('columns') &&
+                tableJson.containsKey('numRows') &&
+                tableJson.containsKey('tableData')) {
+              tempList.add(tableJson);
+            }
+          } catch (e) {
+            print('Error decoding JSON: $e');
+          }
+        }
+      }
+    }
+
+    setState(() {
+      _savedDataList = tempList;
+      print(_savedDataList);
+    });
   }
 
   Future<void> _loadTableFromPreferences() async {
@@ -128,8 +163,9 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         title: Text(widget.subprocessName),
       ),
       body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
+        scrollDirection: Axis.vertical,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildDataTable(),
             SizedBox(height: 20),
@@ -152,7 +188,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
               ],
             ),
             SizedBox(height: 20),
-            _buildDummyTable(), // Add dummy table below the main table
+            //_buildDummyTable(), // Add dummy table below the main table
           ],
         ),
       ),
@@ -199,7 +235,13 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                 ColumnInfo column = _columns[colIndex];
                 if (colIndex == 0) {
                   return DataCell(TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EquipmentMenu(
+                                  equipmentName: _tableData[index][colIndex])));
+                    },
                     child: Text(_tableData[index][colIndex]),
                   ));
                 } else {
@@ -227,14 +269,15 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
     );
   }
 
-  // Method to build the dummy table
+// Method to build the dummy table
   Widget _buildDummyTable() {
+    List<List<String>> groupedData = extractAndGroupDataByTimestamps();
     if (_columns.isEmpty) {
       return Center(child: Text('No data available for dummy table.'));
     }
 
     // Extract headers from the first column of the original table
-// Identify columns that are both fixed and integer type
+    // Identify columns that are both fixed and integer type
     List<int> fixedIntegerColumnIndices = _columns
         .asMap()
         .entries
@@ -244,15 +287,11 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         .toList();
     print('Fixed Integer Column Indices: $fixedIntegerColumnIndices');
 
-    List<int> nonFixedIntegerColumnIndices = _columns
-        .asMap()
-        .entries
-        .where((entry) =>
-            !entry.value.isFixed && entry.value.type == ColumnDataType.integer)
-        .map((entry) => entry.key)
-        .toList();
-    print('Non Fixed Integer COlumn: $nonFixedIntegerColumnIndices');
     List<String> dummyHeaders = _tableData.map((row) => row[0]).toList();
+
+    // Add your custom header name
+    dummyHeaders.insert(0, 'Time Stamp');
+
     print(dummyHeaders);
 
     // Extract values from these columns for each row
@@ -266,10 +305,20 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
           rowValues.join(', ')); // Join values for the row as a single string
     }
     print('Dummy Values: $dummyValues');
+
+    List<int> nonFixedIntegerColumnIndices = _columns
+        .asMap()
+        .entries
+        .where((entry) =>
+            !entry.value.isFixed && entry.value.type == ColumnDataType.integer)
+        .map((entry) => entry.key)
+        .toList();
+    print('Non Fixed Integer COlumn: $nonFixedIntegerColumnIndices');
+
     List<String> loadedDummyValues = [];
     for (var row in _tableData) {
       List<String> rowValues = nonFixedIntegerColumnIndices.map((colIndex) {
-        // Handle casses where colIndex might be out of bounds
+        // Handle cases where colIndex might be out of bounds
         return colIndex < row.length ? row[colIndex] : '';
       }).toList();
       loadedDummyValues.add(
@@ -277,22 +326,95 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
     }
 
     print('Loaded Values$loadedDummyValues');
-    return DataTable(
-        columns: dummyHeaders.map((header) {
-          return DataColumn(
-            label: Text(header),
-          );
-        }).toList(),
-        rows: [
-          DataRow(
-              cells: dummyValues.map((value) {
-            return DataCell(Text(value));
-          }).toList()),
-          //You can add more rows here if needed
-          DataRow(
-              cells: loadedDummyValues.map((value) {
-            return DataCell(Text(value));
-          }).toList()),
-        ]);
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: DataTable(
+            columns: dummyHeaders.map((header) {
+              return DataColumn(
+                label: Text(header),
+              );
+            }).toList(),
+            rows: groupedData.map((row) {
+              return DataRow(
+                  cells: row.map((cell) {
+                return DataCell(Text(cell));
+              }).toList());
+            }).toList()),
+      ),
+    );
+  }
+
+// Function to extract and group data by timestamps
+  List<List<String>> extractAndGroupDataByTimestamps() {
+    Map<String, List<List<String>>> groupedData = {};
+
+    for (var savedData in _savedDataList) {
+      // Extract the timestamp
+      String timestamp = savedData['timestamp'] ?? 'Unknown';
+
+      // Extract columns and tableData
+      List<dynamic> columnsJson = savedData['columns'] ?? [];
+      List<dynamic> tableDataJson = savedData['tableData'] ?? [];
+
+      // Convert columnsJson to List<ColumnInfo>
+      List<ColumnInfo> columns = columnsJson.map((columnJson) {
+        return ColumnInfo(
+          name: columnJson['name'],
+          type: ColumnDataType.values[columnJson['type']],
+          isFixed: columnJson['isFixed'],
+          unit: columnJson['unit'] ?? '',
+        );
+      }).toList();
+
+      // Find non-fixed integer column indices
+      List<int> nonFixedIntegerColumnIndices = columns
+          .asMap()
+          .entries
+          .where((entry) =>
+              !entry.value.isFixed &&
+              entry.value.type == ColumnDataType.integer)
+          .map((entry) => entry.key)
+          .toList();
+
+      // Iterate through each row in the tableData
+      for (var row in tableDataJson) {
+        // Ensure that the row is a List<dynamic> and then map it to a List<String>
+        List<String> rowValues = nonFixedIntegerColumnIndices.map((colIndex) {
+          return colIndex < (row as List<dynamic>).length
+              ? row[colIndex].toString()
+              : '';
+        }).toList();
+
+        // Add the row values to the grouped data under the appropriate timestamp
+        if (!groupedData.containsKey(timestamp)) {
+          groupedData[timestamp] = [];
+        }
+        groupedData[timestamp]!.add(rowValues);
+      }
+    }
+
+    // Convert the grouped data into a 2D matrix
+    List<List<String>> resultMatrix = [];
+    groupedData.forEach((timestamp, rows) {
+      // Combine rows into a single row per timestamp
+      List<String> combinedRow = [timestamp];
+      for (var row in rows) {
+        combinedRow.addAll(row);
+      }
+      resultMatrix.add(combinedRow);
+    });
+
+    return resultMatrix;
+  }
+
+// Usage example:
+  void printGroupedData() {
+    List<List<String>> groupedData = extractAndGroupDataByTimestamps();
+    for (var row in groupedData) {
+      print(row);
+    }
   }
 }

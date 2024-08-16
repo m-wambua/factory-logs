@@ -1,5 +1,7 @@
-
+import 'package:collector/pages/history/maintenance/dynamichistorypage.dart';
 import 'package:collector/pages/homepage.dart';
+import 'package:collector/pages/manuals/dynamicmanualspage.dart';
+import 'package:collector/pages/parameters/dynamicparameterspage.dart';
 import 'package:collector/pages/tableloader.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -29,21 +31,28 @@ class MyApp extends StatelessWidget {
 
         // Handle dynamic routes
         if (routeName != null && routeName.startsWith('/')) {
-          final args = settings.arguments as Map<String, dynamic>?;
-
-          if (args != null) {
+          if (settings.arguments is Map<String, dynamic>) {
+            final args = settings.arguments as Map<String, dynamic>;
             final processName = args['processName'] as String;
             final subprocesses = args['subprocesses'] as List<String>;
 
             return MaterialPageRoute(
-              builder: (context) => DynamicPageLoader(
-                processName: processName,
-                subprocesses: subprocesses,
-              ),
-            );
+                builder: (context) => DynamicPageLoader(
+                    processName: processName, subprocesses: subprocesses));
+          } else if (settings.arguments is String) {
+            final equipmentName = settings.arguments as String;
+
+            // Handle routes where only a string argument is passed
+            switch (routeName) {
+              case '/history':
+                return MaterialPageRoute(builder: (context) => DynamicHistoryPage(equipmentName: equipmentName,));
+              case '/manuals':
+                return MaterialPageRoute(builder: (context) => DynamicManualsPage(equipmentName: equipmentName,));
+              case '/parameters':
+                return MaterialPageRoute(builder: (context) => DynamicParametersPage(equipmentName: equipmentName,));
+            }
           }
         }
-
         // Handle static routes
         final routes = {
           '/history': (context) => const HistoryPage(),
@@ -61,6 +70,9 @@ class MyApp extends StatelessWidget {
           builder: (context) => const LandingPage(username: ''),
         );
       },
+
+      // Handle static routes
+
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -269,9 +281,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TableLoaderPage(
-                
-                subprocessName: subprocess)));
+            builder: (context) => TableLoaderPage(subprocessName: subprocess)));
     print("Navigating to subprocess: $subprocess");
   }
 }
