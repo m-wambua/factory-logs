@@ -155,11 +155,10 @@ class DynamicParametersPage extends StatefulWidget {
 
 class _DynamicParametersPageState extends State<DynamicParametersPage> {
   List<Map<String, String>> _parameters = [];
-  late String _equipmentName;
+
   @override
   Widget build(BuildContext context) {
-    _equipmentName = ModalRoute.of(context)?.settings.arguments as String;
-    _createApparatusFolder(_equipmentName);
+    _createApparatusFolder(widget.equipmentName);
     _loadParameters();
     return Scaffold(
       appBar: AppBar(
@@ -250,7 +249,7 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
       try {
         // Get the directory where the Json file is stored
         String folderPath =
-            'servives/parameters/files_and_folders/$_equipmentName';
+            'servives/parameters/files_and_folders/${widget.equipmentName}';
         Directory targetDir = Directory(folderPath);
 
         // Determine the subdirectory based on the file type
@@ -308,7 +307,7 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
 
   Future<void> _loadParameters() async {
     final String folderPath =
-        'services/parameters/files_and_folders/$_equipmentName';
+        'services/parameters/files_and_folders/${widget.equipmentName}';
     final File paramerFile = File('$folderPath/parameters.json');
     try {
       if (await paramerFile.exists()) {
@@ -325,7 +324,7 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
 
   Future<void> _saveParameters() async {
     final String folderPath =
-        'services/parameters/files_and_folders/$_equipmentName';
+        'services/parameters/files_and_folders/${widget.equipmentName}';
     final File parameterFile = File('$folderPath/parameters.json');
     try {
       if (!await parameterFile.exists()) {
