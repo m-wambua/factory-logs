@@ -2,6 +2,7 @@ import 'package:collector/pages/file_manager.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/subprocesscreator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreatorPage extends StatefulWidget {
   final String processName;
@@ -69,9 +70,7 @@ class _CreatorPageState extends State<CreatorPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => SubprocessCreatorPage(
-                                  subprocessName: _subprocesses[index])
-                                  
-                                  ));
+                                  subprocessName: _subprocesses[index])));
                     },
                     onLongPress: () {
                       _renameSubprocess(index);
@@ -195,19 +194,25 @@ class _CreatorPageState extends State<CreatorPage> {
     setState(() {
       _isSaving = true;
     });
+    
+
     try {
-      await FileManager.createProcessFolders(widget.processName);
-      await FileManager.createProcessFiles(widget.processName);
-      await FileManager.createSubprocessFolders(
-          widget.processName, _subprocesses);
-      for (final subprocess in _subprocesses) {
-        await FileManager.createSubprocessFiles(widget.processName, subprocess);
-      }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Process and Subprocesses saved Successfully!')));
+      // Load the existing processes from the JSON file
+      Map<String, List<String>> existingProcesses =
+          await FileManager.loadProcesses();
+
+      // Add or update the current process with its subprocesses
+      existingProcesses[widget.processName] = _subprocesses;
+
+      // Save the updated processes back to the JSON file
+      await FileManager.saveProcesses(existingProcesses);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Process and Subprocesses saved successfully!')),
+      );
 
       // Update Landing
-      Navigator.pop(context); // Go back to landingPage
+      Navigator.pop(context); // Go back to landing page
       widget.updateButtonState(
           widget.processName, 'finalized'); // Update process state
 
@@ -221,9 +226,10 @@ class _CreatorPageState extends State<CreatorPage> {
         },
       );
     } catch (e) {
-      print('Error creating folders and files: $e');
+      print('Error saving process and subprocesses: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save process and subprocess')));
+        SnackBar(content: Text('Failed to save process and subprocesses')),
+      );
     } finally {
       setState(() {
         _isSaving = false;

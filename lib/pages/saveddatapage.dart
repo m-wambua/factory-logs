@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:collector/pages/subprocesscreator.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SavedDataPage extends StatefulWidget {
   final String subprocessName;
@@ -23,27 +25,33 @@ class _SavedDataPageState extends State<SavedDataPage> {
   }
 
   Future<void> _loadSavedData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Set<String> keys = prefs.getKeys();
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataDirFile =
+        Directory('${savedDataDir.path}/${widget.subprocessName}_saved');
+
+    if (!await savedDataDirFile.exists()) {
+      // Handle case where directory doesn't exist
+      return; // Or create the directory if needed
+    }
+
+    final files = savedDataDirFile.listSync();
+
     List<Map<String, dynamic>> tempList = [];
 
-    for (String key in keys) {
-      if (key.startsWith('${widget.subprocessName}_saved_')) {
-        String? tableJsonString = prefs.getString(key);
-        if (tableJsonString != null) {
-          try {
-            // Decode the JSON into a Map
-            Map<String, dynamic> tableJson = json.decode(tableJsonString);
+    for (var file in files) {
+      if (file is File) {
+        try {
+          final jsonString = await file.readAsString();
+          final tableJson = json.decode(jsonString) as Map<String, dynamic>;
 
-            // Verify that the tableJson contains all necessary keys
-            if (tableJson.containsKey('columns') &&
-                tableJson.containsKey('numRows') &&
-                tableJson.containsKey('tableData')) {
-              tempList.add(tableJson);
-            }
-          } catch (e) {
-            print('Error decoding JSON: $e');
+          // Verify that the tableJson contains all necessary keys
+          if (tableJson.containsKey('columns') &&
+              tableJson.containsKey('numRows') &&
+              tableJson.containsKey('tableData')) {
+            tempList.add(tableJson);
           }
+        } catch (e) {
+          print('Error decoding JSON: $e');
         }
       }
     }

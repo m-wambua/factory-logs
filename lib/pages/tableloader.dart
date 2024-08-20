@@ -6,6 +6,8 @@ import 'package:collector/pages/trends/trendspage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class TableLoaderPage extends StatefulWidget {
   final String subprocessName;
@@ -19,40 +21,47 @@ class TableLoaderPage extends StatefulWidget {
 
 class _TableLoaderPageState extends State<TableLoaderPage> {
   List<ColumnInfo> _columns = [];
-  int _numRows = 0;
+
   List<List<String>> _tableData = [];
+  int _numRows = 0;
   List<List<String>> _additionalRows = [];
   List<Map<String, dynamic>> _savedDataList = [];
 
   @override
   void initState() {
     super.initState();
-    _loadTableFromPreferences();
+    _loadTableFromFile();
     _loadSavedData();
   }
 
   Future<void> _loadSavedData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Set<String> keys = prefs.getKeys();
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataDirFile =
+        Directory('${savedDataDir.path}/${widget.subprocessName}_saved');
+
+    if (!await savedDataDirFile.exists()) {
+      // Handle case where directory doesn't exist
+      return; // Or create the directory if needed
+    }
+
+    final files = savedDataDirFile.listSync();
+
     List<Map<String, dynamic>> tempList = [];
 
-    for (String key in keys) {
-      if (key.startsWith('${widget.subprocessName}_saved_')) {
-        String? tableJsonString = prefs.getString(key);
-        if (tableJsonString != null) {
-          try {
-            // Decode the JSON into a Map
-            Map<String, dynamic> tableJson = json.decode(tableJsonString);
+    for (var file in files) {
+      if (file is File) {
+        try {
+          final jsonString = await file.readAsString();
+          final tableJson = json.decode(jsonString) as Map<String, dynamic>;
 
-            // Verify that the tableJson contains all necessary keys
-            if (tableJson.containsKey('columns') &&
-                tableJson.containsKey('numRows') &&
-                tableJson.containsKey('tableData')) {
-              tempList.add(tableJson);
-            }
-          } catch (e) {
-            print('Error decoding JSON: $e');
+          // Verify that the tableJson contains all necessary keys
+          if (tableJson.containsKey('columns') &&
+              tableJson.containsKey('numRows') &&
+              tableJson.containsKey('tableData')) {
+            tempList.add(tableJson);
           }
+        } catch (e) {
+          print('Error decoding JSON: $e');
         }
       }
     }
@@ -63,97 +72,106 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
     });
   }
 
-  Future<void> _loadTableFromPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? tableJsonString = prefs.getString('${widget.subprocessName}_table');
+  Future<void> _loadTableFromFile() async {
+    final tableFileName = '${widget.subprocessName}_table.json';
+    final documentsDir = await getApplicationDocumentsDirectory();
+    final tableFile = File(documentsDir.path + '/$tableFileName');
 
-    if (tableJsonString != null) {
-      Map<String, dynamic> tableJson = json.decode(tableJsonString);
+    if (await tableFile.exists()) {
+      try {
+        final jsonString = await tableFile.readAsString();
+        final tableJson = json.decode(jsonString) as Map<String, dynamic>;
 
-      setState(() {
-        _columns = (tableJson['columns'] as List<dynamic>).map((columnJson) {
-          return ColumnInfo(
-            name: columnJson['name'],
-            type: ColumnDataType.values[columnJson['type']],
-            isFixed: columnJson['isFixed'],
-            unit: columnJson['unit'] ?? '',
-          );
-        }).toList();
-
-        _numRows = tableJson['numRows'] ?? 0;
-
-        _tableData = List<List<String>>.from(
-          tableJson['tableData'].map((row) => List<String>.from(row)),
-        );
-      });
+        _columns = (tableJson['columns'] as List<dynamic>)
+            .map((columnJson) => ColumnInfo.fromJson(columnJson))
+            .toList();
+        _numRows = tableJson['numRows'] as int;
+        _tableData = (tableJson['tableData'] as List<dynamic>)
+            .map((row) => (row as List<dynamic>).cast<String>())
+            .toList();
+      } catch (error) {
+        print('Error loading table from file: $error');
+        // Handle error, e.g., show a snackbar or default initialization
+      }
+    } else {
+      // Handle case where no JSON file is found
+      Center(child: Text('No Table was Found')); // Default initialization
     }
+
+    setState(() {});
   }
 
   Future<void> _saveTableAsDraft() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataDirFile =
+        Directory('${savedDataDir.path}/${widget.subprocessName}_saved');
+
+    // Create the directory if it doesn't exist
+    await savedDataDirFile.create(recursive: true);
 
     // Get the current timestamp
     String timestamp = DateTime.now().toIso8601String();
 
     // Build the table JSON with current user-filled data
     Map<String, dynamic> tableJson = {
-      'columns': _columns.map((column) {
-        return {
-          'name': column.name,
-          'type': column.type.index,
-          'isFixed': column.isFixed,
-          'unit': column.unit,
-        };
-      }).toList(),
+      'columns': _columns.map((column) => column.toJson()).toList(),
       'numRows': _numRows,
-      'tableData': _tableData.map((row) {
-        return row.map((cell) => cell.toString()).toList();
-      }).toList(),
+      'tableData': _tableData
+          .map((row) => row.map((cell) => cell.toString()).toList())
+          .toList(),
       'timestamp': timestamp,
     };
 
-    // Save the table data as JSON string
-    prefs.setString(
-        '${widget.subprocessName}_saved_$timestamp', json.encode(tableJson));
+    final fileName = '${savedDataDirFile.path}/draft_$timestamp.json';
 
-    // Display a message indicating that the draft has been saved
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Draft saved successfully!')),
-    );
+    try {
+      await File(fileName).writeAsString(json.encode(tableJson));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Draft saved successfully!')),
+      );
+    } catch (error) {
+      print('Error saving table as draft: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving draft!')),
+      );
+    }
   }
 
   Future<void> _saveAndNavigateToTrends() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataDirFile =
+        Directory('${savedDataDir.path}/${widget.subprocessName}_saved');
+
+    // Create the directory if it doesn't exist
+    await savedDataDirFile.create(recursive: true);
 
     // Get the current timestamp
     String timestamp = DateTime.now().toIso8601String();
 
     // Build the table JSON with current user-filled data
     Map<String, dynamic> tableJson = {
-      'columns': _columns.map((column) {
-        return {
-          'name': column.name,
-          'type': column.type.index,
-          'isFixed': column.isFixed,
-          'unit': column.unit,
-        };
-      }).toList(),
+      'columns': _columns.map((column) => column.toJson()).toList(),
       'numRows': _numRows,
-      'tableData': _tableData.map((row) {
-        return row.map((cell) => cell.toString()).toList();
-      }).toList(),
+      'tableData': _tableData
+          .map((row) => row.map((cell) => cell.toString()).toList())
+          .toList(),
       'timestamp': timestamp,
     };
 
-    // Save the table data as JSON string
-    prefs.setString(
-        '${widget.subprocessName}_saved_$timestamp', json.encode(tableJson));
+    final fileName = '${savedDataDirFile.path}/data_$timestamp.json';
 
-    // Display a message indicating that the draft has been saved
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Draft saved successfully!')),
-    );
-    _viewSubmittedData();
+    try {
+      await File(fileName).writeAsString(json.encode(tableJson));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Data saved successfully!')),
+      );
+      _viewSubmittedData(); // Navigate to trends screen
+    } catch (error) {
+      print('Error saving table data: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving data!')),
+      );
+    }
   }
 
   @override
@@ -188,7 +206,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
               ],
             ),
             SizedBox(height: 20),
-            //_buildDummyTable(), // Add dummy table below the main table
+            // _buildDummyTable(), // Add dummy table below the main table
           ],
         ),
       ),
@@ -217,55 +235,65 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
       return Center(child: Text('No columns available.'));
     }
 
-    return DataTable(
-      columns: _columns.map((column) {
-        return DataColumn(
-          label: Text(
-            '${column.name}${column.unit.isNotEmpty ? ' (${column.unit})' : ''}',
+    return Row(
+      children: [
+        DataTable(
+          columns: _columns.map((column) {
+            return DataColumn(
+              label: Text(
+                '${column.name}${column.unit.isNotEmpty ? ' (${column.unit})' : ''}',
+              ),
+            );
+          }).toList(),
+          rows: List<DataRow>.generate(
+            _numRows,
+            (index) {
+              return DataRow(
+                cells: List<DataCell>.generate(
+                  _columns.length,
+                  (colIndex) {
+                    ColumnInfo column = _columns[colIndex];
+                    if (colIndex == 0) {
+                      return DataCell(TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EquipmentMenu(
+                                      equipmentName: _tableData[index]
+                                          [colIndex])));
+                        },
+                        child: Text(_tableData[index][colIndex]),
+                      ));
+                    } else {
+                      return DataCell(
+                        column.isFixed
+                            ? Text(_tableData[index][colIndex])
+                            : TextFormField(
+                                initialValue: _tableData[index][colIndex],
+                                keyboardType:
+                                    column.type == ColumnDataType.integer
+                                        ? TextInputType.number
+                                        : TextInputType.text,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _tableData[index][colIndex] = value;
+                                  });
+                                },
+                              ),
+                      );
+                    }
+                  },
+                ),
+              );
+            },
           ),
-        );
-      }).toList(),
-      rows: List<DataRow>.generate(
-        _numRows,
-        (index) {
-          return DataRow(
-            cells: List<DataCell>.generate(
-              _columns.length,
-              (colIndex) {
-                ColumnInfo column = _columns[colIndex];
-                if (colIndex == 0) {
-                  return DataCell(TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EquipmentMenu(
-                                  equipmentName: _tableData[index][colIndex])));
-                    },
-                    child: Text(_tableData[index][colIndex]),
-                  ));
-                } else {
-                  return DataCell(
-                    column.isFixed
-                        ? Text(_tableData[index][colIndex])
-                        : TextFormField(
-                            initialValue: _tableData[index][colIndex],
-                            keyboardType: column.type == ColumnDataType.integer
-                                ? TextInputType.number
-                                : TextInputType.text,
-                            onChanged: (value) {
-                              setState(() {
-                                _tableData[index][colIndex] = value;
-                              });
-                            },
-                          ),
-                  );
-                }
-              },
-            ),
-          );
-        },
-      ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        //_buildDummyTable()
+      ],
     );
   }
 

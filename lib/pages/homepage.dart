@@ -10,6 +10,7 @@ import 'package:collector/pages/process_2/process_2.dart';
 import 'package:collector/pages/process_3/process_3.dart';
 import 'package:collector/pages/process_4/process_4.dart';
 import 'package:collector/pages/logout_page.dart';
+import 'package:collector/pages/file_manager.dart' as FileManager;
 
 class LandingPage extends StatefulWidget {
   final String username;
@@ -31,11 +32,20 @@ class _LandingPageState extends State<LandingPage> {
 
   List<NotificationModel> _notifications = [];
   List<String> _processes = [];
+  Map<String, List<String>> processNames = {};
 
   @override
   void initState() {
     super.initState();
     loadNotifications();
+    _loadProcesses();
+  }
+
+  Future<void> _loadProcesses() async {
+    processNames = await FileManager.FileManager.loadProcesses();
+    _processes = processNames.keys
+        .toList(); // Extract process names from the loaded data
+    setState(() {});
   }
 
   Future<void> loadNotifications() async {
@@ -187,9 +197,7 @@ class _LandingPageState extends State<LandingPage> {
       ),
       drawer: Drawer(
         child: ListView(
-          padding: EdgeInsets.zero,
-          children: _buildNavigationItems(),
-        ),
+            padding: EdgeInsets.zero, children: _buildNavigationItems()),
       ),
       body: Stack(
         children: [
@@ -221,19 +229,19 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   List<Widget> _buildNavigationItems() {
-    List<Widget> navigationItems = _buttonStates.keys.map((String label) {
+    List<Widget> navigationItems = _processes.map((String processName) {
       Color tileColor =
-          _buttonStates[label] == 'creation' ? Colors.red : Colors.green;
+          _buttonStates[processName] == 'creation' ? Colors.red : Colors.green;
 
       return ListTile(
-        title: Text(label),
-        selected: _selectedProcess == label,
+        title: Text(processName),
+        selected: _selectedProcess == processName,
         tileColor: tileColor,
         onTap: () {
           Navigator.pop(context); // Close the drawer
-          _handleButtonPressed(label);
+          _handleButtonPressed(processName);
           setState(() {
-            _selectedProcess = label;
+            _selectedProcess = processName;
           });
         },
       );
@@ -255,32 +263,48 @@ class _LandingPageState extends State<LandingPage> {
     return navigationItems;
   }
 
- void _handleButtonPressed(String label) async {
-  if (_processes.contains(label)) {
-    Navigator.pushNamed(context, '/${label}');
-  } else {
-    // Handle static routes
-    switch (label) {
-      case 'Process 1':
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Process1Page()));
-        break;
-      case 'Process 2':
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Process2Page()));
-        break;
-      case 'Process 3':
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Process3Page()));
-        break;
-      case 'Process 4':
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Process4Page()));
-        break;
-      case 'Logout':
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LogoutPage(currentUser: widget.username)));
-        break;
-      default:
-        throw Exception('Invalid route: $label');
+  void _handleButtonPressed(String processName) async {
+    if (_processes.contains(processName)) {
+      Navigator.pushNamed(
+        context,
+        '/$processName',
+        arguments: {
+          'processName': processName,
+          'subprocesses': processNames[
+              processName], // Pass subprocesses to the dynamic page
+        },
+      );
+    } else {
+      // Handle static routes as before
+      switch (processName) {
+        case 'Process 1':
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Process1Page()));
+          break;
+        case 'Process 2':
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Process2Page()));
+          break;
+        case 'Process 3':
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Process3Page()));
+          break;
+        case 'Process 4':
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Process4Page()));
+          break;
+        case 'Logout':
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      LogoutPage(currentUser: widget.username)));
+          break;
+        default:
+          throw Exception('Invalid route: $processName');
+      }
     }
   }
-}
 
   void updateButtonState(String processName, String newState) {
     setState(() {

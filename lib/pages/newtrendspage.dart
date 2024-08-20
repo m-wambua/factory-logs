@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:collector/pages/subprocesscreator.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
 
 class TrendsPage2 extends StatefulWidget {
   final String subprocessName;
@@ -14,45 +17,162 @@ class TrendsPage2 extends StatefulWidget {
 
 class _TrendsPage2State extends State<TrendsPage2> {
   List<Map<String, dynamic>> _savedDataList = [];
+  List<ColumnInfo> _columns = [];
+  List<List<String>> _tableData = [];
+  int _numRows = 0;
 
   @override
   void initState() {
     super.initState();
+    _loadTableFromFile();
     _loadSavedData();
   }
 
   Future<void> _loadSavedData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Set<String> keys = prefs.getKeys();
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataDirFile =
+        Directory('${savedDataDir.path}/${widget.subprocessName}_saved');
+
+    if (!await savedDataDirFile.exists()) {
+      // Handle case where directory doesn't exist
+      return; // Or create the directory if needed
+    }
+
+    final files = savedDataDirFile.listSync();
+
     List<Map<String, dynamic>> tempList = [];
 
-    for (String key in keys) {
-      if (key.startsWith('${widget.subprocessName}_saved_')) {
-        String? tableJsonString = prefs.getString(key);
-        if (tableJsonString != null) {
-          try {
-            // Decode the JSON into a Map
-            Map<String, dynamic> tableJson = json.decode(tableJsonString);
+    for (var file in files) {
+      if (file is File) {
+        try {
+          final jsonString = await file.readAsString();
+          final tableJson = json.decode(jsonString) as Map<String, dynamic>;
 
-            // Verify that the tableJson contains all necessary keys
-            if (tableJson.containsKey('columns') &&
-                tableJson.containsKey('numRows') &&
-                tableJson.containsKey('tableData')) {
-              tempList.add(tableJson);
-            }
-          } catch (e) {
-            print('Error decoding JSON: $e');
+          // Verify that the tableJson contains all necessary keys
+          if (tableJson.containsKey('columns') &&
+              tableJson.containsKey('numRows') &&
+              tableJson.containsKey('tableData')) {
+            tempList.add(tableJson);
           }
+        } catch (e) {
+          print('Error decoding JSON: $e');
         }
       }
     }
 
     setState(() {
       _savedDataList = tempList;
+      print(_savedDataList);
     });
   }
 
-  // Function to extract and group data by timestamps
+  Future<void> _loadTableFromFile() async {
+    final tableFileName = '${widget.subprocessName}_table.json';
+    final documentsDir = await getApplicationDocumentsDirectory();
+    final tableFile = File(documentsDir.path + '/$tableFileName');
+
+    if (await tableFile.exists()) {
+      try {
+        final jsonString = await tableFile.readAsString();
+        final tableJson = json.decode(jsonString) as Map<String, dynamic>;
+
+        _columns = (tableJson['columns'] as List<dynamic>)
+            .map((columnJson) => ColumnInfo.fromJson(columnJson))
+            .toList();
+        _numRows = tableJson['numRows'] as int;
+        _tableData = (tableJson['tableData'] as List<dynamic>)
+            .map((row) => (row as List<dynamic>).cast<String>())
+            .toList();
+      } catch (error) {
+        print('Error loading table from file: $error');
+        // Handle error, e.g., show a snackbar or default initialization
+      }
+    } else {
+      // Handle case where no JSON file is found
+      Center(child: Text('No Table was Found')); // Default initialization
+    }
+
+    setState(() {});
+  }
+
+  Widget _buildDummyTable() {
+    List<List<String>> groupedData = extractAndGroupDataByTimestamps();
+    if (_columns.isEmpty) {
+      return Center(child: Text('No data available for dummy table.'));
+    }
+
+    // Extract headers from the first column of the original table
+    // Identify columns that are both fixed and integer type
+    List<int> fixedIntegerColumnIndices = _columns
+        .asMap()
+        .entries
+        .where((entry) =>
+            entry.value.isFixed && entry.value.type == ColumnDataType.integer)
+        .map((entry) => entry.key)
+        .toList();
+    print('Fixed Integer Column Indices: $fixedIntegerColumnIndices');
+
+    List<String> dummyHeaders = _tableData.map((row) => row[0]).toList();
+
+    // Add your custom header name
+    dummyHeaders.insert(0, 'Time Stamp');
+
+    print(dummyHeaders);
+
+    // Extract values from these columns for each row
+    List<String> dummyValues = [];
+    for (var row in _tableData) {
+      List<String> rowValues = fixedIntegerColumnIndices.map((colIndex) {
+        // Handle cases where colIndex might be out of bounds
+        return colIndex < row.length ? row[colIndex] : '';
+      }).toList();
+      dummyValues.add(
+          rowValues.join(', ')); // Join values for the row as a single string
+    }
+    print('Dummy Values: $dummyValues');
+
+    List<int> nonFixedIntegerColumnIndices = _columns
+        .asMap()
+        .entries
+        .where((entry) =>
+            !entry.value.isFixed && entry.value.type == ColumnDataType.integer)
+        .map((entry) => entry.key)
+        .toList();
+    print('Non Fixed Integer COlumn: $nonFixedIntegerColumnIndices');
+
+    List<String> loadedDummyValues = [];
+    for (var row in _tableData) {
+      List<String> rowValues = nonFixedIntegerColumnIndices.map((colIndex) {
+        // Handle cases where colIndex might be out of bounds
+        return colIndex < row.length ? row[colIndex] : '';
+      }).toList();
+      loadedDummyValues.add(
+          rowValues.join(', ')); // join Valuse for the row as a single string
+    }
+
+    print('Loaded Values$loadedDummyValues');
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: DataTable(
+            columns: dummyHeaders.map((header) {
+              return DataColumn(
+                label: Text(header),
+              );
+            }).toList(),
+            rows: groupedData.map((row) {
+              return DataRow(
+                  cells: row.map((cell) {
+                return DataCell(Text(cell));
+              }).toList());
+            }).toList()),
+      ),
+    );
+  }
+
+// Function to extract and group data by timestamps
   List<List<String>> extractAndGroupDataByTimestamps() {
     Map<String, List<List<String>>> groupedData = {};
 
@@ -115,63 +235,12 @@ class _TrendsPage2State extends State<TrendsPage2> {
     return resultMatrix;
   }
 
-  // Build the table widget
-  Widget _buildDataTable() {
+// Usage example:
+  void printGroupedData() {
     List<List<String>> groupedData = extractAndGroupDataByTimestamps();
-    if (groupedData.isEmpty) {
-      return Center(child: Text('No data available.'));
+    for (var row in groupedData) {
+      print(row);
     }
-
-    // Extract custom headers from _savedDataList
-    List<String> dummyHeaders = [];
-    if (_savedDataList.isNotEmpty) {
-      var firstSavedData = _savedDataList.first;
-      var columnsJson = firstSavedData['columns'] ?? [];
-
-      // Ensure columnsJson is a List<dynamic>
-      if (columnsJson is List<dynamic>) {
-        dummyHeaders = columnsJson.map((columnJson) {
-          // Ensure columnJson is a Map<String, dynamic>
-          if (columnJson is Map<String, dynamic>) {
-            return (columnJson['name'] ?? '')
-                .toString(); // Ensure conversion to String
-          }
-          return ''; // Return empty string if columnJson is not a Map
-        }).toList();
-      }
-
-      // Add your custom header name for timestamp
-      dummyHeaders.insert(0, 'Timestamp');
-    }
-
-    // Ensure that the headers match the number of columns in the data
-    if (groupedData.isNotEmpty && groupedData[0].length < dummyHeaders.length) {
-      // Adjust the dummyHeaders length to match the data columns
-      dummyHeaders = dummyHeaders.sublist(0, groupedData[0].length);
-    }
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: DataTable(
-          columns: dummyHeaders.map((header) {
-            return DataColumn(
-              label: Text(header),
-            );
-          }).toList(),
-          rows: groupedData.map((row) {
-            return DataRow(
-              cells: row.map((cell) {
-                return DataCell(
-                  Text(cell),
-                );
-              }).toList(),
-            );
-          }).toList(),
-        ),
-      ),
-    ); 
   }
 
   @override
@@ -180,7 +249,7 @@ class _TrendsPage2State extends State<TrendsPage2> {
       appBar: AppBar(
         title: Text('Saved Data'),
       ),
-      body: _buildDataTable(),
+      body: _buildDummyTable(),
     );
   }
 }

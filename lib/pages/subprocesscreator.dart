@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
 enum ColumnDataType {
   integer,
   string,
@@ -17,6 +18,18 @@ class ColumnInfo {
       this.type = ColumnDataType.string,
       this.isFixed = false,
       this.unit = ''});
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'type': type.index,
+        'isFixed': isFixed,
+        'unit': unit,
+      };
+  factory ColumnInfo.fromJson(Map<String, dynamic> json) => ColumnInfo(
+        name: json['name'] as String,
+        type: ColumnDataType.values[json['type'] as int],
+        isFixed: json['isFixed'] as bool,
+        unit: json['unit'] as String,
+      );
 }
 
 class SubprocessCreatorPage extends StatefulWidget {
@@ -46,70 +59,64 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
     _tableData = List.generate(
         _numRows, (index) => List.generate(_columns.length, (colIndex) => ''));
   }
+ Future<void> _saveTableTemplate() async {
+  final tableFileName = '${widget.subprocessName}_table.json';
+  final documentsDir = await getApplicationDocumentsDirectory();
+  final tableFile = File(documentsDir.path + '/$tableFileName');
 
-  Future<void> _saveTableTemplate() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  // Check if the file exists, create it if not
+  if (!await tableFile.exists()) {
+    await tableFile.create(recursive: true);
+  }
 
-    // Convert table structure to JSON
-    Map<String, dynamic> tableJson = {
-      'columns': _columns
-          .map((column) => {
-                'name': column.name,
-                'type': column.type.index,
-                'isFixed': column.isFixed,
-                'unit': column.unit
-              })
-          .toList(),
-      'numRows': _numRows,
-      'tableData': _tableData,
-    };
+  // Convert table structure to JSON
+  final tableJson = {
+    'columns': _columns.map((column) => column.toJson()).toList(),
+    'numRows': _numRows,
+    'tableData': _tableData.map((row) => row.map((cell) => cell).toList()).toList(), // Deep copy of table data
+  };
 
-    String tableJsonString = json.encode(tableJson);
-
-    // Save JSON to SharedPreferences
-    prefs.setString('${widget.subprocessName}_table', tableJsonString);
-
-    // Debugging: Print JSON structure
-    print('Saved JSON: $tableJsonString');
-
+  try {
+    await tableFile.writeAsString(json.encode(tableJson));
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('Template saved!')));
+  } catch (error) {
+    print('Error saving table to file: $error');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error saving template!')),
+    );
+  }
+}
+
+
+Future<void> _loadTableTemplate() async {
+  final tableFileName = '${widget.subprocessName}_table.json';
+  final documentsDir = await getApplicationDocumentsDirectory();
+  final tableFile = File(documentsDir.path + '/$tableFileName');
+
+  if (await tableFile.exists()) {
+    try {
+      final jsonString = await tableFile.readAsString();
+      final tableJson = json.decode(jsonString) as Map<String, dynamic>;
+
+      _columns = (tableJson['columns'] as List<dynamic>)
+          .map((columnJson) => ColumnInfo.fromJson(columnJson))
+          .toList();
+      _numRows = tableJson['numRows'] as int;
+      _tableData = (tableJson['tableData'] as List<dynamic>)
+          .map((row) => (row as List<dynamic>).cast<String>())
+          .toList();
+    } catch (error) {
+      print('Error loading table from file: $error');
+      // Handle error, e.g., show a snackbar or default initialization
+    }
+  } else {
+    // Handle case where no JSON file is found
+    _initializeTable(); // Default initialization
   }
 
-  Future<void> _loadTableTemplate() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      // Load JSON from SharedPreferences
-      String? tableJsonString =
-          prefs.getString('${widget.subprocessName}_table');
-
-      if (tableJsonString != null) {
-        Map<String, dynamic> tableJson = json.decode(tableJsonString);
-        _columns = (tableJson['columns'] as List<dynamic>).map((columnJson) {
-          return ColumnInfo(
-            name: columnJson['name'],
-            type: ColumnDataType.values[columnJson['type']],
-            isFixed: columnJson['isFixed'],
-            unit: columnJson['unit'] ?? '',
-          );
-        }).toList();
-        _numRows = tableJson['numRows'];
-        _tableData = List<List<String>>.from(
-            tableJson['tableData'].map((row) => List<String>.from(row)));
-
-        // Debugging: Print loaded JSON
-        print('Loaded JSON: $tableJsonString');
-      } else {
-        // Handle case where no JSON is found
-        _initializeTable(); // Default initialization
-      }
-
-      // Debugging: Print loaded table structure
-      print('Loaded Columns: $_columns');
-      print('Loaded Table Data: $_tableData');
-    });
-  }
-
+  setState(() {});
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
