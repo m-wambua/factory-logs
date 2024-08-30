@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+
 class StartUpEntry {
   List<String> startupStep;
   String lastPersonUpdate;
@@ -30,9 +31,9 @@ class StartUpEntry {
 
 class StartUpEntryData {
   List<StartUpEntry> startupData = [];
-  Future<void> savingStartUpEntry(StartUpEntry newEntry) async {
+  Future<void> savingStartUpEntry(StartUpEntry newEntry, String processName) async {
     try {
-      final directory = 'pages/models/process_1/start_up';
+      final directory = 'pages/models/$processName/start_up';
       final file = File('${directory}/startup.json');
       if (!await file.exists()) {
         await file.create(recursive: true);
@@ -66,10 +67,10 @@ class StartUpEntryData {
     }
   }
 
-  Future<void> loadStartUpEntry() async {
+  Future<void> loadStartUpEntry(String processName) async {
     try {
-        final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/startup.json');
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/$processName/startup.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);

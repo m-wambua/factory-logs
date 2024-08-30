@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:collector/pages/lastEntrySaver.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:collector/pages/subprocesscreator.dart';
@@ -47,7 +47,8 @@ class _SavedDataPageState extends State<SavedDataPage> {
           // Verify that the tableJson contains all necessary keys
           if (tableJson.containsKey('columns') &&
               tableJson.containsKey('numRows') &&
-              tableJson.containsKey('tableData')) {
+              tableJson.containsKey('tableData') &&
+              tableJson.containsKey('timestamp')) {
             tempList.add(tableJson);
           }
         } catch (e) {
@@ -58,8 +59,15 @@ class _SavedDataPageState extends State<SavedDataPage> {
 
     setState(() {
       _savedDataList = tempList;
-      print(_savedDataList);
     });
+  }
+
+  // Method to get the last entered data and timestamp
+  Map<String, dynamic>? getLastEnteredData() {
+    if (_savedDataList.isNotEmpty) {
+      return _savedDataList.last;
+    }
+    return null;
   }
 
   @override
@@ -67,9 +75,6 @@ class _SavedDataPageState extends State<SavedDataPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Saved Data'),
-        actions: [
-          IconButton(onPressed: printGroupedData, icon: Icon(Icons.print))
-        ],
       ),
       body: ListView.builder(
         itemCount: _savedDataList.length,
@@ -106,6 +111,9 @@ class _SavedDataPageState extends State<SavedDataPage> {
           }
 
           return Card(
+            color: index == _savedDataList.length - 1
+                ? Colors.blueAccent // highlight the last entered data's card
+                : null,
             child: ListTile(
               title: Text('Saved on: $timestamp'),
               subtitle: Column(
@@ -142,76 +150,5 @@ class _SavedDataPageState extends State<SavedDataPage> {
         },
       ),
     );
-  }
-
-// Function to extract and group data by timestamps
-  List<List<String>> extractAndGroupDataByTimestamps() {
-    Map<String, List<List<String>>> groupedData = {};
-
-    for (var savedData in _savedDataList) {
-      // Extract the timestamp
-      String timestamp = savedData['timestamp'] ?? 'Unknown';
-
-      // Extract columns and tableData
-      List<dynamic> columnsJson = savedData['columns'] ?? [];
-      List<dynamic> tableDataJson = savedData['tableData'] ?? [];
-
-      // Convert columnsJson to List<ColumnInfo>
-      List<ColumnInfo> columns = columnsJson.map((columnJson) {
-        return ColumnInfo(
-          name: columnJson['name'],
-          type: ColumnDataType.values[columnJson['type']],
-          isFixed: columnJson['isFixed'],
-          unit: columnJson['unit'] ?? '',
-        );
-      }).toList();
-
-      // Find non-fixed integer column indices
-      List<int> nonFixedIntegerColumnIndices = columns
-          .asMap()
-          .entries
-          .where((entry) =>
-              !entry.value.isFixed &&
-              entry.value.type == ColumnDataType.integer)
-          .map((entry) => entry.key)
-          .toList();
-
-      // Iterate through each row in the tableData
-      for (var row in tableDataJson) {
-        // Ensure that the row is a List<dynamic> and then map it to a List<String>
-        List<String> rowValues = nonFixedIntegerColumnIndices.map((colIndex) {
-          return colIndex < (row as List<dynamic>).length
-              ? row[colIndex].toString()
-              : '';
-        }).toList();
-
-        // Add the row values to the grouped data under the appropriate timestamp
-        if (!groupedData.containsKey(timestamp)) {
-          groupedData[timestamp] = [];
-        }
-        groupedData[timestamp]!.add(rowValues);
-      }
-    }
-
-    // Convert the grouped data into a 2D matrix
-    List<List<String>> resultMatrix = [];
-    groupedData.forEach((timestamp, rows) {
-      // Combine rows into a single row per timestamp
-      List<String> combinedRow = [timestamp];
-      for (var row in rows) {
-        combinedRow.addAll(row);
-      }
-      resultMatrix.add(combinedRow);
-    });
-
-    return resultMatrix;
-  }
-
-// Usage example:
-  void printGroupedData() {
-    List<List<String>> groupedData = extractAndGroupDataByTimestamps();
-    for (var row in groupedData) {
-      print(row);
-    }
   }
 }

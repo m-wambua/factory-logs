@@ -24,10 +24,7 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   String _selectedProcess = '';
   final Map<String, String> _buttonStates = {
-    'Process 1': 'finalized',
-    'Process 2': 'finalized',
-    'Process 3': 'finalized',
-    'Process 4': 'finalized',
+
   };
 
   List<NotificationModel> _notifications = [];
@@ -55,29 +52,9 @@ class _LandingPageState extends State<LandingPage> {
     });
   }
 
-  void _createNewProcess() {
-    setState(() {
-      int newIndex = _processes.length + 5; // Start index from 5
-      String newProcess = 'Process $newIndex';
-      _processes.add(newProcess);
-      _buttonStates[newProcess] = 'creation';
-    });
-  }
-
-  void _handleProcessSaved(String processName) async {
-    //update state or perform any necessary actions
-    setState(() {
-      _buttonStates[processName] = 'finalized';
-    });
-    //wait for a short delay before navigating to the uodated process page
-    await Future.delayed(Duration(seconds: 5));
-    //Navigate to the updated processpage
-    Navigator.pushNamed(context, '/$processName');
-  }
-
   void _createNewProcess3() async {
     bool createDefault = true;
-    String defaultName = 'Process ${_processes.length + 5}';
+    String defaultName = 'Process ${_processes.length}';
     String processStatus = 'creation'; // Default to creation mode
 
     // Show a dialog to confirm creating a new process
@@ -132,7 +109,7 @@ class _LandingPageState extends State<LandingPage> {
           MaterialPageRoute(
               builder: (context) => CreatorPage(
                     processName: defaultName,
-                    updateButtonState: updateButtonState,
+                    subprocesses: [],
                   )));
     }
   }
@@ -207,14 +184,7 @@ class _LandingPageState extends State<LandingPage> {
                 switch (settings.name) {
                   case '/':
                     return const Placeholder(); // Home page
-                  case 'Process 1':
-                    return const Process1Page();
-                  case 'Process 2':
-                    return const Process2Page();
-                  case 'Process 3':
-                    return const Process3Page();
-                  case 'Process 4':
-                    return const Process4Page();
+
                   case 'Log Out':
                     return LogoutPage(currentUser: widget.username);
                   default:
@@ -277,22 +247,6 @@ class _LandingPageState extends State<LandingPage> {
     } else {
       // Handle static routes as before
       switch (processName) {
-        case 'Process 1':
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const Process1Page()));
-          break;
-        case 'Process 2':
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const Process2Page()));
-          break;
-        case 'Process 3':
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const Process3Page()));
-          break;
-        case 'Process 4':
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const Process4Page()));
-          break;
         case 'Logout':
           Navigator.push(
               context,

@@ -2,6 +2,8 @@ import 'package:collector/pages/process_1/startup.dart';
 import 'package:flutter/material.dart';
 
 class StartUpEntriesPage extends StatefulWidget {
+  final String processName;
+  const StartUpEntriesPage({Key? key, required this.processName});
   @override
   _StartupEntriesPageState createState() => _StartupEntriesPageState();
 }
@@ -16,7 +18,7 @@ class _StartupEntriesPageState extends State<StartUpEntriesPage> {
   }
 
   Future<void> _loadData() async {
-    await startUpEntryData.loadStartUpEntry();
+    await startUpEntryData.loadStartUpEntry(widget.processName);
     setState(() {
       entries = startUpEntryData.startupData;
     });

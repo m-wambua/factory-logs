@@ -1,4 +1,5 @@
 import 'package:collector/pages/equipmentmenu.dart';
+import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/newtrendspage.dart';
 import 'package:collector/pages/saveddatapage.dart';
 import 'package:collector/pages/subprocesscreator.dart';
@@ -11,8 +12,11 @@ import 'package:path_provider/path_provider.dart';
 
 class TableLoaderPage extends StatefulWidget {
   final String subprocessName;
-
-  const TableLoaderPage({Key? key, required this.subprocessName})
+  final Function(NotificationModel) onNotificationAdded;
+  const TableLoaderPage(
+      {Key? key,
+      required this.subprocessName,
+      required this.onNotificationAdded})
       : super(key: key);
 
   @override
@@ -172,6 +176,12 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         SnackBar(content: Text('Error saving data!')),
       );
     }
+    final newNotification = NotificationModel(
+        title: 'A New Entry has been saved',
+        description:
+            'A New Entry has been Logged and Saved at ${widget.subprocessName}',
+        timestamp: DateTime.now(),
+        type: NotificationType.LogsCollected);
   }
 
   @override

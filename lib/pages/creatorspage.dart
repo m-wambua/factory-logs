@@ -6,12 +6,13 @@ import 'package:provider/provider.dart';
 
 class CreatorPage extends StatefulWidget {
   final String processName;
-  final void Function(String processName, String newState) updateButtonState;
+  final List<String>? subprocesses;
 
   const CreatorPage({
     Key? key,
     required this.processName,
-    required this.updateButtonState, // Accept the call back
+    this.subprocesses,
+    // Accept the call back
   }) : super(key: key);
 
   @override
@@ -19,18 +20,26 @@ class CreatorPage extends StatefulWidget {
 }
 
 class _CreatorPageState extends State<CreatorPage> {
-  List<String> _subprocesses = [
-    'Subprocess 1',
-    'Subprocess 2',
-    'Subprocess 3',
-    'Subprocess 4',
-    'Subprocess 5',
-    'Subprocess 6',
-    'Subprocess 7',
-  ];
+  late List<String> _subprocesses;
 
   List<NotificationModel> _notifications = [];
   bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    //Use the passed subprocesses if available,otherwise use a default list
+    _subprocesses = widget.subprocesses ??
+        [
+          'Subprocess 1',
+          'Subprocess 2',
+          'Subprocess 3',
+          'Subprocess 4',
+          'Subprocess 5',
+          'Subprocess 6',
+          'Subprocess 7',
+        ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +203,6 @@ class _CreatorPageState extends State<CreatorPage> {
     setState(() {
       _isSaving = true;
     });
-    
 
     try {
       // Load the existing processes from the JSON file
@@ -213,8 +221,7 @@ class _CreatorPageState extends State<CreatorPage> {
 
       // Update Landing
       Navigator.pop(context); // Go back to landing page
-      widget.updateButtonState(
-          widget.processName, 'finalized'); // Update process state
+      // Update process state
 
       // Navigate to the dynamic page with subprocess data
       Navigator.pushNamed(

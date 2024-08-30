@@ -456,7 +456,7 @@ class _Process1PageState extends State<Process1Page> {
                                 lastPersonUpdate: lastUpdatePerson.text,
                                 lastUpdate: DateTime.now());
 
-                            startUpEntryData.savingStartUpEntry(startUpEntry);
+                            startUpEntryData.savingStartUpEntry(startUpEntry, 'Process Name');
                             Navigator.of(dialogContext).pop();
                           },
                           child: Text('Save')),
@@ -466,7 +466,7 @@ class _Process1PageState extends State<Process1Page> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        StartUpEntriesPage()));
+                                        StartUpEntriesPage(processName: 'process 1',)));
                           },
                           child: Text('View Saved Start-Up')),
                       ElevatedButton(
