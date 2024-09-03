@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/creatorspage.dart';
+import 'package:collector/pages/emailsender.dart';
 import 'package:collector/pages/lastEntrySaver.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/process_1/cableSchedule/cablescheduleadd.dart';
@@ -53,6 +54,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
       TextEditingController();
 
   Map<String, List<Map<String, dynamic>>> _savedDataMap = {};
+  List<TextEditingController> mailingListController = [TextEditingController()];
 
   @override
   void initState() {
@@ -226,6 +228,57 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
           );
         });
   }
+
+  void _showSubmitList(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text('Submit to: '), content: _submissionList());
+        });
+  }
+
+  Widget _submissionList() {
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setStateDialog) {
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (int i = 0; i < mailingListController.length; i++)
+                TextFormField(
+                  controller: mailingListController[i],
+                  decoration: InputDecoration(labelText: 'mail to:'),
+                  onChanged: (value) {},
+                ),
+              SizedBox(height: 10),
+              IconButton(
+                onPressed: () {
+                  setStateDialog(() {
+                    mailingListController.add(TextEditingController());
+                  });
+                },
+                icon: Icon(Icons.add),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        EmailSender.sendEmail(mailingListController);
+                      },
+                      child: Text('Okay')),
+                  TextButton(onPressed: () {}, child: Text('Cancel')),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
 ///////////////////////////////////////////////////////////
 
   Widget _displayRecords() {
@@ -260,12 +313,16 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
               const SizedBox(
                 width: 10,
               ),
-              TextButton(onPressed: () {}, child: Text('Submit'))
+              TextButton(
+                  onPressed: () {
+                    _showSubmitList(context);
+                  },
+                  child: Text('Submit'))
             ],
           )
         ],
       ),
-    );  
+    );
   }
 
   bool _isValidTableJson(Map<String, dynamic> tableJson) {
