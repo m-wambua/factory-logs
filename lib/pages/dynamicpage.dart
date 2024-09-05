@@ -13,10 +13,15 @@ import 'package:collector/pages/process_1/startuppage.dart';
 import 'package:collector/pages/saveddatapage.dart';
 import 'package:collector/pages/subprocesscreator.dart';
 import 'package:collector/pages/tableloader.dart';
+import 'package:excel/excel.dart' as excel;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 
 class DynamicPageLoader extends StatefulWidget {
   final String processName;
@@ -55,7 +60,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
 
   Map<String, List<Map<String, dynamic>>> _savedDataMap = {};
   List<TextEditingController> mailingListController = [TextEditingController()];
-
+  TextEditingController _nameController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -238,6 +243,92 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         });
   }
 
+  Widget _buildInfoText(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: RichText(
+        text: TextSpan(
+          text: '$label: ',
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+          children: [
+            TextSpan(
+              text: value,
+              style: TextStyle(
+                color: Colors.black54,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<List<String>> createExcelFile(Map<String, dynamic> savedData,
+      String processName, String subprocessName) async {
+    var excelFile = excel.Excel.createExcel(); // Create a new Excel file
+    String timestamp = savedData['timestamp'] ?? 'Unknown';
+    var sheet = excelFile['Sheet1'];
+
+    // Add column headers
+    List<dynamic> columnsJson = savedData['columns'] ?? [];
+    List<String> columnNames =
+        columnsJson.map((columnJson) => columnJson['name'].toString()).toList();
+
+    // Add column names to sheet
+    // Convert column names to CellValue
+    var columnHeaders =
+        columnNames.map((name) => excel.TextCellValue(name)).toList();
+    sheet.appendRow(columnHeaders);
+
+    // Add table data
+    List<dynamic> tableDataJson = savedData['tableData'] ?? [];
+    for (var row in tableDataJson) {
+      // Ensure each cell is a string
+      List<dynamic> rowValues = row.map((cell) => cell.toString()).toList();
+      sheet.appendRow(
+          rowValues.map((value) => excel.TextCellValue(value)).toList());
+    }
+
+    // Save Excel file
+    List<String> filePaths = [];
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+
+    // Replace spaces with underscores for better file naming
+    String sanitizedProcessName = processName.replaceAll(' ', '_');
+    String sanitizedSubprocessName = subprocessName.replaceAll(' ', '_');
+    String sanitizedTimeStamp = timestamp.replaceAll(' ', '_');
+    String fileName =
+        '${sanitizedProcessName}_${sanitizedSubprocessName}_$sanitizedTimeStamp.xlsx';
+    File file = File('$tempPath/$fileName');
+
+    // Write the Excel file to disk
+    var bytes = excelFile.encode();
+    if (bytes != null) {
+      file.writeAsBytesSync(bytes);
+    }
+
+    filePaths.add(file.path);
+    return filePaths;
+  }
+
+  void _sendEmailWithAttachments(BuildContext context) async {
+    String emailBody = _formatEmailBody();
+    File pdfFile = await createAndStorePDF();
+
+    EmailSender.sendEmail(
+      mailingListController,
+      emailBody,
+      pdfFile.path,
+    );
+    Navigator.of(context).pop();
+  }
+
   Widget _submissionList() {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setStateDialog) {
@@ -249,7 +340,8 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
               for (int i = 0; i < mailingListController.length; i++)
                 TextFormField(
                   controller: mailingListController[i],
-                  decoration: InputDecoration(labelText: 'mail to:'),
+                  decoration:
+                      InputDecoration(labelText: 'enter email address:'),
                   onChanged: (value) {},
                 ),
               SizedBox(height: 10),
@@ -267,10 +359,14 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                 children: [
                   TextButton(
                       onPressed: () {
-                        EmailSender.sendEmail(mailingListController);
+                        _sendEmailWithAttachments(context);
                       },
                       child: Text('Okay')),
-                  TextButton(onPressed: () {}, child: Text('Cancel')),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Cancel')),
                 ],
               )
             ],
@@ -278,6 +374,33 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         );
       },
     );
+  }
+
+  String _collectTextData() {
+    String productionState =
+        _productionSelected ? 'Production' : ' No Prodution';
+    String odsOccurence = _occurenceDuringShiftController.text;
+    String eventfulShift = _eventfulShift ? 'Yes' : 'No';
+    String eventDescription = _eventDescriptionController.text;
+
+    return '''
+Production State: $productionState
+ODS Occurence During Shift: $odsOccurence
+Eventful Shift: $eventfulShift
+Event Description: $eventDescription
+''';
+  }
+
+  String _formatEmailBody() {
+    String textData = _collectTextData();
+    return '''
+    Dear Team,
+    Please find below the  production details for the shift:
+    $textData
+
+    Best regards,
+    ${_nameController.text}
+    ''';
   }
 ///////////////////////////////////////////////////////////
 
@@ -307,22 +430,96 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
                 child: Text('Cancel'),
               ),
               const SizedBox(
                 width: 10,
               ),
               TextButton(
+                  onPressed: () async {
+                    createAndStorePDF();
+                  },
+                  child: Text('Submit')),
+              TextButton(
                   onPressed: () {
                     _showSubmitList(context);
                   },
-                  child: Text('Submit'))
+                  child: Text('Submit and Forward'))
             ],
           )
         ],
       ),
     );
+  }
+
+  Future<File> createAndStorePDF() async {
+    final pdf = pw.Document();
+    pdf.addPage(pw.MultiPage(build: (pw.Context context) {
+      return [
+        pw.Header(level: 0, child: pw.Text('Process Summary')),
+        pw.Paragraph(
+            text:
+                'Production State: ${_productionSelected ? 'Production' : 'No Production'}'),
+        pw.Paragraph(
+            text:
+                'ODS Occurrence During Shift: ${_occurenceDuringShiftController.text}'),
+        pw.Paragraph(
+            text: 'Eventful Shift: ${_eventfulShift ? ' Yes' : ' No'}'),
+        pw.Paragraph(
+            text: 'Event Description: ${_eventDescriptionController.text}'),
+        pw.Header(level: 1, child: pw.Text('Subprocesses')),
+        ...widget.subprocesses
+            .map((subprocess) => _buildPDFSubprocessSection(subprocess)),
+      ];
+    }));
+
+    final String timestamp =
+        DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+    final String fileName = '${widget.processName}_${timestamp}_Summary.pdf';
+
+    Directory appDocDir = Directory('services/summary_files');
+    final String appDocPath = appDocDir.path;
+
+    final String fullPath = '$appDocPath/pages/summary_files/$fileName';
+
+    await Directory('$appDocPath/pages/summary_files').create(recursive: true);
+    final File file = File(fullPath);
+    await file.writeAsBytes(await pdf.save());
+    print('Pdf created and stored at : $fullPath');
+    return file;
+  }
+
+  pw.Widget _buildPDFSubprocessSection(String subprocess) {
+    if (_savedDataMap[subprocess]?.isNotEmpty ?? false) {
+      final savedData = _savedDataMap[subprocess]!.last;
+      final timestamp = savedData['timestamp'] ?? 'Unknown';
+      final columnsJson = savedData['columns'] ?? [];
+      final tableDataJson = savedData['tableData'] ?? [];
+
+      return pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Header(level: 2, child: pw.Text(subprocess)),
+          pw.Paragraph(text: 'Saved on: $timestamp'),
+          pw.TableHelper.fromTextArray(
+            headers: columnsJson
+                .map<String>((column) =>
+                    '${column['name']}${column['unit']?.isNotEmpty ?? false ? ' (${column['unit']})' : ''}')
+                .toList(),
+            data: tableDataJson
+                .map<List<String>>((row) => (row as List<dynamic>)
+                    .map((cell) => cell.toString())
+                    .toList())
+                .toList(),
+          ),
+        ],
+      );
+    } else {
+      return pw.Paragraph(text: 'No Data available for $subprocess');
+    }
   }
 
   bool _isValidTableJson(Map<String, dynamic> tableJson) {
@@ -411,31 +608,6 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
     }
 
     return tempList;
-  }
-
-  Widget _buildInfoText(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: RichText(
-        text: TextSpan(
-          text: '$label: ',
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-          children: [
-            TextSpan(
-              text: value,
-              style: TextStyle(
-                color: Colors.black54,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   /////////////////////////////////////////////////

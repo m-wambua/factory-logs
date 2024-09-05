@@ -46,6 +46,8 @@ class NotificationModel {
         return NotificationType.LogsCollected;
       case 'NotificationType.MaintenanceUpdate':
         return NotificationType.MaintenanceUpdate;
+      case ' NotificationType.LogsSubmitted':
+        return NotificationType.LogsSubmitted;
       default:
         throw ArgumentError('Invalid notification type: $typeString');
     }
@@ -56,18 +58,22 @@ class NotificationModel {
 enum NotificationType {
   LogsCollected,
   MaintenanceUpdate,
+  LogsSubmitted
   // Add more types as needed
 }
 
 // Function to save notifications to a JSON file
-Future<void> saveNotificationsToFile(List<NotificationModel> notifications) async {
+Future<void> saveNotificationsToFile(
+    List<NotificationModel> notifications) async {
   try {
-    final file = File('pages/models/notifications.json'); // Provide the full file path
+    final file =
+        File('pages/models/notifications.json'); // Provide the full file path
     // Create the file if it doesn't exist
     if (!file.existsSync()) {
       file.createSync(recursive: true);
     }
-    final jsonList = notifications.map((notification) => notification.toJson()).toList();
+    final jsonList =
+        notifications.map((notification) => notification.toJson()).toList();
     await file.writeAsString(json.encode(jsonList));
   } catch (e) {
     // Handle file write error
@@ -78,7 +84,8 @@ Future<void> saveNotificationsToFile(List<NotificationModel> notifications) asyn
 // Function to load notifications from a JSON file
 Future<List<NotificationModel>> loadNotificationsFromFile() async {
   try {
-    final file = File('pages/models/notifications.json'); // Provide the full file path
+    final file =
+        File('pages/models/notifications.json'); // Provide the full file path
     if (!file.existsSync()) {
       return [];
     }
