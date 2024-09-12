@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/creatorspage.dart';
+import 'package:collector/pages/dailydeltacreator.dart';
 import 'package:collector/pages/emailsender.dart';
 import 'package:collector/pages/lastEntrySaver.dart';
 import 'package:collector/pages/models/notification.dart';
@@ -22,6 +23,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class DynamicPageLoader extends StatefulWidget {
   final String processName;
@@ -85,6 +87,16 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
               IconButton(
                 onPressed: () {},
                 icon: Icon(Icons.chrome_reader_mode),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DailyDeltaCreator(
+                              processName: widget.processName)));
+                },
+                icon: Icon(Icons.compare),
               ),
               IconButton(
                   onPressed: () {
@@ -158,15 +170,47 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
               const SizedBox(
                 height: 20,
               ),
-              // Display subprocess buttons only if production was selected
-              if (_productionSelected)
-                Column(
-                  children: _buildElevatedButtonsForSubprocesses(),
-                ),
-              if (!_productionSelected)
-                Column(
-                  children: _buildElevatedButtonsForSubprocessesNoProduction(),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Daily Logs',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      // Display subprocess buttons only if production was selected
+                      if (_productionSelected)
+                        Column(
+                          children: _buildElevatedButtonsForSubprocesses(),
+                        ),
+                      if (!_productionSelected)
+                        Column(
+                          children:
+                              _buildElevatedButtonsForSubprocessesNoProduction(),
+                        ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: 50,
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        'Daily Delta',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      ElevatedButton(
+                          onPressed: () {},
+                          child: Text('${widget.processName} Daily Delta'))
+                    ],
+                  )
+                ],
+              ),
+
               const SizedBox(
                 height: 100,
               ),
@@ -318,15 +362,67 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
   }
 
   void _sendEmailWithAttachments(BuildContext context) async {
-    String emailBody = _formatEmailBody();
-    File pdfFile = await createAndStorePDF();
+    await Future.delayed(Duration(seconds: 2));
 
-    EmailSender.sendEmail(
-      mailingListController,
-      emailBody,
-      pdfFile.path,
-    );
-    Navigator.of(context).pop();
+    Map<String, dynamic> pdfData = {
+      'processName': widget.processName,
+      'productionState': _productionSelected ? 'Production' : 'No Production',
+      'odsOccurrence': _occurenceDuringShiftController.text,
+      'eventfulShift': _eventfulShift ? 'Yes' : 'No',
+      'eventDescription': _eventDescriptionController.text,
+      'subprocesses': widget.subprocesses.map((subprocess) {
+        if (_savedDataMap[subprocess]?.isNotEmpty ?? false) {
+          return {'name': subprocess, 'data': _savedDataMap[subprocess]!.last};
+        } else {
+          return {'name': subprocess, 'data': null};
+        }
+      }).toList(),
+    };
+
+    try {
+      await EmailSender.sendEmail(
+        mailingListController,
+        pdfData,
+      );
+
+      // Show success dialog
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Icon(Icons.check_circle, color: Colors.green),
+            content: Text('Email sent successfully!'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Icon(Icons.error, color: Colors.red),
+            content: Text('Failed to send email: $e'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Widget _submissionList() {

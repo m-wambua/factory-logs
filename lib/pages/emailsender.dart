@@ -1,37 +1,66 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class EmailSender {
-  static Future<void> sendEmail(List<TextEditingController> mailingListController, String body, String attachmentPath) async {
-    // Extract email addresses from controllers
-    List<String> emailAddresses = mailingListController.map((controller) => controller.text).toList();
+  static Future<void> sendEmail(
+      List<TextEditingController> mailingListController,
+      Map<String, dynamic> pdfData) async {
+    List<String> emailAddresses = mailingListController
+        .map((controller) => controller.text.trim())
+        .where((email) => email.isNotEmpty)
+        .toList();
 
-    var url = Uri.parse('http://your-backend-url/send-email');
-    
-    var response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'to_emails': emailAddresses, // List of email addresses
-        'subject': 'Production Summary',
-        'body': body,
-        'attachment_path': attachmentPath, // Send the attachment path to the backend
-      }),
-    );
+    if (emailAddresses.isEmpty) {
+      print('No valid email addresses provided.');
+      return;
+    }
 
-    if (response.statusCode == 200) {
-      print('Email sent successfully!');
-    } else {
-      print('Failed to send email: ${response.body}');
+    var url = Uri.parse(
+        'http://0.0.0.0:8000/send-email'); // Use your server's actual URL
+
+    var payload = {
+      'to_emails': emailAddresses,
+      'subject': 'Production Summary',
+      'pdf_data': pdfData,
+    };
+
+    try {
+      print('Sending payload: ${json.encode(payload)}');
+
+      var response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode(payload),
+          )
+          .timeout(Duration(seconds: 60)); // Increased timeout to 60 seconds
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+        print('Email sent successfully: $jsonResponse');
+      } else {
+        print(
+            'Failed to send email: ${response.statusCode} - ${response.reasonPhrase}');
+        throw Exception(
+            'Failed to send email: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      if (e is TimeoutException) {
+        print(
+            'Connection timed out. Please check your internet connection and server status.');
+      } else {
+        print('Error sending email: $e');
+      }
+      throw e; // Re-throw the exception so it can be handled by the caller
     }
   }
-
-
-  
-  }
-
-
+}
 
 
 /*
