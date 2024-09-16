@@ -30,6 +30,7 @@ class _LandingPageState extends State<LandingPage> {
   List<NotificationModel> _notifications = [];
   List<String> _processes = [];
   Map<String, List<String>> processNames = {};
+  
 
   @override
   void initState() {
