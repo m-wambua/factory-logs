@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/creatorspage.dart';
-import 'package:collector/pages/dailydeltacreator.dart';
+import 'package:collector/pages/dailydeltas/dailydeltacreator.dart';
+import 'package:collector/pages/dailydeltas/dailydeltatableloader.dart';
+import 'package:collector/pages/dailydeltas/delltafilemanager.dart';
 import 'package:collector/pages/emailsender.dart';
 import 'package:collector/pages/lastEntrySaver.dart';
 import 'package:collector/pages/models/notification.dart';
@@ -28,11 +30,13 @@ import 'package:http/http.dart' as http;
 class DynamicPageLoader extends StatefulWidget {
   final String processName;
   final List<String> subprocesses; // Add subprocesses as a parameter
+  final List<String> subdeltas;
 
-  DynamicPageLoader({
-    required this.processName,
-    required this.subprocesses, // Initialize subprocesses
-  });
+  DynamicPageLoader(
+      {required this.processName,
+      required this.subprocesses, // Initialize subprocesses
+      List<String>? subdeltas})
+      : this.subdeltas = subdeltas ?? [];
 
   @override
   State<DynamicPageLoader> createState() => _DynamicPageLoaderState();
@@ -63,10 +67,23 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
   Map<String, List<Map<String, dynamic>>> _savedDataMap = {};
   List<TextEditingController> mailingListController = [TextEditingController()];
   TextEditingController _nameController = TextEditingController();
+  List<String>? subdeltas; // Initialize subdeltas
   @override
   void initState() {
     super.initState();
+
     _loadAllSavedData();
+
+    _loadSubdeltas();
+  }
+
+  // Load subdeltas for the given process
+  void _loadSubdeltas() async {
+    List<String>? loadedSubdeltas =
+        await DeltaFileManager.loadSubdeltasForProcess(widget.processName);
+    setState(() {
+      subdeltas = loadedSubdeltas ?? [];
+    });
   }
 
   Future<void> _loadAllSavedData() async {
@@ -75,8 +92,6 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
     }
     setState(() {});
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +111,9 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => DailyDeltaCreator(
-                              processName: widget.processName)));
+                                processName: widget.processName,
+                                subdeltas: subdeltas,
+                              )));
                 },
                 icon: Icon(Icons.compare),
               ),
@@ -145,6 +162,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Radio Buttons for production selection
               Row(
@@ -169,55 +187,46 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                   const Text('No Production'),
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Daily Logs',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      // Display subprocess buttons only if production was selected
-                      if (_productionSelected)
-                        Column(
-                          children: _buildElevatedButtonsForSubprocesses(),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Daily Logs',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
                         ),
-                      if (!_productionSelected)
-                        Column(
-                          children:
-                              _buildElevatedButtonsForSubprocessesNoProduction(),
+                        // Display subprocess buttons only if production was selected
+                        if (_productionSelected)
+                          ..._buildElevatedButtonsForSubprocesses(),
+                        if (!_productionSelected)
+                          ..._buildElevatedButtonsForSubprocessesNoProduction(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 50),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Daily Delta',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
                         ),
-                    ],
+                        ..._buildElevatedButtonsForSubDeltas()
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        'Daily Delta',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      ElevatedButton(
-                          onPressed: () {},
-                          child: Text('${widget.processName} Daily Delta'))
-                    ],
-                  )
                 ],
               ),
-
-              const SizedBox(
-                height: 100,
-              ),
+              const SizedBox(height: 100),
               const Text(
-                  ' ODS Occurrence During Shift (Delay Please Indicate time)'),
+                  'ODS Occurrence During Shift (Delay Please Indicate time)'),
               TextFormField(
                 maxLines: 20,
                 controller: _occurenceDuringShiftController,
@@ -227,11 +236,9 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                     filled: true,
                     fillColor: Colors.grey[200]),
               ),
-              const SizedBox(
-                height: 50,
-              ),
+              const SizedBox(height: 50),
               CheckboxListTile(
-                  title: const Text(' Was the Shift eventfull'),
+                  title: const Text('Was the Shift eventful'),
                   value: _eventfulShift,
                   onChanged: (value) {
                     setState(() {
@@ -246,10 +253,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                   onPressed: () {
                     setState(() {
@@ -259,7 +263,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                   },
                   child: const Text('Submit All Records')),
               if (saveButtonClickTime != null)
-                Text('The Data was Saved at$saveButtonClickTime'),
+                Text('The Data was Saved at $saveButtonClickTime'),
             ],
           ),
         ),
@@ -728,6 +732,17 @@ Event Description: $eventDescription
 
   void _navigateToSubprocess(String subprocess) {
     // Navigate to the specific subprocess page
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TableLoaderPage(
+                  subprocessName: subprocess,
+                  onNotificationAdded: (notification) {
+                    setState(() {
+                      notifications.add(notification);
+                    });
+                  },
+                )));
     print("Navigating to subprocess: $subprocess");
   }
 
@@ -763,6 +778,50 @@ Event Description: $eventDescription
                   },
                 )));
     print("Navigating to subprocess: $subprocess");
+  }
+
+  List<Widget> _buildElevatedButtonsForSubDeltas() {
+    // Example logic to generate buttons
+    if (subdeltas == null || subdeltas!.isEmpty) {
+      return [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Text('No delta has been uploaded')],
+        )
+      ];
+    }
+
+    return subdeltas!.map((delta) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              _navigateToSubDelta(delta);
+            },
+            child: Text(delta),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+        ],
+      );
+    }).toList();
+  }
+
+  void _navigateToSubDelta(String subDelta) {
+    // Navigate to the specific subdelta page
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => DeltaTableLoaderPage(
+                  subDeltaName: subDelta,
+                  onNotificationAdded: (notification) {
+                    setState(() {
+                      notifications.add(notification);
+                    });
+                  },
+                )));
   }
 
   void _showCableScheduleDialog(BuildContext context) {

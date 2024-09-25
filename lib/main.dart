@@ -36,21 +36,37 @@ class MyApp extends StatelessWidget {
             final args = settings.arguments as Map<String, dynamic>;
             final processName = args['processName'] as String;
             final subprocesses = args['subprocesses'] as List<String>;
-
+            List<String> subdeltas = [];
+            if (args['subDeltas'] != null) {
+              subdeltas =
+                  (args['subDeltas'] as List).map((e) => e.toString()).toList();
+            }
             return MaterialPageRoute(
                 builder: (context) => DynamicPageLoader(
-                    processName: processName, subprocesses: subprocesses));
+                      processName: processName,
+                      subprocesses: subprocesses,
+                      subdeltas: subdeltas,
+                    ));
           } else if (settings.arguments is String) {
             final equipmentName = settings.arguments as String;
 
             // Handle routes where only a string argument is passed
             switch (routeName) {
               case '/history':
-                return MaterialPageRoute(builder: (context) => DynamicHistoryPage(equipmentName: equipmentName,));
+                return MaterialPageRoute(
+                    builder: (context) => DynamicHistoryPage(
+                          equipmentName: equipmentName,
+                        ));
               case '/manuals':
-                return MaterialPageRoute(builder: (context) => DynamicManualsPage(equipmentName: equipmentName,));
+                return MaterialPageRoute(
+                    builder: (context) => DynamicManualsPage(
+                          equipmentName: equipmentName,
+                        ));
               case '/parameters':
-                return MaterialPageRoute(builder: (context) => DynamicParametersPage(equipmentName: equipmentName,));
+                return MaterialPageRoute(
+                    builder: (context) => DynamicParametersPage(
+                          equipmentName: equipmentName,
+                        ));
             }
           }
         }
@@ -84,4 +100,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

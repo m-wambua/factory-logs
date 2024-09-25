@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/creatorspage.dart';
+import 'package:collector/pages/dailydeltas/delltafilemanager.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/notificationpage.dart';
@@ -23,14 +24,12 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   String _selectedProcess = '';
-  final Map<String, String> _buttonStates = {
-
-  };
+  final Map<String, String> _buttonStates = {};
 
   List<NotificationModel> _notifications = [];
   List<String> _processes = [];
   Map<String, List<String>> processNames = {};
-  
+  Map<String, List<String>> processSubDeltas = {};
 
   @override
   void initState() {
@@ -43,6 +42,8 @@ class _LandingPageState extends State<LandingPage> {
     processNames = await FileManager.FileManager.loadProcesses();
     _processes = processNames.keys
         .toList(); // Extract process names from the loaded data
+    processSubDeltas = await DeltaFileManager.loadDeltas();
+
     setState(() {});
   }
 
@@ -243,6 +244,7 @@ class _LandingPageState extends State<LandingPage> {
           'processName': processName,
           'subprocesses': processNames[
               processName], // Pass subprocesses to the dynamic page
+              
         },
       );
     } else {
