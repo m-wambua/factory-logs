@@ -265,15 +265,19 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                     ColumnInfo column = _columns[colIndex];
                     if (colIndex == 0) {
                       return DataCell(TextButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.grey[200],
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30))),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EquipmentMenu(
-                                      equipmentName: _tableData[index]
-                                          [colIndex])));
+                          _showEquipmentMenu(index);
                         },
-                        child: Text(_tableData[index][colIndex]),
+                        child: Text(
+                          _tableData[index][colIndex],
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ));
                     } else {
                       return DataCell(
@@ -305,6 +309,36 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         //_buildDummyTable()
       ],
     );
+  }
+
+  // Method to show equipment menu ( can be customized to your requirements)
+  void _showEquipmentMenu(int index) {
+    //For now, just show a dialog but this can a different action
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Equipment/ Apparatus Options'),
+            content: Text('You Clickec on ${_tableData[index][0]}'),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EquipmentMenu(
+                                equipmentName: _tableData[index][0])));
+                  },
+                  child:
+                      Text('Navigate to ${_tableData[index][0]}\'s submenu')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel')),
+            ],
+          );
+        });
   }
 
 // Method to build the dummy table

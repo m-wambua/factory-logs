@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collector/pages/dailydeltas/dailydeltatrendspage.dart';
 import 'package:collector/pages/dailydeltas/subdeltacreatorpage.dart';
+import 'package:collector/pages/equipmentmenu.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,7 +27,12 @@ class DeltaTableLoaderPage extends StatefulWidget {
 class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
   List<List<TextEditingController>> _controllers = [];
   List<String> _columnUnits = ['', '', '', ''];
-  List<String> _columnLabels = ['Equipment', 'Previous', 'Current', 'Difference'];
+  List<String> _columnLabels = [
+    'Equipment',
+    'Previous',
+    'Current',
+    'Difference'
+  ];
   int _rowCount = 0;
 
   @override
@@ -48,35 +55,30 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
     }
   }
 
-  // Build a table where the first column contains etched TextButtons and the rest are editable fields
+  Future<void> _saveTableAsDraft() async {
+    final savedDataDir = await getApplicationCacheDirectory();
+    final savedDataPath = File('${savedDataDir.path}/delta_table_draft.json');
+    //Create the directory if it doesn't exist
+    await savedDataPath.create(recursive: true);
+
+    //Build the table JSON with current user filled data
+  } // Build a table where the first column contains etched TextButtons and the rest are editable fields
+
   Widget _buildDataTable() {
     if (_controllers.isEmpty) {
       return Center(child: Text('No data available.'));
     }
 
-    return ListView.builder(
-      itemCount: _rowCount,
-      itemBuilder: (context, rowIndex) {
-        return _buildDataRow(rowIndex);
-      },
-    );
-  }
-
-  Widget _buildDataRow(int rowIndex) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Row(
-          children: List.generate(
-            _columnLabels.length,
-            (colIndex) => Expanded(
+    return Table(
+      border: TableBorder.all(),
+      children: List.generate(_rowCount, (rowIndex) {
+        return TableRow(
+          children: List.generate(_columnLabels.length, (colIndex) {
+            return TableCell(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                padding: EdgeInsets.all(8.0),
                 child: colIndex == 0
-                    ? _buildEtchedTextButton(rowIndex) // First column as TextButton
+                    ? _buildEtchedTextButton(rowIndex)
                     : TextFormField(
                         controller: _controllers[rowIndex][colIndex],
                         keyboardType: colIndex == 0
@@ -100,7 +102,57 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
                             });
                           }
                         },
-                        readOnly: colIndex == 3, // The 'Difference' column is read-only
+                        readOnly: colIndex == 3,
+                      ),
+              ),
+            );
+          }),
+        );
+      }),
+    );
+  }
+
+  Widget _buildDataRow(int rowIndex) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          children: List.generate(
+            _columnLabels.length,
+            (colIndex) => Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                child: colIndex == 0
+                    ? _buildEtchedTextButton(
+                        rowIndex) // First column as TextButton
+                    : TextFormField(
+                        controller: _controllers[rowIndex][colIndex],
+                        keyboardType: colIndex == 0
+                            ? TextInputType.text
+                            : TextInputType.number,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          hintText: colIndex == 1
+                              ? '300'
+                              : colIndex == 2
+                                  ? '500'
+                                  : '',
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          if (colIndex == 1 || colIndex == 2) {
+                            setState(() {
+                              _updateDifference(rowIndex);
+                            });
+                          }
+                        },
+                        readOnly: colIndex ==
+                            3, // The 'Difference' column is read-only
                       ),
               ),
             ),
@@ -141,6 +193,19 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
           actions: [
             TextButton(
               onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EquipmentMenu(
+                            equipmentName: _controllers[rowIndex][0].text,
+                          )),
+                );
+              },
+              child: Text(
+                  'Navigate to ${_controllers[rowIndex][0].text}\' submenu '),
+            ),
+            TextButton(
+              onPressed: () {
                 Navigator.of(context).pop();
               },
               child: Text('Close'),
@@ -161,18 +226,76 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Delta Table Loader'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
+        appBar: AppBar(
+          title: Text('Delta Table Loader'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () {
+                // Implement save functionality
+              },
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            _buildColumnLabelsRow(),
+            Expanded(
+                child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildDataTable(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  _buildButtonRow(context),
+                ],
+              ),
+            )),
+          ],
+        ));
+  }
+
+  Widget _buildButtonRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        TextButton(onPressed: () {}, child: Text('Save as Draft')),
+        TextButton(onPressed: () {}, child: Text('Save and Exit')),
+        TextButton(
             onPressed: () {
-              // Implement save functionality
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          DailyDeltaTrends(subDeltaName: widget.subDeltaName)));
             },
-          ),
-        ],
+            child: Text('View History'))
+      ],
+    );
+  }
+
+  Widget _buildColumnLabelsRow() {
+    return Container(
+      color: Colors.grey[200],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: List.generate(
+              4,
+              (index) => Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${_columnLabels[index]}${_columnUnits[index].isNotEmpty ? '(${_columnUnits[index]})' : ''}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  )),
+        ),
       ),
-      body: _buildDataTable(),
     );
   }
 }

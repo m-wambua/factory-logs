@@ -103,7 +103,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
             children: [
               IconButton(
                 onPressed: () {},
-                icon: Icon(Icons.chrome_reader_mode),
+                icon:const Icon(Icons.chrome_reader_mode),
               ),
               IconButton(
                 onPressed: () {
@@ -115,13 +115,13 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                                 subdeltas: subdeltas,
                               )));
                 },
-                icon: Icon(Icons.compare),
+                icon:const Icon(Icons.compare),
               ),
               IconButton(
                   onPressed: () {
                     _showCableScheduleDialog(context);
                   },
-                  icon: Icon(Icons.cable_outlined)),
+                  icon:const Icon(Icons.cable_outlined)),
               IconButton(
                   onPressed: () {
                     _showOptionsDialog(context);
@@ -131,12 +131,12 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                   onPressed: () {
                     _addStartUpProcedure(context);
                   },
-                  icon: Icon(Icons.power_settings_new)),
+                  icon:const Icon(Icons.power_settings_new)),
               IconButton(
                   onPressed: () {
                     _showUpdateProcess(context);
                   },
-                  icon: Icon(Icons.border_color_outlined))
+                  icon:const Icon(Icons.border_color_outlined))
             ],
           )
         ],
@@ -145,9 +145,9 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         future: _loadDynamicPage(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading page'));
+            return const Center(child: Text('Error loading page'));
           } else {
             return snapshot.data ?? Center(child: Text('Page not found'));
           }
@@ -195,7 +195,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                      const  Text(
                           'Daily Logs',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
@@ -213,7 +213,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                      const  Text(
                           'Daily Delta',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
@@ -289,7 +289,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              title: Text('Submit to: '), content: _submissionList());
+              title:const Text('Submit to: '), content: _submissionList());
         });
   }
 
@@ -299,7 +299,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
       child: RichText(
         text: TextSpan(
           text: '$label: ',
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.bold,
             fontSize: 16,
@@ -307,7 +307,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
           children: [
             TextSpan(
               text: value,
-              style: TextStyle(
+              style:const TextStyle(
                 color: Colors.black54,
                 fontWeight: FontWeight.normal,
               ),
@@ -368,7 +368,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
   }
 
   void _sendEmailWithAttachments(BuildContext context) async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     Map<String, dynamic> pdfData = {
       'processName': widget.processName,
@@ -396,11 +396,11 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Icon(Icons.check_circle, color: Colors.green),
+            title:const Icon(Icons.check_circle, color: Colors.green),
             content: Text('Email sent successfully!'),
             actions: [
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -415,11 +415,11 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Icon(Icons.error, color: Colors.red),
+            title:const Icon(Icons.error, color: Colors.red),
             content: Text('Failed to send email: $e'),
             actions: [
               TextButton(
-                child: Text('OK'),
+                child:const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -443,19 +443,19 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                 TextFormField(
                   controller: mailingListController[i],
                   decoration:
-                      InputDecoration(labelText: 'enter email address:'),
+                    const  InputDecoration(labelText: 'enter email address:'),
                   onChanged: (value) {},
                 ),
-              SizedBox(height: 10),
+            const  SizedBox(height: 10),
               IconButton(
                 onPressed: () {
                   setStateDialog(() {
                     mailingListController.add(TextEditingController());
                   });
                 },
-                icon: Icon(Icons.add),
+                icon:const Icon(Icons.add),
               ),
-              SizedBox(height: 10),
+            const  SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -463,12 +463,12 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                       onPressed: () {
                         _sendEmailWithAttachments(context);
                       },
-                      child: Text('Okay')),
+                      child:const Text('Okay')),
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('Cancel')),
+                      child:const Text('Cancel')),
                 ],
               )
             ],
@@ -519,7 +519,7 @@ Event Description: $eventDescription
           _buildInfoText('Eventful Shift', _eventfulShift ? 'Yes' : 'No'),
           _buildInfoText('Event Description', _eventDescriptionController.text),
           const SizedBox(height: 10),
-          Text(
+        const  Text(
             'The Subprocesses Logged are:',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
@@ -535,7 +535,7 @@ Event Description: $eventDescription
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
+                child:const Text('Cancel'),
               ),
               const SizedBox(
                 width: 10,
@@ -544,12 +544,12 @@ Event Description: $eventDescription
                   onPressed: () async {
                     createAndStorePDF();
                   },
-                  child: Text('Submit')),
+                  child:const Text('Submit')),
               TextButton(
                   onPressed: () {
                     _showSubmitList(context);
                   },
-                  child: Text('Submit and Forward'))
+                  child:const Text('Submit and Forward'))
             ],
           )
         ],
@@ -635,7 +635,7 @@ Event Description: $eventDescription
     return ExpansionTile(
       title: Text(
         subprocess,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style:const TextStyle(fontWeight: FontWeight.bold),
       ),
       children: [
         if (_savedDataMap[subprocess]?.isNotEmpty ?? false)
@@ -671,7 +671,7 @@ Event Description: $eventDescription
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text('Saved on: $timestamp',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+                style:const TextStyle(fontWeight: FontWeight.bold)),
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -784,7 +784,7 @@ Event Description: $eventDescription
     // Example logic to generate buttons
     if (subdeltas == null || subdeltas!.isEmpty) {
       return [
-        Column(
+      const  Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [Text('No delta has been uploaded')],
         )
@@ -801,7 +801,7 @@ Event Description: $eventDescription
             },
             child: Text(delta),
           ),
-          SizedBox(
+         const  SizedBox(
             height: 10,
           ),
         ],
@@ -857,7 +857,7 @@ Event Description: $eventDescription
                     MaterialPageRoute(
                         builder: (context) => UploadScreenCableSchedule()));
               },
-              child: Text('Upload New/Update Cable Schedule'))
+              child:const Text('Upload New/Update Cable Schedule'))
         ],
       ),
     );
@@ -873,7 +873,7 @@ Event Description: $eventDescription
 
   Widget uploadOrNot(BuildContext context) {
     return AlertDialog(
-      title: Text('Code Base Storage'),
+      title:const Text('Code Base Storage'),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -887,7 +887,7 @@ Event Description: $eventDescription
                     MaterialPageRoute(
                         builder: (context) => ExistingCodeBasesPage()));
               },
-              child: Text('View Existing Code Bases')),
+              child:const Text('View Existing Code Bases')),
           const SizedBox(
             height: 10,
           ),
@@ -897,7 +897,7 @@ Event Description: $eventDescription
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => UploadScreen()));
               },
-              child: Text('Upload New Code Bases'))
+              child:const Text('Upload New Code Bases'))
         ],
       ),
     );
@@ -923,7 +923,7 @@ Event Description: $eventDescription
             onPressed: () {
               _addNewEntry(context);
             },
-            child: Text('Update the Process Entries'),
+            child:const Text('Update the Process Entries'),
           ),
         ],
       ),
@@ -941,14 +941,14 @@ Event Description: $eventDescription
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              title: Text('Add New Entry'),
+              title:const Text('Add New Entry'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Enter the details for the new entry:'),
-                  SizedBox(height: 10),
+                 const Text('Enter the details for the new entry:'),
+                const  SizedBox(height: 10),
                   TextField(
-                    decoration: InputDecoration(
+                    decoration:const InputDecoration(
                       labelText: 'Enter New Entry Name',
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.text_fields),
@@ -959,7 +959,7 @@ Event Description: $eventDescription
                       });
                     },
                   ),
-                  SizedBox(height: 10),
+                 const SizedBox(height: 10),
                 ],
               ),
               actions: [
@@ -967,7 +967,7 @@ Event Description: $eventDescription
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child:const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
@@ -991,14 +991,14 @@ Event Description: $eventDescription
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                       const SnackBar(
                           content:
                               Text('Please enter a name for the new entry'),
                         ),
                       );
                     }
                   },
-                  child: Text('Add'),
+                  child:const Text('Add'),
                 ),
               ],
             );
@@ -1034,19 +1034,19 @@ Event Description: $eventDescription
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                  onPressed: () {}, icon: Icon(Icons.image))
+                                  onPressed: () {}, icon:const Icon(Icons.image))
                             ],
                           )),
                       onChanged: (value) {},
                     ),
-                  SizedBox(
+                 const SizedBox(
                     height: 5,
                   ),
                   TextField(
                     controller: lastUpdatePerson,
-                    decoration: InputDecoration(labelText: 'Updated By'),
+                    decoration:const InputDecoration(labelText: 'Updated By'),
                   ),
-                  SizedBox(
+                const  SizedBox(
                     height: 5,
                   ),
                   IconButton(
@@ -1055,8 +1055,8 @@ Event Description: $eventDescription
                           startUpController.add(TextEditingController());
                         });
                       },
-                      icon: Icon(Icons.add)),
-                  SizedBox(
+                      icon:const Icon(Icons.add)),
+                const  SizedBox(
                     height: 5,
                   ),
                   Row(
@@ -1074,7 +1074,7 @@ Event Description: $eventDescription
                                 startUpEntry, widget.processName);
                             Navigator.of(dialogContext).pop();
                           },
-                          child: Text('Save')),
+                          child:const Text('Save')),
                       ElevatedButton(
                           onPressed: () {
                             Navigator.push(
@@ -1083,12 +1083,12 @@ Event Description: $eventDescription
                                     builder: (context) => StartUpEntriesPage(
                                         processName: widget.processName)));
                           },
-                          child: Text('View Saved Start Up Procedure')),
+                          child:const Text('View Saved Start Up Procedure')),
                       ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text('Cancel'))
+                          child:const Text('Cancel'))
                     ],
                   )
                 ],
