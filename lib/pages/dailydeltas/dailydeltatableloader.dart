@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/dailydeltas/dailydeltatrendspage.dart';
+import 'package:collector/pages/dailydeltas/saveddeltadata.dart';
 import 'package:collector/pages/dailydeltas/subdeltacreatorpage.dart';
 import 'package:collector/pages/equipmentmenu.dart';
 import 'package:collector/pages/models/notification.dart';
+import 'package:collector/pages/saveddatapage.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -34,6 +36,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
     'Difference'
   ];
   int _rowCount = 0;
+  Map<String, double> _cumulativeData = {};
 
   @override
   void initState() {
@@ -42,6 +45,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
   }
 
   Future<void> _loadSavedData() async {
+    await _loadCumulativeData();
     SubDeltaData? loadData = await SubDeltaData.load(widget.subDeltaName);
     if (loadData != null) {
       setState(() {
@@ -51,18 +55,95 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
           return row.map((cell) => TextEditingController(text: cell)).toList();
         }).toList();
         _rowCount = loadData.rowsData.length;
+
+        // Preload the 'Previous' column with the most recent non-zero cumulative data
+        for (int i = 0; i < _controllers.length; i++) {
+          String equipment = _controllers[i][0].text;
+          _controllers[i][1].text = _getMostRecentNonZeroData(equipment);
+        }
       });
     }
   }
 
-  Future<void> _saveTableAsDraft() async {
-    final savedDataDir = await getApplicationCacheDirectory();
-    final savedDataPath = File('${savedDataDir.path}/delta_table_draft.json');
-    //Create the directory if it doesn't exist
-    await savedDataPath.create(recursive: true);
+  String _getMostRecentNonZeroData(String equipment) {
+    if (_cumulativeData.containsKey(equipment) &&
+        _cumulativeData[equipment]! > 0) {
+      return _cumulativeData[equipment]!.toString();
+    }
+    return '0'; // Default to 0 if no previous data or it's zero
+  }
 
-    //Build the table JSON with current user filled data
-  } // Build a table where the first column contains etched TextButtons and the rest are editable fields
+  Future<void> _loadCumulativeData() async {
+    final SavedDataDir = await getApplicationDocumentsDirectory();
+    final cumulativeDataFile =
+        File('${SavedDataDir.path}/${widget.subDeltaName}_cumulative.json');
+    if (await cumulativeDataFile.exists()) {
+      final jsonString = await cumulativeDataFile.readAsString();
+      final jsonData = json.decode(jsonString) as Map<String, dynamic>;
+      _cumulativeData = Map<String, double>.from(jsonData);
+    }
+  }
+
+  Future<void> _saveCumulativeData() async {
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final cumulativeDataFile =
+        File('${savedDataDir.path}/${widget.subDeltaName}_cumulative.json');
+
+    for (var row in _controllers) {
+      String equipment = row[0].text;
+      double currentValue = double.tryParse(row[2].text) ?? 0;
+      double previousValue = _cumulativeData[equipment] ?? 0;
+      _cumulativeData[equipment] = currentValue;
+    }
+    await cumulativeDataFile.writeAsString(json.encode(_cumulativeData));
+  }
+
+  void _updateDifference(int rowIndex) {
+    final previous = double.tryParse(_controllers[rowIndex][1].text) ?? 0;
+    final current = double.tryParse(_controllers[rowIndex][2].text) ?? 0;
+    final difference = current - previous;
+    _controllers[rowIndex][3].text = difference.toStringAsFixed(2);
+  }
+
+  Future<void> _saveDeltaTableAsDraft() async {
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataFile =
+        File('${savedDataDir.path}/${widget.subDeltaName}_drafts.json');
+
+    // Prepare the columns and table data (previous, current, and delta)
+    Map<String, dynamic> tableJson = {
+      'columns': _columnLabels,
+      'numRows': _rowCount,
+      'tableData': _controllers
+          .map((row) => row.map((controller) => controller.text).toList())
+          .toList(),
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+
+    try {
+      // Read the existing drafts or create a new list if the file doesn't exist
+      List<dynamic> existingDrafts = [];
+      if (await savedDataFile.exists()) {
+        final jsonString = await savedDataFile.readAsString();
+        existingDrafts = json.decode(jsonString) as List<dynamic>;
+      }
+
+      // Append the new draft to the existing list
+      existingDrafts.add(tableJson);
+
+      // Save the updated list back to the file
+      await savedDataFile.writeAsString(json.encode(existingDrafts));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Delta draft saved successfully!')),
+      );
+    } catch (error) {
+      print('Error saving delta draft: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving delta draft!')),
+      );
+    }
+  }
 
   Widget _buildDataTable() {
     if (_controllers.isEmpty) {
@@ -102,7 +183,8 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
                             });
                           }
                         },
-                        readOnly: colIndex == 3,
+                        // Make the Previous column non-editable
+                        readOnly: colIndex == 1, // Change this line
                       ),
               ),
             );
@@ -112,51 +194,25 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
     );
   }
 
-  Widget _buildDataRow(int rowIndex) {
+  Widget _buildColumnLabelsRow() {
     return Container(
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
-      ),
+      color: Colors.grey[200],
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           children: List.generate(
-            _columnLabels.length,
-            (colIndex) => Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.0),
-                child: colIndex == 0
-                    ? _buildEtchedTextButton(
-                        rowIndex) // First column as TextButton
-                    : TextFormField(
-                        controller: _controllers[rowIndex][colIndex],
-                        keyboardType: colIndex == 0
-                            ? TextInputType.text
-                            : TextInputType.number,
+              4,
+              (index) => Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${_columnLabels[index]}${_columnUnits[index].isNotEmpty ? '(${_columnUnits[index]})' : ''}',
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          hintText: colIndex == 1
-                              ? '300'
-                              : colIndex == 2
-                                  ? '500'
-                                  : '',
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          if (colIndex == 1 || colIndex == 2) {
-                            setState(() {
-                              _updateDifference(rowIndex);
-                            });
-                          }
-                        },
-                        readOnly: colIndex ==
-                            3, // The 'Difference' column is read-only
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-              ),
-            ),
-          ),
+                    ),
+                  )),
         ),
       ),
     );
@@ -216,13 +272,6 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
     );
   }
 
-  void _updateDifference(int rowIndex) {
-    final previous = double.tryParse(_controllers[rowIndex][1].text) ?? 0;
-    final current = double.tryParse(_controllers[rowIndex][2].text) ?? 0;
-    final difference = previous - current;
-    _controllers[rowIndex][3].text = difference.toStringAsFixed(2);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -256,14 +305,61 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
         ));
   }
 
+  Future<void> _saveTableSnapshot() async {
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataFile =
+        File('${savedDataDir.path}/${widget.subDeltaName}_snapshots.json');
+
+    Map<String, dynamic> tableSnapshot = {
+      'timestamp': DateTime.now().toIso8601String(),
+      'columnLabels': _columnLabels,
+      'columnUnits': _columnUnits,
+      'rowCount': _rowCount,
+      'tableData': _controllers
+          .map((row) => row.map((cell) => cell.text).toList())
+          .toList(),
+    };
+
+    List<dynamic> existingSnapshots = [];
+    if (await savedDataFile.exists()) {
+      final jsonString = await savedDataFile.readAsString();
+      existingSnapshots = json.decode(jsonString) as List<dynamic>;
+    }
+
+    existingSnapshots.add(tableSnapshot);
+
+    await savedDataFile.writeAsString(json.encode(existingSnapshots));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Table snapshot saved successfully!')),
+    );
+  }
+
   Widget _buildButtonRow(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        TextButton(onPressed: () {}, child: Text('Save as Draft')),
-        TextButton(onPressed: () {}, child: Text('Save and Exit')),
         TextButton(
             onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SavedTablesPage(subDeltaName: widget.subDeltaName)));
+            },
+            child: Text('Save as Draft')),
+        TextButton(
+            onPressed: () {
+              _saveTableSnapshot();
+              _saveAndNavigatetoTrends();
+              _saveDeltaTableAsDraft();
+              Navigator.pop(context);
+            },
+            child: Text('Save and Exit')),
+        TextButton(
+            onPressed: () {
+              _saveAndNavigatetoTrends();
+              _saveDeltaTableAsDraft();
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -275,27 +371,37 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
     );
   }
 
-  Widget _buildColumnLabelsRow() {
-    return Container(
-      color: Colors.grey[200],
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: List.generate(
-              4,
-              (index) => Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${_columnLabels[index]}${_columnUnits[index].isNotEmpty ? '(${_columnUnits[index]})' : ''}',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  )),
-        ),
-      ),
-    );
+  Future<void> _saveAndNavigatetoTrends() async {
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataDirFile =
+        Directory('${savedDataDir.path}/${widget.subDeltaName}_saved');
+    await savedDataDirFile.create(recursive: true);
+
+    String timestamp = DateTime.now().toIso8601String();
+
+    Map<String, dynamic> tableJson = {
+      'columns': _columnLabels,
+      'units': _columnUnits,
+      'numRows': _rowCount,
+      'tableData': _controllers
+          .map((row) => row.map((cell) => cell.text).toList())
+          .toList(),
+      'timestamp': timestamp,
+    };
+
+    final fileName = '${savedDataDirFile.path}/data_$timestamp.json';
+    try {
+      await File(fileName).writeAsString(json.encode(tableJson));
+      await _saveCumulativeData(); // Save the updated cumulative data
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Data saved successfully!')),
+      );
+      // Navigate to trends screen or perform other actions
+    } catch (error) {
+      print('Error saving table data: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving data!')),
+      );
+    }
   }
 }

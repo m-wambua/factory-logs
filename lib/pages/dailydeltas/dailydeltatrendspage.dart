@@ -5,7 +5,6 @@ class DailyDeltaTrends extends StatefulWidget {
   final String subDeltaName;
   const DailyDeltaTrends({Key? key, required this.subDeltaName})
       : super(key: key);
-
   @override
   _DeltaTrendsState createState() => _DeltaTrendsState();
 }
@@ -14,7 +13,6 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
   List<String> _newColumnLabels = ['Timestamp'];
   List<List<String>> _newTableData = [];
   bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
@@ -26,27 +24,23 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
     SubDeltaData? loadData = await SubDeltaData.load(widget.subDeltaName);
     if (loadData != null) {
       setState(() {
-        // Extract unique values from the first column to create new column labels
+// Extract unique values from the first column to create new column labels
         Set<String> uniqueEquipment =
             Set<String>.from(loadData.rowsData.map((row) => row[0]));
         _newColumnLabels.addAll(uniqueEquipment);
-
-        // Create new table data
+// Create new table data
         Map<String, Map<String, String>> transformedData = {};
-
         for (var row in loadData.rowsData) {
           String equipment = row[0];
           String timestamp =
               row[1]; // Assuming timestamp is in the second column
           String value = row[2]; // Assuming the value is in the third column
-
           if (!transformedData.containsKey(timestamp)) {
             transformedData[timestamp] = {};
           }
           transformedData[timestamp]![equipment] = value;
         }
-
-        // Convert transformed data to list format for the table
+// Convert transformed data to list format for the table
         transformedData.forEach((timestamp, data) {
           List<String> rowData = [timestamp];
           for (var equipment in _newColumnLabels.skip(1)) {
@@ -54,7 +48,6 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
           }
           _newTableData.add(rowData);
         });
-
         _isLoading = false;
       });
     }
