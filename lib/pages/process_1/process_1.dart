@@ -1,6 +1,6 @@
-import 'package:collector/pages/process_1/codebase/codedetails.dart';
-import 'package:collector/pages/process_1/startup.dart';
-import 'package:collector/pages/process_1/startuppage.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/codebase/codedetails.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/startupprocedure/startup.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/startupprocedure/startuppage.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/models/notification.dart';
 
@@ -18,8 +18,8 @@ import 'package:collector/pages/process_1/subprocess_4/subprocess_4_np.dart';
 import 'package:collector/pages/process_1/subprocess_5/subprocess_5_np.dart';
 import 'package:collector/pages/process_1/subprocess_6/subprocess_6_np.dart';
 import 'package:collector/pages/process_1/subprocess_7/subprocess_7_np.dart';
-import 'package:collector/pages/process_1/cableSchedule/cablescheduleadd.dart';
-import 'package:collector/pages/process_1/codebase/codebase.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/cableSchedule/cablescheduleadd.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/codebase/codebase.dart';
 
 class FileManager {
   final String processName;

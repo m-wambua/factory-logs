@@ -1,18 +1,18 @@
-import 'package:collector/pages/dynamicpage.dart';
-import 'package:collector/pages/history/maintenance/dynamichistorypage.dart';
-import 'package:collector/pages/homepage.dart';
-import 'package:collector/pages/manuals/dynamicmanualspage.dart';
-import 'package:collector/pages/parameters/dynamicparameterspage.dart';
-import 'package:collector/pages/tableloader.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dynamicpage.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/dynamichistorypage.dart';
+import 'package:collector/pages/welcomePage/homepage/homepage.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/manuals/dynamicmanualspage.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/parameters/dynamicparameterspage.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/tableloader.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-import 'package:collector/pages/history/historypage.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/historypage.dart';
 import 'package:collector/pages/trends/trendspage.dart';
-import 'package:collector/pages/manuals/manuelspage.dart';
-import 'package:collector/pages/parameters/parameterspage.dart';
-import 'package:collector/pages/welcome_page.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/manuals/manuelspage.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/parameters/parameterspage.dart';
+import 'package:collector/pages/welcomePage/welcome_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
