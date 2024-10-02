@@ -404,4 +404,23 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
       );
     }
   }
+
+  Future<void> _loadDummyData() async {
+    List<Map<String, dynamic>> _savedTables = [];
+    final savedDataDir = await getApplicationDocumentsDirectory();
+    final savedDataFile =
+        File('${savedDataDir.path}/ ${widget.subDeltaName}_snapshots.json');
+
+    if (await savedDataFile.exists()) {
+      final jsonString = await savedDataFile.readAsString();
+      final List<dynamic> snapshots = json.decode(jsonString) as List<dynamic>;
+      setState(() {
+        _savedTables = snapshots.cast<Map<String, dynamic>>();
+      });
+      //process the loaded data
+     
+    }
+  }
+
+  
 }
