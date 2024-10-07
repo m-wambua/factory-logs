@@ -292,19 +292,10 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Saved Tables for ${widget.subDeltaName}'),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildGroupedColumn2Table(),
-              _buildGroupedColumn4Table()
-            ],
-          ),
-        )
-        /*
-      _savedTables.isEmpty
+      appBar: AppBar(
+        title: Text('Saved Tables for ${widget.subDeltaName}'),
+      ),
+      body: _savedTables.isEmpty
           ? Center(child: Text('No saved tables found.'))
           : ListView.builder(
               itemCount: _savedTables.length,
@@ -312,9 +303,11 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
                 return _buildTableCard(_savedTables[index]);
               },
             ),
+    );
+    /*
+     
 
 
             */
-        );
   }
 }

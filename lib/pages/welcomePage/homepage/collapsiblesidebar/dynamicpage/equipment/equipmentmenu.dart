@@ -36,7 +36,13 @@ class EquipmentMenu extends StatelessWidget {
                   Navigator.pushNamed(context, '/parameters',
                       arguments: equipmentName);
                 },
-                child: Text('Parameters'))
+                child: Text('Parameters')),
+            TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/spares',
+                      arguments: '$equipmentName');
+                },
+                child: Text('Spares'))
           ],
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dynamicpage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/dynamichistorypage.dart';
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/spartpartsinputpage.dart';
 import 'package:collector/pages/welcomePage/homepage/homepage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/manuals/dynamicmanualspage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/parameters/dynamicparameterspage.dart';
@@ -67,6 +68,10 @@ class MyApp extends StatelessWidget {
                     builder: (context) => DynamicParametersPage(
                           equipmentName: equipmentName,
                         ));
+              case '/spares':
+                return MaterialPageRoute(
+                    builder: (context) =>
+                        EquipmentSparePartsPage(equipmentName: equipmentName));
             }
           }
         }

@@ -365,8 +365,9 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
                                           .toList());
                                 }).toList(),
                         ),
-                        _buildGroupedColumn2Table(),
-                        _buildGroupedColumn4Table()
+
+                        //_buildGroupedColumn2Table(),
+                        //_buildGroupedColumn4Table()
                       ],
                     ),
             ],
