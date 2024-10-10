@@ -63,11 +63,11 @@ class _LandingPageState extends State<LandingPage> {
     bool? confirmCreate = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Create New Process'),
+        title:const Text('Create New Process'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('You are about to create a new process.'),
+          const  Text('You are about to create a new process.'),
             TextField(
               onChanged: (value) {
                 createDefault = false;
@@ -86,13 +86,13 @@ class _LandingPageState extends State<LandingPage> {
               processStatus = 'finalized'; // Set status to finalized
               Navigator.pop(context, true); // Confirm creation
             },
-            child: Text('OK'),
+            child:const Text('OK'),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context, false); // Cancel creation
             },
-            child: Text('Cancel'),
+            child:const Text('Cancel'),
           ),
         ],
       ),

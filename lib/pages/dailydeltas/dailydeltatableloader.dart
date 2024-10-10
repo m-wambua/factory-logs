@@ -6,7 +6,6 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dailydeltas/subdeltacreatorpage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/equipmentmenu.dart';
 import 'package:collector/pages/models/notification.dart';
-import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/saveddatapage.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -135,19 +134,19 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
       await savedDataFile.writeAsString(json.encode(existingDrafts));
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Delta draft saved successfully!')),
+       const SnackBar(content: Text('Delta draft saved successfully!')),
       );
     } catch (error) {
-      print('Error saving delta draft: $error');
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving delta draft!')),
+        const SnackBar(content: Text('Error saving delta draft!')),
       );
     }
   }
 
   Widget _buildDataTable() {
     if (_controllers.isEmpty) {
-      return Center(child: Text('No data available.'));
+      return const Center(child: Text('No data available.'));
     }
 
     return Table(
@@ -157,7 +156,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
           children: List.generate(_columnLabels.length, (colIndex) {
             return TableCell(
               child: Padding(
-                padding: EdgeInsets.all(8.0),
+                padding:const EdgeInsets.all(8.0),
                 child: colIndex == 0
                     ? _buildEtchedTextButton(rowIndex)
                     : TextFormField(
@@ -173,7 +172,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
                                   ? '500'
                                   : '',
                           contentPadding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                            const  EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           border: OutlineInputBorder(),
                         ),
                         onChanged: (value) {
@@ -204,12 +203,12 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
               4,
               (index) => Expanded(
                     child: Container(
-                      padding: EdgeInsets.all(8),
+                      padding:const EdgeInsets.all(8),
                       alignment: Alignment.center,
                       child: Text(
                         '${_columnLabels[index]}${_columnUnits[index].isNotEmpty ? '(${_columnUnits[index]})' : ''}',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style:const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   )),
@@ -227,12 +226,12 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
       },
       style: TextButton.styleFrom(
         backgroundColor: Colors.grey[200], // Etched background color
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        padding:const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
         _controllers[rowIndex][0].text, // Display the equipment name
-        style: TextStyle(color: Colors.black),
+        style:const TextStyle(color: Colors.black),
       ),
     );
   }
@@ -244,7 +243,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Equipment Options'),
+          title:const Text('Equipment Options'),
           content: Text('You clicked on ${_controllers[rowIndex][0].text}'),
           actions: [
             TextButton(
@@ -264,7 +263,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child:const Text('Close'),
             ),
           ],
         );
@@ -279,7 +278,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
           title: Text('Delta Table Loader'),
           actions: [
             IconButton(
-              icon: Icon(Icons.save),
+              icon:const Icon(Icons.save),
               onPressed: () {
                 // Implement save functionality
               },
@@ -294,7 +293,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
               child: Column(
                 children: [
                   _buildDataTable(),
-                  SizedBox(
+                const  SizedBox(
                     height: 20,
                   ),
                   _buildButtonRow(context),
@@ -331,7 +330,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
     await savedDataFile.writeAsString(json.encode(existingSnapshots));
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Table snapshot saved successfully!')),
+    const  SnackBar(content: Text('Table snapshot saved successfully!')),
     );
   }
 
@@ -347,7 +346,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
                       builder: (context) =>
                           SavedTablesPage(subDeltaName: widget.subDeltaName)));
             },
-            child: Text('Save as Draft')),
+            child:const Text('Save as Draft')),
         TextButton(
             onPressed: () {
               _saveTableSnapshot();
@@ -355,7 +354,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
               _saveDeltaTableAsDraft();
               Navigator.pop(context);
             },
-            child: Text('Save and Exit')),
+            child:const Text('Save and Exit')),
         TextButton(
             onPressed: () {
               _saveAndNavigatetoTrends();
@@ -366,7 +365,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
                       builder: (context) =>
                           DailyDeltaTrends(subDeltaName: widget.subDeltaName)));
             },
-            child: Text('View History'))
+            child:const Text('View History'))
       ],
     );
   }
@@ -394,13 +393,12 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
       await File(fileName).writeAsString(json.encode(tableJson));
       await _saveCumulativeData(); // Save the updated cumulative data
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Data saved successfully!')),
+      const  SnackBar(content: Text('Data saved successfully!')),
       );
       // Navigate to trends screen or perform other actions
     } catch (error) {
-      print('Error saving table data: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving data!')),
+      const  SnackBar(content: Text('Error saving data!')),
       );
     }
   }

@@ -4,7 +4,6 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
 import 'package:collector/pages/welcomePage/homepage/homepage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/manuals/dynamicmanualspage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/parameters/dynamicparameterspage.dart';
-import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/tableloader.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -19,7 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

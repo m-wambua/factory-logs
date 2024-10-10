@@ -12,10 +12,12 @@ import 'package:mailer/smtp_server.dart';
 class EquipmentSparePartsPage extends StatefulWidget {
   final String equipmentName;
 
-  const EquipmentSparePartsPage({Key? key, required this.equipmentName}) : super(key: key);
+  const EquipmentSparePartsPage({Key? key, required this.equipmentName})
+      : super(key: key);
 
   @override
-  _EquipmentSparePartsPageState createState() => _EquipmentSparePartsPageState();
+  _EquipmentSparePartsPageState createState() =>
+      _EquipmentSparePartsPageState();
 }
 
 class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
@@ -55,7 +57,8 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
   Future<void> _saveSpareParts() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/${widget.equipmentName}_spares.json');
-    await file.writeAsString(json.encode(spareParts.map((sp) => sp.toJson()).toList()));
+    await file.writeAsString(
+        json.encode(spareParts.map((sp) => sp.toJson()).toList()));
   }
 
   void _addSparePart() {
@@ -102,12 +105,15 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
         build: (pw.Context context) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('Spare Part Details', style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
+            pw.Text('Spare Part Details',
+                style:
+                    pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 20),
             pw.Text('Name: ${sparePart.name}'),
             pw.Text('Part Number: ${sparePart.partNumber}'),
             pw.Text('Description: ${sparePart.description}'),
-            pw.Text('Stock Levels: ${sparePart.minimumStock} - ${sparePart.maximumStock}'),
+            pw.Text(
+                'Stock Levels: ${sparePart.minimumStock} - ${sparePart.maximumStock}'),
             pw.Text('Condition: ${sparePart.condition}'),
             pw.Text('Lead Time: ${sparePart.leadTime}'),
             pw.Text('Supplier Info: ${sparePart.supplierInfo}'),
@@ -118,7 +124,8 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
         ),
       ),
     );
-    await Printing.sharePdf(bytes: await pdf.save(), filename: '${sparePart.name}_details.pdf');
+    await Printing.sharePdf(
+        bytes: await pdf.save(), filename: '${sparePart.name}_details.pdf');
   }
 
   Future<void> _sendEmail(SparePart sparePart) async {
@@ -128,7 +135,17 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('${widget.equipmentName} Spare Parts')),
+      appBar: AppBar(
+        title: Text('${widget.equipmentName} Spare Parts'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              _createNewSpares(widget.equipmentName);
+            },
+            icon: Icon(Icons.add),
+          )
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
@@ -141,9 +158,13 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                     title: Text(sparePart.name),
                     subtitle: Text('Part Number: ${sparePart.partNumber}'),
                     children: [
-                      ListTile(title: Text('Description: ${sparePart.description}')),
-                      ListTile(title: Text('Stock: ${sparePart.minimumStock} - ${sparePart.maximumStock}')),
-                      ListTile(title: Text('Condition: ${sparePart.condition}')),
+                      ListTile(
+                          title: Text('Description: ${sparePart.description}')),
+                      ListTile(
+                          title: Text(
+                              'Stock: ${sparePart.minimumStock} - ${sparePart.maximumStock}')),
+                      ListTile(
+                          title: Text('Condition: ${sparePart.condition}')),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -163,68 +184,105 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
               },
             ),
           ),
-          Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
-                  validator: (value) => value!.isEmpty ? 'Please enter a name' : null,
-                ),
-                TextFormField(
-                  controller: _partNumberController,
-                  decoration: InputDecoration(labelText: 'Part Number'),
-                  validator: (value) => value!.isEmpty ? 'Please enter a part number' : null,
-                ),
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: InputDecoration(labelText: 'Description'),
-                ),
-                TextFormField(
-                  controller: _minStockController,
-                  decoration: InputDecoration(labelText: 'Minimum Stock'),
-                  keyboardType: TextInputType.number,
-                ),
-                TextFormField(
-                  controller: _maxStockController,
-                  decoration: InputDecoration(labelText: 'Maximum Stock'),
-                  keyboardType: TextInputType.number,
-                ),
-                TextFormField(
-                  controller: _leadTimeController,
-                  decoration: InputDecoration(labelText: 'Lead Time'),
-                ),
-                TextFormField(
-                  controller: _supplierInfoController,
-                  decoration: InputDecoration(labelText: 'Supplier Information'),
-                ),
-                TextFormField(
-                  controller: _criticalityController,
-                  decoration: InputDecoration(labelText: 'Criticality'),
-                ),
-                TextFormField(
-                  controller: _conditionController,
-                  decoration: InputDecoration(labelText: 'Condition'),
-                ),
-                TextFormField(
-                  controller: _warrantyController,
-                  decoration: InputDecoration(labelText: 'Warranty Information'),
-                ),
-                TextFormField(
-                  controller: _usageRateController,
-                  decoration: InputDecoration(labelText: 'Usage Rate'),
-                ),
-                ElevatedButton(
-                  onPressed: _addSparePart,
-                  child: Text('Add Spare Part'),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
-}
 
+  void _createNewSpares(String equipmentName) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              scrollable: true,
+              title: Text('Create New Spare Part for $equipmentName'),
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(labelText: 'Name'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter a name' : null,
+                    ),
+                    TextFormField(
+                      controller: _partNumberController,
+                      decoration: InputDecoration(labelText: 'Part Number'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter a part number' : null,
+                    ),
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: InputDecoration(labelText: 'Description'),
+                    ),
+                    TextFormField(
+                      controller: _minStockController,
+                      decoration: InputDecoration(labelText: 'Minimum Stock'),
+                      keyboardType: TextInputType.number,
+                    ),
+                    TextFormField(
+                      controller: _maxStockController,
+                      decoration: InputDecoration(labelText: 'Maximum Stock'),
+                      keyboardType: TextInputType.number,
+                    ),
+                    TextFormField(
+                      controller: _leadTimeController,
+                      decoration: InputDecoration(labelText: 'Lead Time'),
+                    ),
+                    TextFormField(
+                      controller: _supplierInfoController,
+                      decoration:
+                          InputDecoration(labelText: 'Supplier Information'),
+                    ),
+                    TextFormField(
+                      controller: _criticalityController,
+                      decoration: InputDecoration(labelText: 'Criticality'),
+                    ),
+                    TextFormField(
+                      controller: _conditionController,
+                      decoration: InputDecoration(labelText: 'Condition'),
+                    ),
+                    TextFormField(
+                      controller: _warrantyController,
+                      decoration:
+                          InputDecoration(labelText: 'Warranty Information'),
+                    ),
+                    TextFormField(
+                      controller: _usageRateController,
+                      decoration: InputDecoration(labelText: 'Usage Rate'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          _addSparePart();
+                        },
+                        child: Text(
+                          'Save Spare',
+                          style: TextStyle(color: Colors.green),
+                        )),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.red),
+                        ))
+                  ],
+                ),
+              ],
+            ));
+  }
+}

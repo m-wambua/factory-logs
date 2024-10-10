@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/allspares.dart';
 import 'package:collector/pages/welcomePage/homepage/menubaritems/creatorspage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dailydeltas/dailydeltacreator.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dailydeltas/dailydeltatableloader.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dailydeltas/delltafilemanager.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/emailsender.dart';
-import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/lastEntrySaver.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/cableSchedule/cablescheduleadd.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/codebase/codebase.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/codebase/codedetails.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/startupprocedure/startup.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/startupprocedure/startuppage.dart';
-import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/saveddatapage.dart';
 import 'package:collector/pages/welcomePage/homepage/menubaritems/subprocesscreator.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/tableloader.dart';
 import 'package:excel/excel.dart' as excel;
@@ -21,11 +20,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 
 class DynamicPageLoader extends StatefulWidget {
   final String processName;
@@ -102,8 +98,13 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
           Row(
             children: [
               IconButton(
-                onPressed: () {},
-                icon:const Icon(Icons.chrome_reader_mode),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllEquipmentSparesPage()));
+                },
+                icon: const Icon(Icons.chrome_reader_mode),
               ),
               IconButton(
                 onPressed: () {
@@ -115,13 +116,13 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                                 subdeltas: subdeltas,
                               )));
                 },
-                icon:const Icon(Icons.compare),
+                icon: const Icon(Icons.compare),
               ),
               IconButton(
                   onPressed: () {
                     _showCableScheduleDialog(context);
                   },
-                  icon:const Icon(Icons.cable_outlined)),
+                  icon: const Icon(Icons.cable_outlined)),
               IconButton(
                   onPressed: () {
                     _showOptionsDialog(context);
@@ -131,12 +132,12 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                   onPressed: () {
                     _addStartUpProcedure(context);
                   },
-                  icon:const Icon(Icons.power_settings_new)),
+                  icon: const Icon(Icons.power_settings_new)),
               IconButton(
                   onPressed: () {
                     _showUpdateProcess(context);
                   },
-                  icon:const Icon(Icons.border_color_outlined))
+                  icon: const Icon(Icons.border_color_outlined))
             ],
           )
         ],
@@ -195,7 +196,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                      const  Text(
+                        const Text(
                           'Daily Logs',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
@@ -213,7 +214,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                      const  Text(
+                        const Text(
                           'Daily Delta',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
@@ -289,7 +290,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              title:const Text('Submit to: '), content: _submissionList());
+              title: const Text('Submit to: '), content: _submissionList());
         });
   }
 
@@ -307,7 +308,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
           children: [
             TextSpan(
               text: value,
-              style:const TextStyle(
+              style: const TextStyle(
                 color: Colors.black54,
                 fontWeight: FontWeight.normal,
               ),
@@ -396,8 +397,8 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title:const Icon(Icons.check_circle, color: Colors.green),
-            content: Text('Email sent successfully!'),
+            title: const Icon(Icons.check_circle, color: Colors.green),
+            content:const Text('Email sent successfully!'),
             actions: [
               TextButton(
                 child: const Text('OK'),
@@ -415,11 +416,11 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title:const Icon(Icons.error, color: Colors.red),
+            title: const Icon(Icons.error, color: Colors.red),
             content: Text('Failed to send email: $e'),
             actions: [
               TextButton(
-                child:const Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -443,19 +444,19 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                 TextFormField(
                   controller: mailingListController[i],
                   decoration:
-                    const  InputDecoration(labelText: 'enter email address:'),
+                      const InputDecoration(labelText: 'enter email address:'),
                   onChanged: (value) {},
                 ),
-            const  SizedBox(height: 10),
+              const SizedBox(height: 10),
               IconButton(
                 onPressed: () {
                   setStateDialog(() {
                     mailingListController.add(TextEditingController());
                   });
                 },
-                icon:const Icon(Icons.add),
+                icon: const Icon(Icons.add),
               ),
-            const  SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -463,12 +464,12 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                       onPressed: () {
                         _sendEmailWithAttachments(context);
                       },
-                      child:const Text('Okay')),
+                      child: const Text('Okay')),
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child:const Text('Cancel')),
+                      child: const Text('Cancel')),
                 ],
               )
             ],
@@ -519,7 +520,7 @@ Event Description: $eventDescription
           _buildInfoText('Eventful Shift', _eventfulShift ? 'Yes' : 'No'),
           _buildInfoText('Event Description', _eventDescriptionController.text),
           const SizedBox(height: 10),
-        const  Text(
+          const Text(
             'The Subprocesses Logged are:',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
@@ -535,7 +536,7 @@ Event Description: $eventDescription
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child:const Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               const SizedBox(
                 width: 10,
@@ -544,12 +545,12 @@ Event Description: $eventDescription
                   onPressed: () async {
                     createAndStorePDF();
                   },
-                  child:const Text('Submit')),
+                  child: const Text('Submit')),
               TextButton(
                   onPressed: () {
                     _showSubmitList(context);
                   },
-                  child:const Text('Submit and Forward'))
+                  child: const Text('Submit and Forward'))
             ],
           )
         ],
@@ -590,7 +591,7 @@ Event Description: $eventDescription
     await Directory('$appDocPath/pages/summary_files').create(recursive: true);
     final File file = File(fullPath);
     await file.writeAsBytes(await pdf.save());
-    print('Pdf created and stored at : $fullPath');
+    
     return file;
   }
 
@@ -635,7 +636,7 @@ Event Description: $eventDescription
     return ExpansionTile(
       title: Text(
         subprocess,
-        style:const TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       children: [
         if (_savedDataMap[subprocess]?.isNotEmpty ?? false)
@@ -671,7 +672,7 @@ Event Description: $eventDescription
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text('Saved on: $timestamp',
-                style:const TextStyle(fontWeight: FontWeight.bold)),
+                style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -704,7 +705,11 @@ Event Description: $eventDescription
             tempList.add(tableJson);
           }
         } catch (e) {
-          print('Error decoding JSON for $subprocess: $e');
+          
+      ScaffoldMessenger.of(context).showSnackBar(
+      const  SnackBar(content: Text('Error Loading Data!')),
+      );
+         
         }
       }
     }
@@ -784,7 +789,7 @@ Event Description: $eventDescription
     // Example logic to generate buttons
     if (subdeltas == null || subdeltas!.isEmpty) {
       return [
-      const  Column(
+        const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [Text('No delta has been uploaded')],
         )
@@ -801,7 +806,7 @@ Event Description: $eventDescription
             },
             child: Text(delta),
           ),
-         const  SizedBox(
+          const SizedBox(
             height: 10,
           ),
         ],
@@ -857,7 +862,7 @@ Event Description: $eventDescription
                     MaterialPageRoute(
                         builder: (context) => UploadScreenCableSchedule()));
               },
-              child:const Text('Upload New/Update Cable Schedule'))
+              child: const Text('Upload New/Update Cable Schedule'))
         ],
       ),
     );
@@ -873,7 +878,7 @@ Event Description: $eventDescription
 
   Widget uploadOrNot(BuildContext context) {
     return AlertDialog(
-      title:const Text('Code Base Storage'),
+      title: const Text('Code Base Storage'),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -887,7 +892,7 @@ Event Description: $eventDescription
                     MaterialPageRoute(
                         builder: (context) => ExistingCodeBasesPage()));
               },
-              child:const Text('View Existing Code Bases')),
+              child: const Text('View Existing Code Bases')),
           const SizedBox(
             height: 10,
           ),
@@ -897,7 +902,7 @@ Event Description: $eventDescription
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => UploadScreen()));
               },
-              child:const Text('Upload New Code Bases'))
+              child: const Text('Upload New Code Bases'))
         ],
       ),
     );
@@ -923,7 +928,7 @@ Event Description: $eventDescription
             onPressed: () {
               _addNewEntry(context);
             },
-            child:const Text('Update the Process Entries'),
+            child: const Text('Update the Process Entries'),
           ),
         ],
       ),
@@ -941,14 +946,14 @@ Event Description: $eventDescription
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              title:const Text('Add New Entry'),
+              title: const Text('Add New Entry'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                 const Text('Enter the details for the new entry:'),
-                const  SizedBox(height: 10),
+                  const Text('Enter the details for the new entry:'),
+                  const SizedBox(height: 10),
                   TextField(
-                    decoration:const InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Enter New Entry Name',
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.text_fields),
@@ -959,7 +964,7 @@ Event Description: $eventDescription
                       });
                     },
                   ),
-                 const SizedBox(height: 10),
+                  const SizedBox(height: 10),
                 ],
               ),
               actions: [
@@ -967,7 +972,7 @@ Event Description: $eventDescription
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child:const Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
@@ -991,14 +996,14 @@ Event Description: $eventDescription
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                       const SnackBar(
+                        const SnackBar(
                           content:
                               Text('Please enter a name for the new entry'),
                         ),
                       );
                     }
                   },
-                  child:const Text('Add'),
+                  child: const Text('Add'),
                 ),
               ],
             );
@@ -1034,19 +1039,20 @@ Event Description: $eventDescription
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                  onPressed: () {}, icon:const Icon(Icons.image))
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.image))
                             ],
                           )),
                       onChanged: (value) {},
                     ),
-                 const SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   TextField(
                     controller: lastUpdatePerson,
-                    decoration:const InputDecoration(labelText: 'Updated By'),
+                    decoration: const InputDecoration(labelText: 'Updated By'),
                   ),
-                const  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   IconButton(
@@ -1055,8 +1061,8 @@ Event Description: $eventDescription
                           startUpController.add(TextEditingController());
                         });
                       },
-                      icon:const Icon(Icons.add)),
-                const  SizedBox(
+                      icon: const Icon(Icons.add)),
+                  const SizedBox(
                     height: 5,
                   ),
                   Row(
@@ -1074,7 +1080,7 @@ Event Description: $eventDescription
                                 startUpEntry, widget.processName);
                             Navigator.of(dialogContext).pop();
                           },
-                          child:const Text('Save')),
+                          child: const Text('Save')),
                       ElevatedButton(
                           onPressed: () {
                             Navigator.push(
@@ -1083,12 +1089,12 @@ Event Description: $eventDescription
                                     builder: (context) => StartUpEntriesPage(
                                         processName: widget.processName)));
                           },
-                          child:const Text('View Saved Start Up Procedure')),
+                          child: const Text('View Saved Start Up Procedure')),
                       ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child:const Text('Cancel'))
+                          child: const Text('Cancel'))
                     ],
                   )
                 ],

@@ -2,7 +2,7 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/welcomePage/homepage/menubaritems/subprocesscreator.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 
 class CreatorPage extends StatefulWidget {
   final String processName;
@@ -52,7 +52,7 @@ class _CreatorPageState extends State<CreatorPage> {
               // Save functionality if needed
               _saveProcessAndSubprocesses();
             },
-            icon: Icon(Icons.save),
+            icon:const Icon(Icons.save),
           ),
         ],
       ),
@@ -65,11 +65,11 @@ class _CreatorPageState extends State<CreatorPage> {
               // List of subprocess tiles
               for (int index = 0; index < _subprocesses.length; index++)
                 Card(
-                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  margin:const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListTile(
                     title: Text(_subprocesses[index]),
                     trailing: IconButton(
-                      icon: Icon(Icons.delete),
+                      icon:const Icon(Icons.delete),
                       onPressed: () {
                         _deleteSubprocess(index);
                       },
@@ -86,13 +86,13 @@ class _CreatorPageState extends State<CreatorPage> {
                     },
                   ),
                 ),
-              SizedBox(height: 20),
+             const SizedBox(height: 20),
               // Add button for creating new subprocess
               ElevatedButton(
                 onPressed: () {
                   _createNewSubprocess();
                 },
-                child: Text('Add New Subprocess'),
+                child:const Text('Add New Subprocess'),
               ),
             ],
           ),
@@ -109,9 +109,9 @@ class _CreatorPageState extends State<CreatorPage> {
       builder: (context) {
         String tempSubprocessName = '';
         return AlertDialog(
-          title: Text('Create New Subprocess'),
+          title:const Text('Create New Subprocess'),
           content: TextField(
-            decoration: InputDecoration(
+            decoration:const InputDecoration(
               labelText: 'Subprocess Name',
             ),
             onChanged: (value) {
@@ -123,14 +123,14 @@ class _CreatorPageState extends State<CreatorPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child:const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context,
                     tempSubprocessName.isEmpty ? null : tempSubprocessName);
               },
-              child: Text('Create'),
+              child:const Text('Create'),
             ),
           ],
         );
@@ -158,9 +158,9 @@ class _CreatorPageState extends State<CreatorPage> {
       builder: (context) {
         String tempSubprocessName = '';
         return AlertDialog(
-          title: Text('Rename Subprocess'),
+          title:const Text('Rename Subprocess'),
           content: TextField(
-            decoration: InputDecoration(
+            decoration:const InputDecoration(
               labelText: 'New Name',
             ),
             onChanged: (value) {
@@ -172,20 +172,20 @@ class _CreatorPageState extends State<CreatorPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child:const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context, '');
               },
-              child: Text('Clear'),
+              child:const Text('Clear'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context,
                     tempSubprocessName.isEmpty ? null : tempSubprocessName);
               },
-              child: Text('Rename'),
+              child:const Text('Rename'),
             ),
           ],
         );
@@ -216,7 +216,7 @@ class _CreatorPageState extends State<CreatorPage> {
       await FileManager.saveProcesses(existingProcesses);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Process and Subprocesses saved successfully!')),
+       const SnackBar(content: Text('Process and Subprocesses saved successfully!')),
       );
 
       // Update Landing
@@ -233,9 +233,9 @@ class _CreatorPageState extends State<CreatorPage> {
         },
       );
     } catch (e) {
-      print('Error saving process and subprocesses: $e');
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save process and subprocesses')),
+      const  SnackBar(content: Text('Failed to save process and subprocesses')),
       );
     } finally {
       setState(() {

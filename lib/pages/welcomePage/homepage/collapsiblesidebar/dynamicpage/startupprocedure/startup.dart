@@ -54,7 +54,7 @@ class StartUpEntryData {
       //Append new data to existing entries
       existingStartUp.addAll(startupData);
       // Convert all entries to Json and write to the file with formatting
-      JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      JsonEncoder encoder =const JsonEncoder.withIndent('  ');
 
       String jsonString = encoder
           .convert(startupData.map((detail) => detail.toJson()).toList());
@@ -63,6 +63,7 @@ class StartUpEntryData {
       // Clear the current list to avoid duplicating data in the next save
       startupData.clear();
     } catch (e) {
+      
       print(' error Saving Start Up Procedure details: $e');
     }
   }
