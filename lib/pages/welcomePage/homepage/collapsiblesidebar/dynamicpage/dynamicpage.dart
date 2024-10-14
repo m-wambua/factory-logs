@@ -398,7 +398,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
         builder: (context) {
           return AlertDialog(
             title: const Icon(Icons.check_circle, color: Colors.green),
-            content:const Text('Email sent successfully!'),
+            content: const Text('Email sent successfully!'),
             actions: [
               TextButton(
                 child: const Text('OK'),
@@ -591,7 +591,7 @@ Event Description: $eventDescription
     await Directory('$appDocPath/pages/summary_files').create(recursive: true);
     final File file = File(fullPath);
     await file.writeAsBytes(await pdf.save());
-    
+
     return file;
   }
 
@@ -705,11 +705,9 @@ Event Description: $eventDescription
             tempList.add(tableJson);
           }
         } catch (e) {
-          
-      ScaffoldMessenger.of(context).showSnackBar(
-      const  SnackBar(content: Text('Error Loading Data!')),
-      );
-         
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error Loading Data!')),
+          );
         }
       }
     }

@@ -1,8 +1,8 @@
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/spartpartsmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
+import 'package:path/path.dart' as path;
 
 class AllEquipmentSparesPage extends StatefulWidget {
   @override
@@ -19,25 +19,43 @@ class _AllEquipmentSparesPageState extends State<AllEquipmentSparesPage> {
   }
 
   Future<void> _loadAllEquipmentSpares() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final files = directory.listSync();
-    
-    for (var file in files) {
-      if (file is File && file.path.endsWith('_spares.json')) {
-        final equipmentName = file.path.split('/').last.split('_spares.json').first;
-        final contents = await file.readAsString();
-        final List<dynamic> jsonList = json.decode(contents);
-        allEquipmentSpares[equipmentName] = jsonList.map((json) => SparePart.fromJson(json)).toList();
+    try {
+      final baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
+      final directory = Directory(baseDir);
+
+      if (await directory.exists()) {
+        final List<FileSystemEntity> entities = await directory.list().toList();
+        for (var entity in entities) {
+          if (entity is Directory) {
+            final equipmentName = path.basename(entity.path);
+            final filePath =
+                path.join(entity.path, '${equipmentName}_spares.json');
+            final file = File(filePath);
+
+            if (await file.exists()) {
+              final contents = await file.readAsString();
+              final List<dynamic> jsonList = json.decode(contents);
+              allEquipmentSpares[equipmentName] =
+                  jsonList.map((json) => SparePart.fromJson(json)).toList();
+            }
+          }
+        }
       }
+    } catch (e) {
+      print("Error loading spare parts: $e");
     }
-    
+
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:const Text('All Equipment Spares')),
+      appBar: AppBar(
+        title: const Text('All Equipment Spares'),
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
+      ),
       body: ListView.builder(
         itemCount: allEquipmentSpares.length,
         itemBuilder: (context, index) {
@@ -45,11 +63,14 @@ class _AllEquipmentSparesPageState extends State<AllEquipmentSparesPage> {
           final spares = allEquipmentSpares[equipmentName]!;
           return ExpansionTile(
             title: Text(equipmentName),
-            children: spares.map((spare) => ListTile(
-              title: Text(spare.name),
-              subtitle: Text('Part Number: ${spare.partNumber}'),
-              trailing: Text('Stock: ${spare.minimumStock} - ${spare.maximumStock}'),
-            )).toList(),
+            children: spares
+                .map((spare) => ListTile(
+                      title: Text(spare.name),
+                      subtitle: Text('Part Number: ${spare.partNumber}'),
+                      trailing: Text(
+                          'Stock: ${spare.minimumStock} - ${spare.maximumStock}'),
+                    ))
+                .toList(),
           );
         },
       ),
