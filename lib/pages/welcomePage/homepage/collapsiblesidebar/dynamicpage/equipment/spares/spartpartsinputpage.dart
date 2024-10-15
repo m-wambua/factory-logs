@@ -44,13 +44,30 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
     _loadSpareParts();
   }
 
-  void _showSubmitList(BuildContext context) {
+  void _showSubmitList(BuildContext context, SparePart sparePart) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Submit to: '),
             content: _submissionList(),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        _sendEmail(sparePart);
+                      },
+                      child: Text('Send Email')),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'))
+                ],
+              )
+            ],
           );
         });
   }
@@ -83,17 +100,6 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
             const SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(onPressed: () {}, child: const Text('Okay')),
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel'))
-              ],
-            )
           ],
         ),
       );
@@ -234,7 +240,56 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
   }
 
   Future<void> _sendEmail(SparePart sparePart) async {
-    // Implement email sending logic here
+    Map<String, dynamic> pdfData = {
+      'name': sparePart.name,
+      'Part Number': sparePart.partNumber,
+      'Description': sparePart.description,
+      'Minimum Stock': sparePart.minimumStock,
+      'Maximum Stock': sparePart.maximumStock,
+      'Condition': sparePart.condition,
+      'Lead Time': sparePart.leadTime,
+      'Supplier Info': sparePart.supplierInfo,
+      'Warranty': sparePart.warranty,
+      'Usage Rate': sparePart.usageRate,
+    };
+    try {
+      await EmailSender.sendEmail(
+          mailingListController, pdfData, EmailType.sparePartsDetails);
+      //show success dialog
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                ),
+                content: const Text('Email sent Succesfully!'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'))
+                ],
+              ));
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                ),
+                content: Text('Error sending email: $e'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'))
+                ],
+              ));
+    }
   }
 
   @override
@@ -290,7 +345,8 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                                     child: Text('Print'),
                                   ),
                                   ElevatedButton(
-                                    onPressed: () => _sendEmail(sparePart),
+                                    onPressed: () =>
+                                        _showSubmitList(context, sparePart),
                                     child: Text('Email'),
                                   ),
                                 ],

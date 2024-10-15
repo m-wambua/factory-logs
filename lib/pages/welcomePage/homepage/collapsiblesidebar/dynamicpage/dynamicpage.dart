@@ -389,7 +389,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
     try {
       await EmailSender.sendEmail(
         mailingListController,
-        pdfData,
+        pdfData,EmailType.productionSummary 
       );
 
       // Show success dialog
