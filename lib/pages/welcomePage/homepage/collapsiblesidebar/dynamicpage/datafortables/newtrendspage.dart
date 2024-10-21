@@ -1,10 +1,25 @@
 import 'dart:io';
 
 import 'package:collector/pages/welcomePage/homepage/menubaritems/subprocesscreator.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
+
+// Update the ChartData class
+class ChartData {
+  final String timestamp;
+  final List<double> values;
+  final String name;
+
+  ChartData({
+    required this.timestamp,
+    required this.values,
+    required this.name,
+  });
+}
 
 class TrendsPage2 extends StatefulWidget {
   final String subprocessName;
@@ -246,10 +261,262 @@ class _TrendsPage2State extends State<TrendsPage2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Saved Data'),
+        appBar: AppBar(
+          title: Text('Saved Data'),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildDummyTable(),
+              const Divider(),
+              buildCombinedLineGraph()
+            ],
+          ),
+        ));
+  }
+
+// Replace the existing _buildLineGraphData and _buildLineGraphs methods with these:
+
+  List<ChartData> _buildLineGraphData() {
+    List<List<String>> groupedData = extractAndGroupDataByTimestamps();
+    List<ChartData> lineGraphData = [];
+
+    print('Grouped Data: $groupedData'); // Debug print
+
+    // Get non-fixed integer columns
+    List<int> nonFixedIntegerColumnIndices = _columns
+        .asMap()
+        .entries
+        .where((entry) =>
+            !entry.value.isFixed && entry.value.type == ColumnDataType.integer)
+        .map((entry) => entry.key)
+        .toList();
+
+    print(
+        'Non-fixed Integer Column Indices: $nonFixedIntegerColumnIndices'); // Debug print
+
+    // Get column names for these indices
+    List<String> seriesNames = nonFixedIntegerColumnIndices
+        .map((index) => _columns[index].name)
+        .toList();
+
+    print('Series Names: $seriesNames'); // Debug print
+
+    if (groupedData.isEmpty) {
+      print('No grouped data available');
+      return [];
+    }
+
+    // Process each row of data
+    for (var row in groupedData) {
+      if (row.isEmpty) {
+        print('Empty row found, skipping');
+        continue;
+      }
+
+      try {
+        String timestamp = row[0];
+        print('Processing timestamp: $timestamp'); // Debug print
+
+        // Convert all values after timestamp to doubles
+        List<double> values = row.sublist(1).map((value) {
+          final parsedValue = double.tryParse(value.trim()) ?? 0.0;
+          print('Parsed value: $value -> $parsedValue'); // Debug print
+          return parsedValue;
+        }).toList();
+
+        if (values.isNotEmpty) {
+          ChartData chartData = ChartData(
+            timestamp: timestamp,
+            values: values,
+            name: 'Data Series', // We'll improve this naming later
+          );
+          lineGraphData.add(chartData);
+        }
+      } catch (e) {
+        print('Error processing row: $e'); // Debug print
+        continue;
+      }
+    }
+
+    print(
+        'Final Line Graph Data: ${lineGraphData.length} entries'); // Debug print
+    return lineGraphData;
+  }
+
+  Widget buildCombinedLineGraph() {
+    final List<ChartData> chartDataList = _buildLineGraphData();
+
+    print(
+        'Building graph with ${chartDataList.length} data points'); // Debug print
+
+    if (chartDataList.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'No data available for the graph. Please check if data is loaded correctly.',
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      );
+    }
+
+    // Define colors for different lines
+    final List<Color> lineColors = [
+      Colors.blue,
+      Colors.red,
+      Colors.green,
+      Colors.orange,
+      Colors.purple,
+      Colors.teal,
+      Colors.pink,
+      Colors.amber,
+    ];
+
+    // Find overall min and max values
+    double minY = double.infinity;
+    double maxY = double.negativeInfinity;
+
+    for (var data in chartDataList) {
+      for (var value in data.values) {
+        if (value < minY) minY = value;
+        if (value > maxY) maxY = value;
+      }
+    }
+
+    print('Min Y: $minY, Max Y: $maxY'); // Debug print
+
+    // Ensure we have a non-zero range
+    if (minY == maxY ||
+        minY == double.infinity ||
+        maxY == double.negativeInfinity) {
+      minY = 0;
+      maxY = 1;
+    }
+
+    final double padding = (maxY - minY) * 0.1;
+    final double effectiveMinY = minY - padding;
+    final double effectiveMaxY = maxY + padding;
+
+    return Container(
+      height: 400,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Expanded(
+            child: LineChart(
+              LineChartData(
+                lineTouchData: LineTouchData(
+                  enabled: true,
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                      return touchedSpots.map((spot) {
+                        return LineTooltipItem(
+                          'Value: ${spot.y.toStringAsFixed(1)}',
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }).toList();
+                    },
+                  ),
+                ),
+                lineBarsData: List.generate(
+                  chartDataList[0].values.length,
+                  (seriesIndex) => LineChartBarData(
+                    spots: chartDataList.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final values = entry.value.values;
+                      return FlSpot(
+                        index.toDouble(),
+                        seriesIndex < values.length ? values[seriesIndex] : 0,
+                      );
+                    }).toList(),
+                    isCurved: false,
+                    color: lineColors[seriesIndex % lineColors.length],
+                    barWidth: 2,
+                    dotData: FlDotData(show: true),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color: lineColors[seriesIndex % lineColors.length]
+                          .withOpacity(0.1),
+                    ),
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 50,
+                      getTitlesWidget: (value, meta) {
+                        final int index = value.toInt();
+                        if (index >= 0 && index < chartDataList.length) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: RotatedBox(
+                              quarterTurns: 1,
+                              child: Text(
+                                chartDataList[index].timestamp,
+                                style: const TextStyle(fontSize: 10),
+                              ),
+                            ),
+                          );
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 40,
+                      getTitlesWidget: (value, meta) {
+                        return Text(value.toStringAsFixed(1),
+                            style: const TextStyle(fontSize: 10));
+                      },
+                    ),
+                  ),
+                  topTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                gridData: FlGridData(show: true),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                ),
+                minY: effectiveMinY,
+                maxY: effectiveMaxY,
+              ),
+            ),
+          ),
+          // Add legend
+          Wrap(
+            spacing: 8.0,
+            children: List.generate(
+              chartDataList[0].values.length,
+              (index) => Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 16,
+                    height: 16,
+                    color: lineColors[index % lineColors.length],
+                  ),
+                  const SizedBox(width: 4),
+                // 
+                  
+                  Text('Series ${index + 1}'),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
-      body: _buildDummyTable(),
     );
   }
 }

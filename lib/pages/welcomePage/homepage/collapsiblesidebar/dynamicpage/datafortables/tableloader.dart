@@ -205,7 +205,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                 ),
                 SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: _viewSavedData,
+                  onPressed: _viewSubmittedData,
                   child: Text('View Saved Data'),
                 ),
                 SizedBox(width: 10),
