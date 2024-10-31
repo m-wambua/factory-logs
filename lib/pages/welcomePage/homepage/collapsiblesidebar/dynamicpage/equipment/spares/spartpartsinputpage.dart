@@ -1,5 +1,6 @@
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/emailsender.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/spartpartsmodel.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
@@ -296,7 +297,18 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.equipmentName} Spare Parts'),
+        title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('${widget.equipmentName} Spares Parts'),
+            ],
+          ),
+        
+       
         actions: [
           IconButton(
             onPressed: () {

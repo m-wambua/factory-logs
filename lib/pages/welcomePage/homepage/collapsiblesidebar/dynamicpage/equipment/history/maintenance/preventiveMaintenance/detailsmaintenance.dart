@@ -1,3 +1,4 @@
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'maintenance_details.dart';
@@ -33,7 +34,19 @@ class _MaintenanceDetailsPageState extends State<MaintenanceDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Maintenance Details')),
+      appBar: AppBar(title:
+       Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Maintenance Details'),
+            ],
+          ),
+      
+     ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: details != null

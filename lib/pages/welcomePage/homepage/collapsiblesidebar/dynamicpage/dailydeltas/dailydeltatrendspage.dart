@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dailydeltas/subdeltacreatorpage.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -313,7 +314,20 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('${widget.subDeltaName}\'s Trends'),
+
+
+          title:    Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('${widget.subDeltaName}\'s Trends'),
+            ],
+          ),
+          
+          
         ),
         body: SingleChildScrollView(
           child: Column(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/parameters/parameterdetails.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,7 +27,18 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Add Parameter'),
+      title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Add Parameter'),
+            ],
+          ),
+      
+      
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

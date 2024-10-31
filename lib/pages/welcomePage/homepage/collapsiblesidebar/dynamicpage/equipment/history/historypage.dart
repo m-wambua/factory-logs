@@ -1,6 +1,7 @@
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/failureMaintenance/failurehistory.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
 import 'package:collector/pages/models/notification.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -21,7 +22,18 @@ class _HistoryPageState extends State<HistoryPage> {
     //Use the subprocess variable to display relevant data
     return Scaffold(
       appBar: AppBar(
-        title: Text('History for $subprocess'),
+        title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('History for $subprocess '),
+            ],
+          ),
+        
+       
       ),
       body: SingleChildScrollView(
           child: Column(

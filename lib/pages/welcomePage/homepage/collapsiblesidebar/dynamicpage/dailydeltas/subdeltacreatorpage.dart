@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -246,7 +247,19 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.subdeltaName),
+        title: 
+         Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('${widget.subdeltaName} Configurator'),
+            ],
+          ),
+        
+        
         actions: [
           IconButton(
             icon: Icon(Icons.save),

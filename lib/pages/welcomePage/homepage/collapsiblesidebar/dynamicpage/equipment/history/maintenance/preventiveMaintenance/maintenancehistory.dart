@@ -6,6 +6,7 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
     as MaintenanceEntry;
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/preventiveMaintenance/maintenancehistorysparecode.dart';
 import 'package:collector/pages/models/notification.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
@@ -55,7 +56,17 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('Preventive Maintenance Checklist for ${widget.subprocess} '),
+         Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Preventive Maintenance Checklist for ${widget.subprocess}'),
+            ],
+          ),
+            
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

@@ -4,6 +4,7 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/saveddatapage.dart';
 import 'package:collector/pages/welcomePage/homepage/menubaritems/subprocesscreator.dart';
 import 'package:collector/pages/trends/trendspage.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -188,7 +189,16 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.subprocessName),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Image.asset(AppAssets.deltalogo),
+            ),
+            Text(widget.subprocessName),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

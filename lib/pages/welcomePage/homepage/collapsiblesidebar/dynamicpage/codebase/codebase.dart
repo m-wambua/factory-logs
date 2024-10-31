@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class UploadScreen extends StatefulWidget {
@@ -22,7 +23,18 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Code Base'),
+        title: Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Upload Code Base'),
+            ],
+          ),
+        
+        
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.0),

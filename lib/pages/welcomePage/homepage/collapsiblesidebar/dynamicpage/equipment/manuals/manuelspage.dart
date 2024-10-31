@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/manuals/manualsdetails.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -157,8 +158,18 @@ class _ManualsPageState extends State<ManualsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(' Manuals for: $_subprocess'),
-        actions: [
+        title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Manuals for ${_subprocess}'),
+            ],
+          ),
+        
+                actions: [
           IconButton(onPressed: _deleteAllManuals, icon: Icon(Icons.delete))
         ],
       ),

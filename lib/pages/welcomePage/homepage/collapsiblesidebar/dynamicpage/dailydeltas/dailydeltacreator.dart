@@ -2,6 +2,7 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/file_manager.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dailydeltas/subdeltacreatorpage.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,18 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Delta\'s Creator - ${widget.processName}'),
+        title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Delta\'s Creator - ${widget.processName}'),
+            ],
+          ),
+        
+        
         actions: [
           IconButton(
               onPressed: () {

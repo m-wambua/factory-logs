@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:collector/pages/welcomePage/homepage/menubaritems/subprocesscreator.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
@@ -262,7 +263,16 @@ class _TrendsPage2State extends State<TrendsPage2> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Saved Data'),
+          title: Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Saved ${widget.subprocessName} Data'),
+            ],
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -347,8 +357,11 @@ class _TrendsPage2State extends State<TrendsPage2> {
   Widget buildCombinedLineGraph() {
     final List<ChartData> chartDataList = _buildLineGraphData();
 
-    print(
-        'Building graph with ${chartDataList.length} data points'); // Debug print
+    // Get dummy headers (excluding the timestamp column which is at index 0)
+    List<String> dummyHeaders = _tableData.map((row) => row[0]).toList();
+    // Remove the 'Time Stamp' header
+
+    print('Dummy Headers: $dummyHeaders'); // Debug print
 
     if (chartDataList.isEmpty) {
       return const Center(
@@ -385,8 +398,6 @@ class _TrendsPage2State extends State<TrendsPage2> {
       }
     }
 
-    print('Min Y: $minY, Max Y: $maxY'); // Debug print
-
     // Ensure we have a non-zero range
     if (minY == maxY ||
         minY == double.infinity ||
@@ -412,8 +423,10 @@ class _TrendsPage2State extends State<TrendsPage2> {
                   touchTooltipData: LineTouchTooltipData(
                     getTooltipItems: (List<LineBarSpot> touchedSpots) {
                       return touchedSpots.map((spot) {
+                        // Get the header name for this series
+                        String headerName = dummyHeaders[spot.barIndex];
                         return LineTooltipItem(
-                          'Value: ${spot.y.toStringAsFixed(1)}',
+                          '$headerName: ${spot.y.toStringAsFixed(1)}',
                           const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -474,15 +487,19 @@ class _TrendsPage2State extends State<TrendsPage2> {
                       showTitles: true,
                       reservedSize: 40,
                       getTitlesWidget: (value, meta) {
-                        return Text(value.toStringAsFixed(1),
-                            style: const TextStyle(fontSize: 10));
+                        return Text(
+                          value.toStringAsFixed(1),
+                          style: const TextStyle(fontSize: 10),
+                        );
                       },
                     ),
                   ),
-                  topTitles:
-                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles:
-                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
                 gridData: FlGridData(show: true),
                 borderData: FlBorderData(
@@ -494,11 +511,11 @@ class _TrendsPage2State extends State<TrendsPage2> {
               ),
             ),
           ),
-          // Add legend
+          // Updated legend with dummy headers
           Wrap(
             spacing: 8.0,
             children: List.generate(
-              chartDataList[0].values.length,
+              dummyHeaders.length,
               (index) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -508,9 +525,7 @@ class _TrendsPage2State extends State<TrendsPage2> {
                     color: lineColors[index % lineColors.length],
                   ),
                   const SizedBox(width: 4),
-                // 
-                  
-                  Text('Series ${index + 1}'),
+                  Text(dummyHeaders[index]),
                 ],
               ),
             ),

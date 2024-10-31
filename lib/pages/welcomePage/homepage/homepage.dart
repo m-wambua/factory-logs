@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:collector/pages/welcomePage/homepage/menubaritems/creatorspage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/dailydeltas/delltafilemanager.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/welcomePage/homepage/menubaritems/notificationpage.dart';
@@ -11,7 +12,8 @@ import 'package:collector/pages/process_2/process_2.dart';
 import 'package:collector/pages/process_3/process_3.dart';
 import 'package:collector/pages/process_4/process_4.dart';
 import 'package:collector/pages/welcomePage/loginAndLogout/logout_page.dart';
-import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/file_manager.dart' as FileManager;
+import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/file_manager.dart'
+    as FileManager;
 
 class LandingPage extends StatefulWidget {
   final String username;
@@ -31,6 +33,9 @@ class _LandingPageState extends State<LandingPage> {
   Map<String, List<String>> processNames = {};
   Map<String, List<String>> processSubDeltas = {};
 
+  // Add a controller for sidebar width
+  final double sidebarWidth = 250.0;
+
   @override
   void initState() {
     super.initState();
@@ -40,10 +45,8 @@ class _LandingPageState extends State<LandingPage> {
 
   Future<void> _loadProcesses() async {
     processNames = await FileManager.FileManager.loadProcesses();
-    _processes = processNames.keys
-        .toList(); // Extract process names from the loaded data
+    _processes = processNames.keys.toList();
     processSubDeltas = await DeltaFileManager.loadDeltas();
-
     setState(() {});
   }
 
@@ -57,17 +60,16 @@ class _LandingPageState extends State<LandingPage> {
   void _createNewProcess3() async {
     bool createDefault = true;
     String defaultName = 'Process ${_processes.length}';
-    String processStatus = 'creation'; // Default to creation mode
+    String processStatus = 'creation';
 
-    // Show a dialog to confirm creating a new process
     bool? confirmCreate = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title:const Text('Create New Process'),
+        title: const Text('Create New Process'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-          const  Text('You are about to create a new process.'),
+            const Text('You are about to create a new process.'),
             TextField(
               onChanged: (value) {
                 createDefault = false;
@@ -83,45 +85,55 @@ class _LandingPageState extends State<LandingPage> {
         actions: [
           TextButton(
             onPressed: () {
-              processStatus = 'finalized'; // Set status to finalized
-              Navigator.pop(context, true); // Confirm creation
+              processStatus = 'finalized';
+              Navigator.pop(context, true);
             },
-            child:const Text('OK'),
+            child: const Text('OK'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context, false); // Cancel creation
+              Navigator.pop(context, false);
             },
-            child:const Text('Cancel'),
+            child: const Text('Cancel'),
           ),
         ],
       ),
     );
 
-    // If confirmed, create the new process
     if (confirmCreate == true) {
       setState(() {
         _processes.add(defaultName);
-        _buttonStates[defaultName] = processStatus; // Set process status
+        _buttonStates[defaultName] = processStatus;
       });
-      // Navigate to the creator's page for the new process
 
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CreatorPage(
-                    processName: defaultName,
-                    subprocesses: [],
-                  )));
+        context,
+        MaterialPageRoute(
+          builder: (context) => CreatorPage(
+            processName: defaultName,
+            subprocesses: [],
+          ),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     int notificationCount = _notifications.length;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Factory Processes'),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Image.asset(AppAssets.deltalogo),
+            ),
+            const Text('Factory Processes'),
+          ],
+        ),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.home)),
           const SizedBox(width: 15),
@@ -174,26 +186,45 @@ class _LandingPageState extends State<LandingPage> {
           IconButton(onPressed: () {}, icon: const Icon(Icons.list)),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-            padding: EdgeInsets.zero, children: _buildNavigationItems()),
-      ),
-      body: Stack(
+      body: Row(
         children: [
-          Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(builder: (context) {
-                switch (settings.name) {
-                  case '/':
-                    return const Placeholder(); // Home page
-
-                  case 'Log Out':
-                    return LogoutPage(currentUser: widget.username);
-                  default:
-                    throw Exception('Invalid route: ${settings.name}');
-                }
-              });
-            },
+          // Permanent Sidebar
+          Container(
+            width: sidebarWidth,
+            color: Theme.of(context).colorScheme.surface,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: _buildNavigationItems(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Vertical Divider
+          VerticalDivider(
+            width: 1,
+            thickness: 1,
+            color: Theme.of(context).dividerColor,
+          ),
+          // Main Content
+          Expanded(
+            child: Navigator(
+              onGenerateRoute: (settings) {
+                return MaterialPageRoute(builder: (context) {
+                  switch (settings.name) {
+                    case '/':
+                      return const Placeholder();
+                    case 'Log Out':
+                      return LogoutPage(currentUser: widget.username);
+                    default:
+                      throw Exception('Invalid route: ${settings.name}');
+                  }
+                });
+              },
+            ),
           ),
         ],
       ),
@@ -210,7 +241,6 @@ class _LandingPageState extends State<LandingPage> {
         selected: _selectedProcess == processName,
         tileColor: tileColor,
         onTap: () {
-          Navigator.pop(context); // Close the drawer
           _handleButtonPressed(processName);
           setState(() {
             _selectedProcess = processName;
@@ -219,12 +249,10 @@ class _LandingPageState extends State<LandingPage> {
       );
     }).toList();
 
-    // Ensure 'Logout' button is always last
     navigationItems.add(ListTile(
       title: const Text('Logout'),
       selected: _selectedProcess == 'Logout',
       onTap: () {
-        Navigator.pop(context); // Close the drawer
         _handleButtonPressed('Logout');
         setState(() {
           _selectedProcess = 'Logout';
@@ -242,20 +270,18 @@ class _LandingPageState extends State<LandingPage> {
         '/$processName',
         arguments: {
           'processName': processName,
-          'subprocesses': processNames[
-              processName], // Pass subprocesses to the dynamic page
-              
+          'subprocesses': processNames[processName],
         },
       );
     } else {
-      // Handle static routes as before
       switch (processName) {
         case 'Logout':
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      LogoutPage(currentUser: widget.username)));
+            context,
+            MaterialPageRoute(
+              builder: (context) => LogoutPage(currentUser: widget.username),
+            ),
+          );
           break;
         default:
           throw Exception('Invalid route: $processName');

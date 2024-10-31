@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/parameters/parameterdetails.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -162,7 +163,19 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
     _loadParameters();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Parameters for ${widget.equipmentName}'),
+        title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Parameters for ${widget.equipmentName}'),
+            ],
+          ),
+        
+        
+        
         actions: [
           IconButton(onPressed: _deleteAllParameters, icon: Icon(Icons.delete))
         ],

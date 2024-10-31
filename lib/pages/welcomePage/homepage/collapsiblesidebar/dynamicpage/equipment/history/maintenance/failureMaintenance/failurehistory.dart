@@ -2,6 +2,7 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/failureMaintenance/failureDetailsPage.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/failureMaintenance/failureEntry.dart'
     as FailureEntry;
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -43,7 +44,19 @@ class _FailureHistoryState extends State<FailureHistory> {
     _loadFailureEntries();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Failure Maintenance Checklist'),
+
+        title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Failure Maintenance Checklist'),
+            ],
+          ),
+        
+        
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

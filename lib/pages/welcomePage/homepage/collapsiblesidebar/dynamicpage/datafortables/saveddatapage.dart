@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/lastEntrySaver.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:collector/pages/welcomePage/homepage/menubaritems/subprocesscreator.dart';
@@ -74,7 +75,16 @@ class _SavedDataPageState extends State<SavedDataPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Saved Data'),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Image.asset(AppAssets.deltalogo),
+            ),
+            Text('Saved ${widget.subprocessName} Data'),
+          ],
+        ),
       ),
       body: ListView.builder(
         itemCount: _savedDataList.length,

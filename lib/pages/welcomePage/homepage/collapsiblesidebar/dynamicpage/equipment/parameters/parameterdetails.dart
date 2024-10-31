@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -19,7 +20,19 @@ class DetailsPage extends StatelessWidget {
     print(filePath);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Details'),
+        title:  
+         Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Details'),
+            ],
+          ),
+        
+        
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

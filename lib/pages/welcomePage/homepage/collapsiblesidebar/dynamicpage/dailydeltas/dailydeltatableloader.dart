@@ -7,6 +7,7 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/equipmentmenu.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/saveddatapage.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -276,7 +277,16 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Delta Table Loader'),
+          title: Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Daily ${widget.subDeltaName} Data'),
+            ],
+          ),
           actions: [
             IconButton(
               icon: Icon(Icons.save),

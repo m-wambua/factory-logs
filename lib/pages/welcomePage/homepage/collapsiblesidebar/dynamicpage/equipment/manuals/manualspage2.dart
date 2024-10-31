@@ -4,6 +4,7 @@
 import 'dart:io';
 
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -40,7 +41,19 @@ class _ManualsPageState extends State<ManualsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manual for $subprocess'),
+        title: 
+         Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Manuals for ${subprocess}'),
+            ],
+          ),
+        
+       
       ),
       body: SingleChildScrollView(
         child: Column(

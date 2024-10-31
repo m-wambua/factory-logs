@@ -1,4 +1,5 @@
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/startupprocedure/startup.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class StartUpEntriesPage extends StatefulWidget {
@@ -28,7 +29,18 @@ class _StartupEntriesPageState extends State<StartUpEntriesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('StartUp Entries '),
+        title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('StartUp Entries'),
+            ],
+          ),
+        
+        
       ),
       body: ListView.builder(
           itemCount: entries.length,

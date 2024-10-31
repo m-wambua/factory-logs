@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/cableSchedule/cablescheduledata.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class UploadScreenCableSchedule extends StatefulWidget {
@@ -45,7 +46,19 @@ class _UploadScreenState extends State<UploadScreenCableSchedule> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Upload Cable/Update Schedule'),
+        title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Upload/Update Cable Schedule'),
+            ],
+          ),
+        
+        
+        
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),

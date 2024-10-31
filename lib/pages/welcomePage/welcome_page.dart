@@ -1,4 +1,5 @@
 import 'package:collector/pages/welcomePage/loginAndLogout/login_page.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -13,7 +14,17 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome'),
+          title: Row(
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            child: Image.asset(AppAssets.deltalogo),
+          ),
+          const Text('Welcome'),
+        ],
+      )
+      
       ),
       body: Center(
           child: Column(
@@ -70,8 +81,10 @@ class _WelcomePageState extends State<WelcomePage> {
                   child: const Text('Cancel')),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const LoginPage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage()));
                   },
                   child: const Text('Ok'))
             ],

@@ -1,6 +1,7 @@
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/failureMaintenance/failurehistory.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
 import 'package:collector/pages/models/notification.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class DynamicHistoryPage extends StatefulWidget {
@@ -17,7 +18,19 @@ class _DynamicHistoryPageState extends State<DynamicHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Maintenance History for ${widget.equipmentName}'),
+          title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Maintenance History for ${widget.equipmentName}'),
+            ],
+          ),
+          
+          
+          
         ),
         body: Center(
           child: Column(

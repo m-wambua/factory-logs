@@ -1,6 +1,7 @@
 import 'package:collector/pages/welcomePage/homepage/homepage.dart';
 import 'package:collector/pages/welcomePage/loginAndLogout/logout_page.dart';
 import 'package:collector/pages/welcomePage/loginAndLogout/personel.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,8 +24,16 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
-      ),
+          title: Row(
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            child: Image.asset(AppAssets.deltalogo),
+          ),
+          const Text('Login'),
+        ],
+      )),
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

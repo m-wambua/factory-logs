@@ -15,6 +15,7 @@ import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicp
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/startupprocedure/startuppage.dart';
 import 'package:collector/pages/welcomePage/homepage/menubaritems/subprocesscreator.dart';
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/datafortables/tableloader.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:excel/excel.dart' as excel;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,16 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.processName),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Image.asset(AppAssets.deltalogo),
+            ),
+            Text(widget.processName),
+          ],
+        ),
         actions: [
           Row(
             children: [
@@ -388,9 +398,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
 
     try {
       await EmailSender.sendEmail(
-        mailingListController,
-        pdfData,EmailType.productionSummary 
-      );
+          mailingListController, pdfData, EmailType.productionSummary);
 
       // Show success dialog
       showDialog(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -293,7 +294,18 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Saved Tables for ${widget.subDeltaName}'),
+        title: 
+         Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Saved  Tables for ${widget.subDeltaName}'),
+            ],
+          ),
+        
       ),
       body: _savedTables.isEmpty
           ? Center(child: Text('No saved tables found.'))

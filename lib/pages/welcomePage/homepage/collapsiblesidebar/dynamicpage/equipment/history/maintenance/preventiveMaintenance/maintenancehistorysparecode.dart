@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -76,7 +77,18 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     _loadMaintenanceEntries();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Preventive Maintenance Checklist '),
+        title: Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Preventive Mainteance Checklist for ${widget.subprocess}'),
+            ],
+          ),
+        
+       
       ),
       body: SingleChildScrollView(
           scrollDirection: Axis.vertical,

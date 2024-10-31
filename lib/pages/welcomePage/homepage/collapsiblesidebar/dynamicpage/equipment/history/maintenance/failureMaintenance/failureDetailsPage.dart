@@ -1,4 +1,5 @@
 import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/history/maintenance/failureMaintenance/failureDetails.dart';
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 //import 'Failure_details.dart';
@@ -32,7 +33,18 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Failure Details')),
+      appBar: AppBar(title:  Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                child: Image.asset(AppAssets.deltalogo),
+              ),
+              Text('Failure Details'),
+            ],
+          ),
+      
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: details != null
