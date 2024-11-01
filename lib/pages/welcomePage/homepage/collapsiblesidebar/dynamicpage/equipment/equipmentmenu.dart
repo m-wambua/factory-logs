@@ -1,3 +1,4 @@
+import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class EquipmentMenu extends StatelessWidget {
@@ -8,7 +9,16 @@ class EquipmentMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(equipmentName),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Image.asset(AppAssets.deltalogo),
+            ),
+            Text('Submenu Items for $equipmentName'),
+          ],
+        ),
       ),
       body: Center(
         child: Column(

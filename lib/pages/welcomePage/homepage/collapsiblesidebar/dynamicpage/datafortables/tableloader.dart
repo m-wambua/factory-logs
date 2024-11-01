@@ -185,6 +185,92 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         type: NotificationType.LogsCollected);
   }
 
+/////////////////////////////////////////////////
+  /// ColumnLabelRow
+
+  Widget _buildColumnsLabelRow() {
+    return Container(
+        color: Colors.grey[200],
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: _columns
+                  .map((column) => Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '${column.name}${column.unit.isNotEmpty ? ' (${column.unit})' : ''}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            )));
+  }
+
+  ///////////////////////////////////////
+  ///// Table
+  Widget _buildDataTable2() {
+    if (_columns.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Table(
+      border: TableBorder.all(),
+      children: List.generate(_numRows, (rowindex) {
+        return TableRow(
+            children: List.generate(_columns.length, (colindex) {
+          ColumnInfo column = _columns[colindex];
+          return TableCell(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: colindex == 0
+                ? _buildEtchedTextButton(rowindex)
+                : column.isFixed
+                    ? Text(
+                        _tableData[rowindex][colindex],
+                        textAlign: TextAlign.center,
+                      )
+                    : TextFormField(
+                        textAlign: TextAlign.center,
+                        initialValue: _tableData[rowindex][colindex],
+                        decoration:
+                            InputDecoration(border: OutlineInputBorder()),
+                        onChanged: (value) {
+                          setState(() {
+                            _tableData[rowindex][colindex] = value;
+                          });
+                        },
+                      ),
+          ));
+        }));
+      }),
+    );
+  }
+
+  // Method to create an etched TextButton in the first column
+  Widget _buildEtchedTextButton(int rowIndex) {
+    return TextButton(
+      onPressed: () {
+        // Define the behavior when clicking on the first column's TextButton
+        _showEquipmentMenu(rowIndex);
+      },
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.grey[200], // Etched background color
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      child: Text(
+        _tableData[rowIndex][0],
+        style: TextStyle(color: Colors.black),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,9 +291,12 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildDataTable(),
+            _buildColumnsLabelRow(),
+            _buildDataTable2(),
+            //_buildDataTable(),
             SizedBox(height: 20),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: _saveTableAsDraft,
