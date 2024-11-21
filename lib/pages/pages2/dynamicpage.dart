@@ -6,7 +6,7 @@ import 'package:collector/pages/pages2/creatorspage.dart';
 import 'package:collector/pages/pages2/dailydeltas/dailydeltacreator.dart';
 import 'package:collector/pages/pages2/dailydeltas/dailydeltatableloader.dart';
 import 'package:collector/pages/pages2/dailydeltas/delltafilemanager.dart';
-import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/emailsender.dart';
+import 'package:collector/pages/pages2/emaiandstorage/emailsender.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/pages2/cableSchedule/cablescheduleadd.dart';
 import 'package:collector/pages/pages2/codebase/codebase.dart';

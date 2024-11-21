@@ -12,7 +12,12 @@ import 'package:collection/collection.dart';
 
 class FailureHistory extends StatefulWidget {
   final String subprocess;
-  FailureHistory({required this.subprocess});
+  final String processName;
+  final String equipmentName;
+  FailureHistory(
+      {required this.processName,
+      required this.equipmentName,
+      required this.subprocess});
   @override
   _FailureHistoryState createState() => _FailureHistoryState();
 }
@@ -51,7 +56,7 @@ class _FailureHistoryState extends State<FailureHistory> {
               backgroundColor: Theme.of(context).colorScheme.surface,
               child: Image.asset(AppAssets.deltalogo),
             ),
-            Text('${widget.subprocess} Failure  Maintenance Checklist'),
+            Text('${widget.equipmentName} Failure  Maintenance Checklist'),
           ],
         ),
       ),
@@ -614,7 +619,7 @@ class _FailureHistoryState extends State<FailureHistory> {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final file =
-          File('${directory.path}/${widget.subprocess}/failure_details.json');
+          File('${directory.path}/${widget.equipmentName}/failure_details.json');
       List<FailureDetails> detailsList = [];
 
       // Load existing data if the file exists
@@ -758,7 +763,7 @@ class _FailureHistoryState extends State<FailureHistory> {
   Future<void> _loadFailureEntries() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/${widget.subprocess}/failure.json');
+      final file = File('${directory.path}/${widget.equipmentName}/failure.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);
@@ -784,7 +789,7 @@ class _FailureHistoryState extends State<FailureHistory> {
   Future<void> _saveFailureEntries() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/${widget.subprocess}/failure.json');
+      final file = File('${directory.path}/${widget.equipmentName}/failure.json');
 
       // Update existing task if it exists, otherwise add the new task
       for (var entry in failureEntries) {
@@ -831,7 +836,7 @@ class _FailureHistoryState extends State<FailureHistory> {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final file =
-          File('${directory.path}/${widget.subprocess}/failure_details.json');
+          File('${directory.path}/${widget.equipmentName}/failure_details.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);

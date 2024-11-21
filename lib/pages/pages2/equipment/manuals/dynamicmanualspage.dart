@@ -369,49 +369,53 @@ class _DynamicManualsPageState extends State<DynamicManualsPage> {
   }
 
   Future<void> uploadPDF(File pdfFile, BuildContext context) async {
-    print('Starting upload process...'); // Debug log
+    print('Starting upload process...');
     final url = Uri.parse('http://0.0.0.0:8000/pdf-transfer');
 
     try {
-      print('File size: ${await pdfFile.length()} bytes'); // Debug log
-
       var request = http.MultipartRequest('POST', url);
+
+      // Add these lines to send form fields
+      request.fields['filemenu'] = 'Manuals' ?? '';
+      request.fields['process_name'] = widget.processName ?? '';
+      request.fields['subprocess_name'] = widget.subprocessName ?? '';
+      request.fields['equipment_name'] = widget.equipmentName ?? '';
+
       var stream = http.ByteStream(pdfFile.openRead());
       var length = await pdfFile.length();
-
       var multipartFile = http.MultipartFile(
         'file',
         stream,
         length,
         filename: pdfFile.path.split('/').last,
       );
-
       request.files.add(multipartFile);
-      print('Sending request...'); // Debug log
 
+      print('Sending request...');
       var response = await request.send();
-      print('Response status code: ${response.statusCode}'); // Debug log
+      print('Response status code: ${response.statusCode}');
 
-      // Read response body
       final responseBody = await response.stream.bytesToString();
-      print('Response body: $responseBody'); // Debug log
+      print('Response body: $responseBody');
 
       if (response.statusCode == 200) {
         print('File uploaded successfully');
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('PDF uploaded successfully')));
+          print(
+              'Uploaded to:  Manuals ${widget.processName}/${widget.subprocessName}/${widget.equipmentName}');
         }
       } else {
         print('Upload failed: ${response.statusCode}');
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Failed to upload PDF: ${response.statusCode}')));
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to upload PDF: $responseBody')));
         }
       }
     } catch (e, stackTrace) {
-      print('Error uploading file: $e'); // Debug log
-      print('Stack trace: $stackTrace'); // Debug log for more detail
+      print('Error uploading file: $e');
+      print('Stack trace: $stackTrace');
       if (context.mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Error uploading PDF: $e')));

@@ -1,4 +1,4 @@
-import 'package:collector/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/emailsender.dart';
+import 'package:collector/pages/pages2/emaiandstorage/emailsender.dart';
 import 'package:collector/pages/pages2/equipment/spares/spartpartsmodel.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +12,15 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 
 class EquipmentSparePartsPage extends StatefulWidget {
+  final String processName;
+  final String subprocessName;
   final String equipmentName;
 
-  const EquipmentSparePartsPage({Key? key, required this.equipmentName})
+  const EquipmentSparePartsPage(
+      {Key? key,
+      required this.processName,
+      required this.subprocessName,
+      required this.equipmentName})
       : super(key: key);
 
   @override
@@ -217,7 +223,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
         build: (pw.Context context) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('${widget.equipmentName} Spare Part Details',
+            pw.Text('${widget.equipmentName} Spare Part Details for process',
                 style:
                     pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 20),
@@ -297,18 +303,17 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                child: Image.asset(AppAssets.deltalogo),
-              ),
-              Text('${widget.equipmentName} Spares Parts'),
-            ],
-          ),
-        
-       
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Image.asset(AppAssets.deltalogo),
+            ),
+            Text(
+                '${widget.equipmentName} Spares Parts for process ${widget.processName} and for subprocess ${widget.subprocessName}'),
+          ],
+        ),
         actions: [
           IconButton(
             onPressed: () {

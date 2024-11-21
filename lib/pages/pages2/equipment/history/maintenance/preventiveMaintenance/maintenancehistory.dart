@@ -14,10 +14,15 @@ import 'package:collection/collection.dart';
 
 class MyMaintenanceHistory extends StatefulWidget {
   final String subprocess;
+  final String equipmentName;
+  final String processName;
   final Function(NotificationModel) onNotificationAdded;
 
   MyMaintenanceHistory(
-      {required this.subprocess, required this.onNotificationAdded});
+      {required this.processName,
+      required this.equipmentName,
+      required this.subprocess,
+      required this.onNotificationAdded});
 
   @override
   _MyMaintenanceHistoryState createState() => _MyMaintenanceHistoryState();
@@ -43,7 +48,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
 
   Future<void> loadMaintenanceDetails() async {
     await maintenanceData.loadMaintenanceDetails(
-        widget.subprocess); // Load maintenance details from file
+        widget.equipmentName); // Load maintenance details from file
     setState(() {
       maintenanceDetailsList = maintenanceData
           .maintenanceDetailsList; // Assign the first details if available, otherwise null
@@ -55,18 +60,17 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     _loadMaintenanceEntries();
     return Scaffold(
       appBar: AppBar(
-        title:
-         Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                child: Image.asset(AppAssets.deltalogo),
-              ),
-              Text('Preventive Maintenance Checklist for ${widget.subprocess}'),
-            ],
-          ),
-            
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Image.asset(AppAssets.deltalogo),
+            ),
+            Text(
+                'Preventive Maintenance Checklist for ${widget.equipmentName}'),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -119,7 +123,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => MaintenanceDetailsPage(
-                            subprocess: widget.subprocess,
+                            subprocess: widget.equipmentName,
                           )));
             },
             child: Text(equipment),
@@ -885,7 +889,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
                         checklist: currentItems);
 
                     details.tasks.add(taskDetails);
-                    maintenanceData.saveMaintenanceDetails(widget.subprocess);
+                    maintenanceData.saveMaintenanceDetails(widget.equipmentName);
 
                     Navigator.of(dialogContext).pop();
 
@@ -910,7 +914,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final file = File(
-          '${directory.path}/${widget.subprocess}/maintenance_details.json');
+          '${directory.path}/${widget.equipmentName}/maintenance_details.json');
       List<MaintenanceDetails> detailsList = [];
 
       // Load existing data if the file exists
@@ -1055,7 +1059,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final file =
-          File('${directory.path}/${widget.subprocess}/maintenance.json');
+          File('${directory.path}/${widget.equipmentName}/maintenance.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);
@@ -1082,7 +1086,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final file =
-          File('${directory.path}/${widget.subprocess}/maintenance.json');
+          File('${directory.path}/${widget.equipmentName}/maintenance.json');
 
       // Update existing task if it exists, otherwise add the new task
       for (var entry in maintenanceEntries) {
@@ -1129,7 +1133,7 @@ class _MyMaintenanceHistoryState extends State<MyMaintenanceHistory> {
     try {
       final directory = await getApplicationDocumentsDirectory();
       final file = File(
-          '${directory.path}/${widget.subprocess}/maintenance_details.json');
+          '${directory.path}/${widget.equipmentName}/maintenance_details.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);

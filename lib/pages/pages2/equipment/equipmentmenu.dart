@@ -32,8 +32,11 @@ class EquipmentMenu extends StatelessWidget {
           children: [
             TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/history',
-                      arguments: '$equipmentName');
+                  Navigator.pushNamed(context, '/history', arguments: {
+                    'equipmentName': equipmentName,
+                    'processName': processName,
+                    'subprocessName': subprocessName
+                  });
                 },
                 child: Text('History')),
             SizedBox(
@@ -53,14 +56,20 @@ class EquipmentMenu extends StatelessWidget {
             ),
             TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/parameters',
-                      arguments: equipmentName);
+                  Navigator.pushNamed(context, '/parameters', arguments: {
+                    'equipmentName': equipmentName,
+                    'processName': processName,
+                    'subprocessName': subprocessName,
+                  });
                 },
                 child: Text('Parameters')),
             TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/spares',
-                      arguments: '$equipmentName');
+                  Navigator.pushNamed(context, '/spares', arguments: {
+                    'equipmentName': equipmentName,
+                    'processName': processName,
+                    'subprocessName': subprocessName
+                  });
                 },
                 child: Text('Spares'))
           ],

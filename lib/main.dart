@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-import 'package:collector/pages/pages2/equipment/history/historypage.dart';
 import 'package:collector/pages/trends/trendspage.dart';
 import 'package:collector/pages/pages2/equipment/manuals/manuelspage.dart';
 import 'package:collector/pages/pages2/equipment/parameters/parameterspage.dart';
@@ -20,6 +19,7 @@ void main() async {
   Hive.init(appDocumentDir.path);
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -33,66 +33,65 @@ class MyApp extends StatelessWidget {
         if (routeName != null && routeName.startsWith('/')) {
           if (settings.arguments is Map<String, dynamic>) {
             final args = settings.arguments as Map<String, dynamic>;
-            
+
             // Check if this is a manuals route first
             if (routeName == '/manuals') {
               return MaterialPageRoute(
-                builder: (context) => DynamicManualsPage(
-                  equipmentName: args['equipmentName'] as String,
-                  processName: args['processName'] as String,
-                  subprocessName: args['subprocessName'] as String,
-                ));
+                  builder: (context) => DynamicManualsPage(
+                        equipmentName: args['equipmentName'] as String,
+                        processName: args['processName'] as String,
+                        subprocessName: args['subprocessName'] as String,
+                      ));
+            }
+
+            if (routeName == '/history') {
+              return MaterialPageRoute(
+                  builder: (context) => DynamicHistoryPage(
+                        equipmentName: args['equipmentName'] as String,
+                        processName: args['processName'] as String,
+                        subprocessName: args['subprocessName'] as String,
+                      ));
+            }
+
+            if (routeName == '/parameters') {
+              return MaterialPageRoute(
+                  builder: (context) => DynamicParametersPage(
+                        equipmentName: args['equipmentName'] as String,
+                        processName: args['processName'] as String,
+                        subprocessName: args['subprocessName'] as String,
+                      ));
+            }
+
+            if (routeName == '/spares') {
+              return MaterialPageRoute(
+                  builder: (context) => EquipmentSparePartsPage(
+                        equipmentName: args['equipmentName'] as String,
+                        processName: args['processName'] as String,
+                        subprocessName: args['subprocessName'] as String,
+                      ));
             }
 
             // Handle the original dynamic routes case
-            if (args.containsKey('processName') && args.containsKey('subprocesses')) {
+            if (args.containsKey('processName') &&
+                args.containsKey('subprocesses')) {
               final processName = args['processName'] as String;
               final subprocesses = args['subprocesses'] as List<String>;
               List<String> subdeltas = [];
               if (args['subDeltas'] != null) {
-                subdeltas = (args['subDeltas'] as List).map((e) => e.toString()).toList();
+                subdeltas = (args['subDeltas'] as List)
+                    .map((e) => e.toString())
+                    .toList();
               }
               return MaterialPageRoute(
-                builder: (context) => DynamicPageLoader(
-                  processName: processName,
-                  subprocesses: subprocesses,
-                  subdeltas: subdeltas,
-                ));
+                  builder: (context) => DynamicPageLoader(
+                        processName: processName,
+                        subprocesses: subprocesses,
+                        subdeltas: subdeltas,
+                      ));
             }
           } else if (settings.arguments is String) {
             final equipmentName = settings.arguments as String;
-
-            // Handle routes where only a string argument is passed
-            switch (routeName) {
-              case '/history':
-                return MaterialPageRoute(
-                  builder: (context) => DynamicHistoryPage(
-                    equipmentName: equipmentName,
-                  ));
-              case '/parameters':
-                return MaterialPageRoute(
-                  builder: (context) => DynamicParametersPage(
-                    equipmentName: equipmentName,
-                  ));
-              case '/spares':
-                return MaterialPageRoute(
-                  builder: (context) => EquipmentSparePartsPage(
-                    equipmentName: equipmentName
-                  ));
-            }
           }
-        }
-
-        // Handle static routes
-        final routes = {
-          '/history': (context) => const HistoryPage(),
-          '/trends': (context) => const TrendsPage(),
-          '/manuals': (context) => ManualsPage(),
-          '/parameters': (context) => ParameterPage(),
-        };
-
-        if (routes.containsKey(routeName)) {
-          return MaterialPageRoute(builder: routes[routeName]!);
         }
 
         // Fallback if route is not found

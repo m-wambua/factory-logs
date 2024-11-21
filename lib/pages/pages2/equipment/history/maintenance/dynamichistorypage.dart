@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 
 class DynamicHistoryPage extends StatefulWidget {
   final String equipmentName;
-  const DynamicHistoryPage({super.key, required this.equipmentName});
+  final String processName;
+  final String subprocessName;
+  const DynamicHistoryPage({super.key, required this.processName,
+  
+  required this.subprocessName, required this.equipmentName});
 
   @override
   State<DynamicHistoryPage> createState() => _DynamicHistoryPageState();
@@ -18,19 +22,16 @@ class _DynamicHistoryPageState extends State<DynamicHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title:  Row(
+          title: Row(
             children: [
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: Image.asset(AppAssets.deltalogo),
               ),
-              Text('Maintenance History for ${widget.equipmentName}'),
+              Text('Maintenance History for ${widget.equipmentName} for process ${widget.processName} and subprocess ${widget.subprocessName}'),
             ],
           ),
-          
-          
-          
         ),
         body: Center(
           child: Column(
@@ -41,7 +42,9 @@ class _DynamicHistoryPageState extends State<DynamicHistoryPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => FailureHistory(
-                                subprocess: widget.equipmentName)));
+                              subprocess: widget.subprocessName,
+                              processName: widget.processName,
+                                equipmentName: widget.equipmentName)));
                   },
                   child: Text('Failure History')),
               SizedBox(
@@ -53,7 +56,9 @@ class _DynamicHistoryPageState extends State<DynamicHistoryPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => MyMaintenanceHistory(
-                                subprocess: widget.equipmentName,
+                              equipmentName: widget.equipmentName,
+                                subprocess: widget.subprocessName,
+                                processName: widget.processName,
                                 onNotificationAdded: (notification) {
                                   setState(() {
                                     notifications.add(notification);
