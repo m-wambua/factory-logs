@@ -1,3 +1,5 @@
 1.with the new arguments for the processName, subprocessName and equipmentName this will be used as naming sequence for the backend design (done 21/11/2024)
 2. Create a retrieval function and accuratley label the pdf files sent
 3. write a wrapper around Theme
+4.Writing a serve function that converts to pdf and then saves it on our backend(26/11/2024)
+5.Ensure the data for all the equipmentmenu is saved well

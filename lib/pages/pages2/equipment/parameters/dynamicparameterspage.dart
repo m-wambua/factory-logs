@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/pages2/equipment/parameters/parameterdetails.dart';
+import 'package:collector/pages/pages2/equipment/parameters/parametersmodel.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,13 @@ class AddParameterWidget extends StatefulWidget {
 }
 
 class _AddParameterWidgetState extends State<AddParameterWidget> {
-  final TextEditingController _headerController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+  final _headerController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
   String? _filePath;
   String? _fileName;
   List<Map<String, String>> _parameters = [];
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -163,11 +165,78 @@ class DynamicParametersPage extends StatefulWidget {
 
 class _DynamicParametersPageState extends State<DynamicParametersPage> {
   List<Map<String, String>> _parameters = [];
+  List<ParameterStorage> _parameterStorage = [];
+  final _formKey = GlobalKey<FormState>();
+
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _loadParameters();
+  }
 
   @override
+  Future<void> _loadParameters() async {
+    try {
+      final loadParameters =
+          await ParameterStorage.loadParameterList(widget.equipmentName);
+      setState(() {
+        _parameterStorage = loadParameters;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading spare parts: $e')));
+    }
+  }
+
+  Future<void> _saveParameters() async {
+    try {
+      await ParameterStorage.saveParamterList(
+          _parameterStorage, widget.equipmentName);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving spare parts: $e')));
+    }
+  }
+
+  Future<void> _deleteParameterList(int Index) async {
+    setState(() {
+      ParameterStorage.deleteParameterEntry(widget.equipmentName);
+    });
+    await _saveParameters();
+  }
+
+  Future<void> _showDeleteConfirmation(int index) async {
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm Deletion'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Cancel')),
+                  TextButton(
+                    onPressed: () {
+                      _deleteParameterList(index);
+                    },
+                    child: Text('Delete'),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   Widget build(BuildContext context) {
     _createApparatusFolder(widget.equipmentName);
-    _loadParameters();
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -217,11 +286,102 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showAddParameterDialog(context);
+          _createNewParameters(widget.equipmentName);
         },
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void _addParameters() {
+    if (_formKey.currentState!.validate()) {
+      final newparameter = ParameterStorage(
+          name: _nameController.text, description: _descriptionController.text);
+      setState(() {
+        _parameterStorage.add(newparameter);
+      });
+      _saveParameters();
+      _clearForm();
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _clearForm() {
+    _nameController.clear();
+    _descriptionController.clear();
+  }
+
+  void _createNewParameters(String equipmentName) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              scrollable: true,
+              title: Text('Create new parameters'),
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                            child: TextFormField(
+                          controller: _nameController,
+                          decoration: InputDecoration(labelText: 'Name'),
+                          validator: (value) =>
+                              value!.isEmpty ? 'Please enter a name' : null,
+                        )),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: TextFormField(
+                          controller: _descriptionController,
+                          decoration: InputDecoration(labelText: 'Description'),
+                          validator: (value) => value!.isEmpty
+                              ? 'Please enter a description'
+                              : null,
+                        )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          handleUpload(context);
+                        },
+                        icon: Icon(Icons.attach_file))
+                  ],
+                ),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          _addParameters();
+                        },
+                        child: Text(
+                          'Save Parameter',
+                          style: TextStyle(color: Colors.green),
+                        )),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ));
   }
 
   void _showAddParameterDialog(BuildContext context) {
@@ -327,37 +487,6 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
       }
     }
     return copiedFilePath;
-  }
-
-  Future<void> _loadParameters() async {
-    final String folderPath =
-        'services/parameters/files_and_folders/${widget.equipmentName}';
-    final File paramerFile = File('$folderPath/parameters.json');
-    try {
-      if (await paramerFile.exists()) {
-        final String jsonString = await paramerFile.readAsString();
-        final List<dynamic> JsonList = jsonDecode(jsonString);
-        _parameters =
-            JsonList.map((json) => Map<String, String>.from(json)).toList();
-        setState(() {}); // Trigger a rebuild after loading parameters
-      }
-    } catch (e) {
-      print('Error loading parameters $e');
-    }
-  }
-
-  Future<void> _saveParameters() async {
-    final String folderPath =
-        'services/parameters/files_and_folders/${widget.equipmentName}';
-    final File parameterFile = File('$folderPath/parameters.json');
-    try {
-      if (!await parameterFile.exists()) {
-        await parameterFile.create(recursive: true);
-      }
-      await parameterFile.writeAsString(jsonEncode(_parameters));
-    } catch (e) {
-      print('Error saving parameters: $e');
-    }
   }
 
   // Function to build file types status widget

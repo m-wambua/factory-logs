@@ -10,6 +10,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:http/http.dart' as http;
 
 class EquipmentSparePartsPage extends StatefulWidget {
   final String processName;
@@ -197,6 +198,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
         spareParts.add(newSparePart);
       });
       _saveSpareParts();
+      _generateAndUploadPDF(newSparePart);
       _clearForm();
       Navigator.of(context).pop();
     }
@@ -244,6 +246,37 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
     );
     await Printing.sharePdf(
         bytes: await pdf.save(), filename: '${sparePart.name}_details.pdf');
+  }
+
+  Future<File> _generateAndSavePDF(SparePart sparePart) async {
+    final pdf = pw.Document();
+    pdf.addPage(pw.Page(
+        build: (pw.Context context) => pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                      '${widget.equipmentName} Spare Part Details for process',
+                      style: pw.TextStyle(
+                          fontSize: 20, fontWeight: pw.FontWeight.bold)),
+                  pw.SizedBox(height: 20),
+                  pw.Text('Name: ${sparePart.name}'),
+                  pw.Text('Part Number: ${sparePart.partNumber}'),
+                  pw.Text('Description: ${sparePart.description}'),
+                  pw.Text(
+                      'Stock Levels: ${sparePart.minimumStock}- ${sparePart.maximumStock}'),
+                  pw.Text('Condition: ${sparePart.condition}'),
+                  pw.Text('Lead Time: ${sparePart.leadTime}'),
+                  pw.Text('Supplier Info: ${sparePart.supplierInfo}'),
+                  pw.Text('Criticality: ${sparePart.criticality}'),
+                  pw.Text('Warranty: ${sparePart.warranty}'),
+                  pw.Text('Usage Rate: ${sparePart.usageRate}'),
+                ])));
+
+    final directory = await getTemporaryDirectory();
+    final filePath = '${directory.path}/${sparePart.name}_details.pdf';
+    final file = File(filePath);
+    await file.writeAsBytes(await pdf.save());
+    return file;
   }
 
   Future<void> _sendEmail(SparePart sparePart) async {
@@ -506,5 +539,64 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                 ),
               ],
             ));
+  }
+
+  Future<void> uploadPDf(File pdfFile) async {
+    print('Starting upload process...');
+    final url = Uri.parse('http://0.0.0:8000/pdf-transfer');
+
+    try {
+      var request = http.MultipartRequest('POST', url);
+
+      request.fields['filemenu'] = 'Spares' ?? '';
+      request.fields['process_name'] = widget.processName ?? '';
+      request.fields['subprocess_name'] = widget.subprocessName ?? '';
+      request.fields['equipment_name'] = widget.equipmentName ?? '';
+
+      var stream = http.ByteStream(pdfFile.openRead());
+
+      var length = await pdfFile.length();
+
+      var multipartFile = http.MultipartFile('file', stream, length,
+          filename: pdfFile.path.split('/').last);
+      request.files.add(multipartFile);
+
+      print('Sending request...');
+      var response = await request.send();
+      print('Responce status code: ${response.statusCode}');
+      final responseBody = await response.stream.bytesToString();
+      print('Response body: $responseBody');
+
+      if (response.statusCode == 200) {
+        print('File uploaded successfully');
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('File uploaded successfully')));
+        }
+      } else {
+        print('Error uploading file');
+        if (context.mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Error uploading file')));
+        }
+      }
+    } catch (e, stackTrace) {
+      print('Error uploading file: $e');
+      print('Stack trace $stackTrace');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error uploading PDF: $e')));
+      }
+    }
+  }
+
+  Future<void> _generateAndUploadPDF(SparePart sparePart) async {
+    try {
+      final pdfFile = await _generateAndSavePDF(sparePart);
+      await uploadPDf(pdfFile);
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 }

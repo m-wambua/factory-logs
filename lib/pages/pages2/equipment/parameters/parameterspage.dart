@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/pages2/equipment/parameters/parameterdetails.dart';
+import 'package:collector/pages/pages2/equipment/parameters/parametersmodel.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -27,18 +28,16 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title:  Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                child: Image.asset(AppAssets.deltalogo),
-              ),
-              Text('Add Parameter'),
-            ],
+      title: Row(
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            child: Image.asset(AppAssets.deltalogo),
           ),
-      
-      
+          Text('Add Parameter'),
+        ],
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -183,7 +182,13 @@ class ParameterPage extends StatefulWidget {
 class _ParameterPageState extends State<ParameterPage> {
   List<Map<String, String>> _parameters = [];
   late String _subprocess;
+  @override
+  void initState() {
+    super.initState();
+    
+  }
 
+  
   @override
   Widget build(BuildContext context) {
     _subprocess = ModalRoute.of(context)?.settings.arguments as String;
