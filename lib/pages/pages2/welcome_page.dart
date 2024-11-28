@@ -47,7 +47,7 @@ class _WelcomePageState extends State<WelcomePage> {
           TextButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()));
+                    MaterialPageRoute(builder: (context) => const SignUpPage()));
               },
               child: const Text('Don\' have an account? Sign up'))
         ],

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/pages2/equipment/manuals/manualsdetails.dart';
-import 'package:collector/pages/pages2/equipment/manuals/manualspage2.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import 'package:http/http.dart' as http;
 class AddManualWidget extends StatefulWidget {
   final void Function(
       String header, String comment, String? filePath, String fileName) onSave;
-  AddManualWidget({Key? key, required this.onSave}) : super(key: key);
+  const AddManualWidget({super.key, required this.onSave});
   @override
   _AddManualWidgetState createState() => _AddManualWidgetState();
 }
@@ -26,13 +25,13 @@ class _AddManualWidgetState extends State<AddManualWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Add Manual'),
+      title: const Text('Add Manual'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _headerController,
-            decoration: InputDecoration(labelText: 'Header'),
+            decoration: const InputDecoration(labelText: 'Header'),
           ),
           Row(
             children: [
@@ -41,7 +40,7 @@ class _AddManualWidgetState extends State<AddManualWidget> {
                 controller: _commentController,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(labelText: 'Comment'),
+                decoration: const InputDecoration(labelText: 'Comment'),
               )),
               IconButton(
                   onPressed: () async {
@@ -56,7 +55,7 @@ class _AddManualWidgetState extends State<AddManualWidget> {
                       });
                     }
                   },
-                  icon: Icon(Icons.attach_file)),
+                  icon: const Icon(Icons.attach_file)),
               IconButton(
                   onPressed: () async {
                     // Handle pit picture action for images
@@ -64,7 +63,7 @@ class _AddManualWidgetState extends State<AddManualWidget> {
                     final XFile? image =
                         await picker.pickImage(source: ImageSource.gallery);
                   },
-                  icon: Icon(Icons.image))
+                  icon: const Icon(Icons.image))
             ],
           )
         ],
@@ -74,8 +73,8 @@ class _AddManualWidgetState extends State<AddManualWidget> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: Icon(Icons.close)),
-        TextButton(onPressed: _saveManual, child: Text('Save Manual'))
+            icon: const Icon(Icons.close)),
+        TextButton(onPressed: _saveManual, child: const Text('Save Manual'))
       ],
     );
   }
@@ -85,12 +84,12 @@ class _AddManualWidgetState extends State<AddManualWidget> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Rename File'),
+            title: const Text('Rename File'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  decoration: InputDecoration(labelText: ' New File Name'),
+                  decoration: const InputDecoration(labelText: ' New File Name'),
                   onChanged: (value) {
                     // Update file name when user types in the text field
                     _fileName = value;
@@ -104,13 +103,13 @@ class _AddManualWidgetState extends State<AddManualWidget> {
                     Navigator.pop(context);
                     _fileName = null;
                   },
-                  child: Text('Cancel')),
+                  child: const Text('Cancel')),
               ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                     _saveManual();
                   },
-                  child: Text('Save'))
+                  child: const Text('Save'))
             ],
           );
         });
@@ -171,11 +170,11 @@ class _DynamicManualsPageState extends State<DynamicManualsPage> {
                 onPressed: () {
                   handleUpload(context);
                 },
-                icon: Icon(Icons.upload))
+                icon: const Icon(Icons.upload))
           ],
         ),
         actions: [
-          IconButton(onPressed: _deleteAllManuals, icon: Icon(Icons.delete))
+          IconButton(onPressed: _deleteAllManuals, icon: const Icon(Icons.delete))
         ],
       ),
       body: ListView.builder(
@@ -197,7 +196,7 @@ class _DynamicManualsPageState extends State<DynamicManualsPage> {
                 child: ListTile(
                   title: Text(
                     manual['header'] ?? '',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(manual['comment'] ?? ''),
                   trailing: _buildFileTypeStatus(manual['file_path']),
@@ -209,7 +208,7 @@ class _DynamicManualsPageState extends State<DynamicManualsPage> {
         onPressed: () {
           _showAddManualDialog(context);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -266,20 +265,13 @@ class _DynamicManualsPageState extends State<DynamicManualsPage> {
         //copy the file to the subdirectory
 
         String fileName = filePath.split('/').last;
-        if (fileName != null) {
-          // if user provided a new file name concatenate it with the original
-          fileName = fileName! + '_' + fileName;
-        } else {
-          // if user chose to retain the name , concatenate the header with the original file name
-          if (header.isNotEmpty) {
-            fileName = header! + '_' + fileName;
-          }
-        }
-        File originalFile = File(filePath);
+        // if user provided a new file name concatenate it with the original
+        fileName = '${fileName}_$fileName';
+              File originalFile = File(filePath);
         File copiedFile = await originalFile.copy('${subdir.path}/$fileName');
         copiedFilePath = copiedFile.path;
         print('File is copied to ${copiedFile.path}');
-        print('file path is now${filePath}');
+        print('file path is now$filePath');
         Map<String, String> manual = {
           'header': header,
           'comment': comment,
@@ -342,7 +334,7 @@ class _DynamicManualsPageState extends State<DynamicManualsPage> {
         color: Colors.blue,
       );
     } else {
-      return SizedBox();
+      return const SizedBox();
     }
   }
 

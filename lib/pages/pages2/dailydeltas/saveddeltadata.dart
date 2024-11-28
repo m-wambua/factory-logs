@@ -7,8 +7,7 @@ import 'package:path_provider/path_provider.dart';
 class SavedTablesPage extends StatefulWidget {
   final String subDeltaName;
 
-  const SavedTablesPage({Key? key, required this.subDeltaName})
-      : super(key: key);
+  const SavedTablesPage({super.key, required this.subDeltaName});
 
   @override
   _SavedTablesPageState createState() => _SavedTablesPageState();
@@ -16,8 +15,8 @@ class SavedTablesPage extends StatefulWidget {
 
 class _SavedTablesPageState extends State<SavedTablesPage> {
   List<Map<String, dynamic>> _savedTables = [];
-  Map<String, List<dynamic>> _groupedColumn2Data = {};
-  Map<String, List<dynamic>> _groupedColumn4Data = {};
+  final Map<String, List<dynamic>> _groupedColumn2Data = {};
+  final Map<String, List<dynamic>> _groupedColumn4Data = {};
 
   @override
   void initState() {
@@ -54,17 +53,17 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
     }
 
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Saved on: ${tableData['timestamp']}',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Table(
               border: TableBorder.all(),
               children: [
@@ -77,10 +76,10 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
 
                       return TableCell(
                         child: Padding(
-                          padding: EdgeInsets.all(4),
+                          padding: const EdgeInsets.all(4),
                           child: Text(
                             unit.isNotEmpty ? '$label ($unit)' : label,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -93,7 +92,7 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
                     children: row.map<Widget>((cell) {
                       return TableCell(
                         child: Padding(
-                          padding: EdgeInsets.all(4),
+                          padding: const EdgeInsets.all(4),
                           child: Text(cell.toString()),
                         ),
                       );
@@ -129,7 +128,7 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
 
   Widget _buildGroupedColumn2Table() {
     if (_groupedColumn2Data.isEmpty) {
-      return Card(
+      return const Card(
         margin: EdgeInsets.all(8),
         child: Padding(
           padding: EdgeInsets.all(16),
@@ -144,29 +143,29 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
         .reduce((max, length) => length > max ? length : max);
 
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Grouped Column 2 Data',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Table(
                 border: TableBorder.all(),
                 columnWidths: {
                   for (int i = 0; i <= maxValues; i++)
-                    i: i == 0 ? FixedColumnWidth(150) : FixedColumnWidth(100),
+                    i: i == 0 ? const FixedColumnWidth(150) : const FixedColumnWidth(100),
                 },
                 children: [
                   TableRow(
                     children: [
-                      TableCell(
+                      const TableCell(
                           child: Padding(
                         padding: EdgeInsets.all(8),
                         child: Text('Timestamp',
@@ -175,9 +174,9 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
                       for (int i = 1; i <= maxValues; i++)
                         TableCell(
                             child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text('Value $i',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: const TextStyle(fontWeight: FontWeight.bold)),
                         )),
                     ],
                   ),
@@ -186,20 +185,20 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
                       children: [
                         TableCell(
                             child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text(entry.key),
                         )),
                         for (int i = 0; i < maxValues; i++)
                           TableCell(
                               child: Padding(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(i < entry.value.length
                                 ? entry.value[i].toString()
                                 : ''),
                           )),
                       ],
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
@@ -230,7 +229,7 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
 
   Widget _buildGroupedColumn4Table() {
     if (_groupedColumn4Data.isEmpty) {
-      return Card(
+      return const Card(
         margin: EdgeInsets.all(8),
         child: Padding(
           padding: EdgeInsets.all(16),
@@ -245,29 +244,29 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
         .reduce((max, length) => length > max ? length : max);
 
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Grouped Column 2 Data',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Table(
                 border: TableBorder.all(),
                 columnWidths: {
                   for (int i = 0; i <= maxValues; i++)
-                    i: i == 0 ? FixedColumnWidth(150) : FixedColumnWidth(100),
+                    i: i == 0 ? const FixedColumnWidth(150) : const FixedColumnWidth(100),
                 },
                 children: [
                   TableRow(
                     children: [
-                      TableCell(
+                      const TableCell(
                           child: Padding(
                         padding: EdgeInsets.all(8),
                         child: Text('Timestamp',
@@ -276,9 +275,9 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
                       for (int i = 1; i <= maxValues; i++)
                         TableCell(
                             child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text('Value $i',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: const TextStyle(fontWeight: FontWeight.bold)),
                         )),
                     ],
                   ),
@@ -287,20 +286,20 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
                       children: [
                         TableCell(
                             child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text(entry.key),
                         )),
                         for (int i = 0; i < maxValues; i++)
                           TableCell(
                               child: Padding(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(i < entry.value.length
                                 ? entry.value[i].toString()
                                 : ''),
                           )),
                       ],
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
@@ -326,7 +325,7 @@ class _SavedTablesPageState extends State<SavedTablesPage> {
         ),
       ),
       body: _savedTables.isEmpty
-          ? Center(child: Text('No saved tables found.'))
+          ? const Center(child: Text('No saved tables found.'))
           : ListView.builder(
               itemCount: _savedTables.length,
               itemBuilder: (context, index) {

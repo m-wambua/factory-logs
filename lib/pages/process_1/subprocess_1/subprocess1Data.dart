@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 class Process1Category {
   String name;
@@ -64,7 +62,7 @@ class Process1Data {
 
   Future<void> loadSubprocess1Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_1';
+      const directory = 'pages/process_1/subprocess_1';
       final file = File('$directory/Subprocess1_data.json');
 
       if (await file.exists()) {
@@ -80,7 +78,7 @@ class Process1Data {
 
   Future<void> saveSubprocess1Data() async {
     try {
-      final directory = 'pages/process_1/subprocess_1';
+      const directory = 'pages/process_1/subprocess_1';
       final file = File('$directory/Subprocess1_data.json');
 
       if (!await file.exists()) {
@@ -103,7 +101,7 @@ class Process1Data {
       existingEntries.addAll(process1DataList);
 
       // Convert all entries to JSON and write to the file with formatting
-      JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      JsonEncoder encoder = const JsonEncoder.withIndent('  ');
       String jsonString = encoder
           .convert(existingEntries.map((detail) => detail.toJson()).toList());
       await file.writeAsString(jsonString, mode: FileMode.write, flush: true);

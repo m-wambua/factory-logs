@@ -104,8 +104,7 @@ class SubDeltaData {
 class SubDeltaCreatorPage extends StatefulWidget {
   final String subdeltaName;
 
-  const SubDeltaCreatorPage({Key? key, required this.subdeltaName})
-      : super(key: key);
+  const SubDeltaCreatorPage({super.key, required this.subdeltaName});
 
   @override
   _SubDeltaCreatorPageState createState() => _SubDeltaCreatorPageState();
@@ -142,7 +141,7 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
         _rowCount = loadData.rowsData.length;
       });
     } else {
-      return null;
+      return;
     }
   }
 
@@ -157,11 +156,11 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
     bool saveResult = await data.save(widget.subdeltaName);
     if (saveResult) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Data saved successfully')),
+        const SnackBar(content: Text('Data saved successfully')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save data')),
+        const SnackBar(content: Text('Failed to save data')),
       );
     }
   }
@@ -198,17 +197,17 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
         builder: (BuildContext context) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              title: Text('Edit Column'),
+              title: const Text('Edit Column'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
-                    decoration: InputDecoration(labelText: 'Column Name'),
+                    decoration: const InputDecoration(labelText: 'Column Name'),
                     onChanged: (value) => newLabel = value,
                     controller: TextEditingController(text: newLabel),
                   ),
                   SwitchListTile(
-                    title: Text('Add Unit'),
+                    title: const Text('Add Unit'),
                     value: addUnit,
                     onChanged: (value) => setState(() {
                       addUnit = value;
@@ -216,7 +215,7 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
                   ),
                   if (addUnit)
                     TextField(
-                      decoration: InputDecoration(labelText: 'Unit'),
+                      decoration: const InputDecoration(labelText: 'Unit'),
                       onChanged: (value) => newUnit = value,
                       controller: TextEditingController(text: newUnit),
                     ),
@@ -224,11 +223,11 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
               ),
               actions: [
                 TextButton(
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 TextButton(
-                  child: Text('Save'),
+                  child: const Text('Save'),
                   onPressed: () {
                     this.setState(() {
                       _columnLabels[columnIndex] = newLabel;
@@ -262,7 +261,7 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
         
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: () {
               // TODO: Implement save functionality
               _saveSubDeltaData();
@@ -298,12 +297,12 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
                 onLongPress: () =>
                     index > 0 ? _showColumnEditDialog(index) : null,
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   alignment: Alignment.center,
                   child: Text(
                     '${_columnLabels[index]}${_columnUnits[index].isNotEmpty ? ' (${_columnUnits[index]})' : ''}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -326,7 +325,7 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
             4,
             (colIndex) => Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: TextFormField(
                   controller: _controllers[rowIndex][colIndex],
                   keyboardType:
@@ -339,8 +338,8 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
                             ? '500'
                             : '',
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    border: OutlineInputBorder(),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    border: const OutlineInputBorder(),
                   ),
                   onChanged: (value) {
                     if (colIndex == 1 || colIndex == 2) {
@@ -363,10 +362,10 @@ class _SubDeltaCreatorPageState extends State<SubDeltaCreatorPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        ElevatedButton(onPressed: _addRow, child: Text('Add Row')),
+        ElevatedButton(onPressed: _addRow, child: const Text('Add Row')),
         ElevatedButton(
           onPressed: _removeRow,
-          child: Text('Remove Row'),
+          child: const Text('Remove Row'),
         )
       ],
     );

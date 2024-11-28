@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'package:path/path.dart' as path;
 
 class AllEquipmentSparesPage extends StatefulWidget {
+  const AllEquipmentSparesPage({super.key});
+
   @override
   _AllEquipmentSparesPageState createState() => _AllEquipmentSparesPageState();
 }
@@ -21,7 +23,7 @@ class _AllEquipmentSparesPageState extends State<AllEquipmentSparesPage> {
 
   Future<void> _loadAllEquipmentSpares() async {
     try {
-      final baseDir =
+      const baseDir =
           '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
       final directory = Directory(baseDir);
 
@@ -61,12 +63,12 @@ class _AllEquipmentSparesPageState extends State<AllEquipmentSparesPage> {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: Image.asset(AppAssets.deltalogo),
               ),
-              Text('All Equipment Spares'),
+              const Text('All Equipment Spares'),
             ],
           ),
         
       
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
       ),
       body: ListView.builder(
         itemCount: allEquipmentSpares.length,

@@ -38,8 +38,8 @@ class EquipmentMenu extends StatelessWidget {
                     'subprocessName': subprocessName
                   });
                 },
-                child: Text('History')),
-            SizedBox(
+                child: const Text('History')),
+            const SizedBox(
               height: 10,
             ),
             TextButton(
@@ -50,8 +50,8 @@ class EquipmentMenu extends StatelessWidget {
                     'subprocessName': subprocessName
                   });
                 },
-                child: Text('Manuals')),
-            SizedBox(
+                child: const Text('Manuals')),
+            const SizedBox(
               height: 10,
             ),
             TextButton(
@@ -62,7 +62,7 @@ class EquipmentMenu extends StatelessWidget {
                     'subprocessName': subprocessName,
                   });
                 },
-                child: Text('Parameters')),
+                child: const Text('Parameters')),
             TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/spares', arguments: {
@@ -71,7 +71,7 @@ class EquipmentMenu extends StatelessWidget {
                     'subprocessName': subprocessName
                   });
                 },
-                child: Text('Spares'))
+                child: const Text('Spares'))
           ],
         ),
       ),

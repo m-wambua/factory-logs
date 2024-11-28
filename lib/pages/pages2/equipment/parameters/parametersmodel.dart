@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collector/pages/pages2/equipment/equipmentmenu.dart';
 import 'package:path/path.dart' as path;
 
 class ParameterStorage {
@@ -22,7 +21,7 @@ class ParameterStorage {
   static Future<void> saveParamterList(
       List<ParameterStorage> parameterList, String equipmentName) async {
     try {
-      final basDir =
+      const basDir =
           '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/parameters/parameterstore';
 
       final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
@@ -41,7 +40,7 @@ class ParameterStorage {
         }
       }
       final filePath = path.join(
-          equipmentDirPath, '${sanitizedEquipmentName}_paramaters.json');
+          equipmentDirPath, '${sanitizedEquipmentName}_parameters.json');
       final file = File(filePath);
 
       final jsonList = parameterList.map((pl) => pl.toJson()).toList();
@@ -50,14 +49,14 @@ class ParameterStorage {
       print("Parameter list saved successfully");
     } catch (e) {
       print("Error saving parameter list: $e");
-      throw e;
+      rethrow;
     }
   }
 
   static Future<List<ParameterStorage>> loadParameterList(
       String equipmentName) async {
     try {
-      final basDir =
+      const basDir =
           '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/parameters/parameterstore';
 
       final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
@@ -80,13 +79,13 @@ class ParameterStorage {
       }
     } catch (e) {
       print("Error loading parameter list: $e");
-      throw e;
+      rethrow;
     }
   }
 
   static Future<void> deleteParameterEntry(String equipmentName) async {
     try {
-      final baseDir =
+      const baseDir =
           '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/parameters/parameterstore';
 
       final sanitzedEquipmentName = equipmentName.replaceAll('/', '_');
@@ -102,7 +101,7 @@ class ParameterStorage {
       }
     } catch (e) {
       print("Error deleting parameter list: $e");
-      throw e;
+      rethrow;
     }
   }
 }

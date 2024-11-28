@@ -29,7 +29,7 @@ class _Process3PageState extends State<Process3Page> {
                 onPressed: () {
                   _addStartUpProcedure(context);
                 },
-                icon: Icon(Icons.power_settings_new))
+                icon: const Icon(Icons.power_settings_new))
           ],
         )
       ]),
@@ -205,7 +205,7 @@ class _Process3PageState extends State<Process3Page> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('Add/Update Start-Up Procedure for TLL'),
+              title: const Text('Add/Update Start-Up Procedure for TLL'),
               content: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -219,12 +219,12 @@ class _Process3PageState extends State<Process3Page> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                  onPressed: () {}, icon: Icon(Icons.image))
+                                  onPressed: () {}, icon: const Icon(Icons.image))
                             ],
                           )),
                       onChanged: (value) {},
                     ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   IconButton(
@@ -235,19 +235,19 @@ class _Process3PageState extends State<Process3Page> {
                           },
                         );
                       },
-                      icon: Icon(Icons.add)),
-                  SizedBox(
+                      icon: const Icon(Icons.add)),
+                  const SizedBox(
                     height: 5,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ElevatedButton(onPressed: () {}, child: Text('Save')),
+                      ElevatedButton(onPressed: () {}, child: const Text('Save')),
                       ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text('Cancel'))
+                          child: const Text('Cancel'))
                     ],
                   )
                 ],

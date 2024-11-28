@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 //import 'Failure_data.dart'; // Import Failure data
 
 class FailureDetailsPage extends StatefulWidget {
+  final String equipmentName;
+  const FailureDetailsPage({super.key, required this.equipmentName});
+
   @override
   _FailureDetailsPageState createState() => _FailureDetailsPageState();
 }
@@ -21,8 +24,8 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
   }
 
   Future<void> loadFailureDetails() async {
-    await failureData
-        .loadFailureDetails(); // Load Failure details from file
+    await failureData.loadFailureDetails(
+        widget.equipmentName); // Load Failure details from file
     setState(() {
       details = failureData.FailureDetailsList.isNotEmpty
           ? failureData.FailureDetailsList.first
@@ -33,17 +36,17 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:  Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                child: Image.asset(AppAssets.deltalogo),
-              ),
-              Text('Failure Details'),
-            ],
-          ),
-      
+      appBar: AppBar(
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Image.asset(AppAssets.deltalogo),
+            ),
+            const Text('Failure Details'),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -52,7 +55,7 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Equipment: ${details!.equipment}'),
-                  SizedBox(
+                  const SizedBox(
                       height: 16), // Add some space between equipment and tasks
                   Expanded(
                     child: ListView.builder(
@@ -69,13 +72,13 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Task: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text: '${task.task}',
+                                      text: task.task,
                                     ),
                                   ],
                                 ),
@@ -84,14 +87,14 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Last Update:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text:
-                                          '${DateFormat('yyyy-MM-dd HH:mm:ss').format(task.lastUpdate)}',
+                                      text: DateFormat('yyyy-MM-dd HH:mm:ss')
+                                          .format(task.lastUpdate),
                                     ),
                                   ],
                                 ),
@@ -100,23 +103,23 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Situation Before: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text: '${task.situationBefore}',
+                                      text: task.situationBefore,
                                     ),
                                   ],
                                 ),
                               ),
-                              Text('Steps Taken:',
+                              const Text('Steps Taken:',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: task.stepsTaken.length,
                                 itemBuilder:
                                     (BuildContext context, int stepIndex) {
@@ -124,12 +127,12 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                                       '${stepIndex + 1}. ${task.stepsTaken[stepIndex]}');
                                 },
                               ),
-                              Text('Tools Used:',
+                              const Text('Tools Used:',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: task.toolsUsed.length,
                                 itemBuilder:
                                     (BuildContext context, int toolIndex) {
@@ -142,14 +145,14 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Situation Resolved: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
                                       text:
-                                          '${task.situationResolved ? 'Yes' : 'No'}',
+                                          task.situationResolved ? 'Yes' : 'No',
                                     ),
                                   ],
                                 ),
@@ -159,13 +162,13 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Situation After: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text: '${task.situationAfter}',
+                                      text: task.situationAfter,
                                     ),
                                   ],
                                 ),
@@ -175,19 +178,19 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                                 text: TextSpan(
                                   style: DefaultTextStyle.of(context).style,
                                   children: <TextSpan>[
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'Person Responsible: ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     TextSpan(
-                                      text: '${task.personResponsible}',
+                                      text: task.personResponsible,
                                     ),
                                   ],
                                 ),
                               ),
 
-                              SizedBox(
+                              const SizedBox(
                                   height: 16), // Add some space between tasks
                             ],
                           ),
@@ -197,7 +200,7 @@ class _FailureDetailsPageState extends State<FailureDetailsPage> {
                   ),
                 ],
               )
-            : Center(child: Text('No Failure details available')),
+            : const Center(child: Text('No Failure details available')),
       ),
     );
   }

@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 class DetailsPage extends StatelessWidget {
   final String header;
   final String description;
   final String filePath;
 
-  DetailsPage({
+  const DetailsPage({super.key, 
     required this.header,
     required this.description,
     required this.filePath,
@@ -28,7 +27,7 @@ class DetailsPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: Image.asset(AppAssets.deltalogo),
               ),
-              Text('Details'),
+              const Text('Details'),
             ],
           ),
         
@@ -41,14 +40,14 @@ class DetailsPage extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               header,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               description,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ),
           _buildFilePreview(),
@@ -62,7 +61,7 @@ class DetailsPage extends StatelessWidget {
       future: _loadFile(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -73,19 +72,19 @@ class DetailsPage extends StatelessWidget {
                 children: [
                   Container(
                     alignment: Alignment.center,
-                    padding: EdgeInsets.all(20.0),
-                    child: Text(
+                    padding: const EdgeInsets.all(20.0),
+                    child: const Text(
                       'Click to Open The PDF', // Add PDF preview here
                       style: TextStyle(fontSize: 18.0),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextButton(
                     onPressed: () {
                       // Add code to open PDF using system's PDF viewer
                       _openPDF(filePath);
                     },
-                    child: Text(
+                    child: const Text(
                       'Open PDF',
                       style: TextStyle(
                         color: Colors
@@ -102,9 +101,9 @@ class DetailsPage extends StatelessWidget {
                 height: 500,
               );
             case 'unsupported':
-              return Text('Unsupported file type');
+              return const Text('Unsupported file type');
             default:
-              return SizedBox(); // Return empty container if file type is null or unsupported
+              return const SizedBox(); // Return empty container if file type is null or unsupported
           }
         }
       },
@@ -112,7 +111,7 @@ class DetailsPage extends StatelessWidget {
   }
 
   Future<String?> _loadFile() async {
-    if (filePath == null || filePath.isEmpty) {
+    if (filePath.isEmpty) {
       return null;
     }
 

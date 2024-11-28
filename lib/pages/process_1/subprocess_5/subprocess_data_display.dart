@@ -1,9 +1,9 @@
 import 'package:collector/pages/process_1/subprocess_5/subprocess5Data.dart';
-import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 
 class Subprocess5DataDisplay extends StatefulWidget {
-  const Subprocess5DataDisplay({Key? key}) : super(key: key);
+  const Subprocess5DataDisplay({super.key});
+  @override
   _Subprocess5DataDisplayState createState() => _Subprocess5DataDisplayState();
 }
 
@@ -36,7 +36,7 @@ class _Subprocess5DataDisplayState extends State<Subprocess5DataDisplay> {
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columns: [
-                    DataColumn(label: Text('Date')),
+                    const DataColumn(label: Text('Date')),
                     for (var category
                         in process5data.process5DataList.first.categories)
                       DataColumn(label: Text('${category.name} Current'))
@@ -48,7 +48,7 @@ class _Subprocess5DataDisplayState extends State<Subprocess5DataDisplay> {
                     return DataRow(cells: [
                       DataCell(Text(entry.lastUpdate.toString())),
                       for (var category in entry.categories)
-                        DataCell(Text('${category.current.toString()}'))
+                        DataCell(Text(category.current.toString()))
                       //optionally include remark cells here
                       //for (var category in entry.categories)
                       // DataCell(text(category.remark))

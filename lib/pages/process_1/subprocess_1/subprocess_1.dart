@@ -63,7 +63,7 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
       TextEditingController();
 
   final Process1Data process1Data = Process1Data();
-  List<NotificationModel> _sampleNotifications = [];
+  final List<NotificationModel> _sampleNotifications = [];
   @override
   void initState() {
     super.initState();
@@ -268,11 +268,11 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
                   child: const Text('Save as Draft'),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
 
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 ElevatedButton(
@@ -287,7 +287,7 @@ class _SubProcess1Page1State extends State<SubProcess1Page1> {
 
 // Create a list of Categories for other components here
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 // Add buttons for additional functionality

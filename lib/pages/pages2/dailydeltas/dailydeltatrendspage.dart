@@ -9,18 +9,17 @@ import 'package:path_provider/path_provider.dart';
 
 class DailyDeltaTrends extends StatefulWidget {
   final String subDeltaName;
-  const DailyDeltaTrends({Key? key, required this.subDeltaName})
-      : super(key: key);
+  const DailyDeltaTrends({super.key, required this.subDeltaName});
   @override
   _DeltaTrendsState createState() => _DeltaTrendsState();
 }
 
 class _DeltaTrendsState extends State<DailyDeltaTrends> {
-  List<String> _newColumnLabels = ['Timestamp'];
-  List<List<String>> _newTableData = [];
+  final List<String> _newColumnLabels = ['Timestamp'];
+  final List<List<String>> _newTableData = [];
   List<Map<String, dynamic>> _savedTables = [];
-  Map<String, List<dynamic>> _groupedColumn2Data = {};
-  Map<String, List<dynamic>> _groupedColumn4Data = {};
+  final Map<String, List<dynamic>> _groupedColumn2Data = {};
+  final Map<String, List<dynamic>> _groupedColumn4Data = {};
   bool _isLoading = true;
   bool _isColumn2Data = true;
   @override
@@ -116,7 +115,7 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
 
   Widget _buildGroupedColumn4Table() {
     if (_groupedColumn4Data.isEmpty) {
-      return Card(
+      return const Card(
         margin: EdgeInsets.all(8),
         child: Padding(
           padding: EdgeInsets.all(16),
@@ -131,40 +130,40 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
         .reduce((max, length) => length > max ? length : max);
 
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Grouped Column 4 Data',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Table(
                 border: TableBorder.all(),
                 columnWidths: {
                   for (int i = 0; i <= maxValues; i++)
-                    i: i == 0 ? FixedColumnWidth(150) : FixedColumnWidth(100),
+                    i: i == 0 ? const FixedColumnWidth(150) : const FixedColumnWidth(100),
                 },
                 children: [
                   TableRow(
                     children: [
                       TableCell(
                           child: Padding(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Text(_newColumnLabels[0],
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                       )),
                       for (int i = 1; i <= maxValues; i++)
                         TableCell(
                             child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text('Value $i',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: const TextStyle(fontWeight: FontWeight.bold)),
                         )),
                     ],
                   ),
@@ -173,20 +172,20 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
                       children: [
                         TableCell(
                             child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text(entry.key),
                         )),
                         for (int i = 0; i < maxValues; i++)
                           TableCell(
                               child: Padding(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(i < entry.value.length
                                 ? entry.value[i].toString()
                                 : ''),
                           )),
                       ],
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
@@ -198,7 +197,7 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
 
   Widget _buildGroupedColumn2Table() {
     if (_groupedColumn2Data.isEmpty) {
-      return Card(
+      return const Card(
         margin: EdgeInsets.all(8),
         child: Padding(
           padding: EdgeInsets.all(16),
@@ -213,40 +212,40 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
         .reduce((max, length) => length > max ? length : max);
 
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Grouped Column 2 Data',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Table(
                 border: TableBorder.all(),
                 columnWidths: {
                   for (int i = 0; i <= maxValues; i++)
-                    i: i == 0 ? FixedColumnWidth(150) : FixedColumnWidth(100),
+                    i: i == 0 ? const FixedColumnWidth(150) : const FixedColumnWidth(100),
                 },
                 children: [
                   TableRow(
                     children: [
                       TableCell(
                           child: Padding(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Text(_newColumnLabels[0],
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                       )),
                       for (int i = 1; i <= maxValues; i++)
                         TableCell(
                             child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text('Value $i',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: const TextStyle(fontWeight: FontWeight.bold)),
                         )),
                     ],
                   ),
@@ -255,20 +254,20 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
                       children: [
                         TableCell(
                             child: Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Text(entry.key),
                         )),
                         for (int i = 0; i < maxValues; i++)
                           TableCell(
                               child: Padding(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(i < entry.value.length
                                 ? entry.value[i].toString()
                                 : ''),
                           )),
                       ],
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
@@ -284,13 +283,13 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
     }
 
     List<List<String>> rows = [];
-    _groupedColumn2Data.entries.forEach((entry) {
+    for (var entry in _groupedColumn2Data.entries) {
       List<String> rowData = [entry.key];
       for (int i = 0; i < _groupedColumn2Data.values.first.length; i++) {
         rowData.add(i < entry.value.length ? entry.value[i].toString() : '');
       }
       rows.add(rowData);
-    });
+    }
     return rows;
   }
 
@@ -300,13 +299,13 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
     }
 
     List<List<String>> rows = [];
-    _groupedColumn4Data.entries.forEach((entry) {
+    for (var entry in _groupedColumn4Data.entries) {
       List<String> rowData = [entry.key];
       for (int i = 0; i < _groupedColumn4Data.values.first.length; i++) {
         rowData.add(i < entry.value.length ? entry.value[i].toString() : '');
       }
       rows.add(rowData);
-    });
+    }
     return rows;
   }
 
@@ -333,7 +332,7 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
           child: Column(
             children: [
               _isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : Column(
                       children: [
                         Row(
@@ -345,8 +344,8 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
                                     _isColumn2Data = true;
                                   });
                                 },
-                                child: Text('Rolling Entry')),
-                            SizedBox(
+                                child: const Text('Rolling Entry')),
+                            const SizedBox(
                               width: 16,
                             ),
                             ElevatedButton(
@@ -355,7 +354,7 @@ class _DeltaTrendsState extends State<DailyDeltaTrends> {
                                     _isColumn2Data = false;
                                   });
                                 },
-                                child: Text('Delta Diffence'))
+                                child: const Text('Delta Diffence'))
                           ],
                         ),
                         DataTable(

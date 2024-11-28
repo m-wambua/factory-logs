@@ -17,9 +17,7 @@ import 'package:collector/pages/pages2/subprocesscreator.dart';
 import 'package:collector/pages/pages2/datafortables/tableloader.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:excel/excel.dart' as excel;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
@@ -30,10 +28,10 @@ class DynamicPageLoader extends StatefulWidget {
   final List<String> subdeltas;
 
   DynamicPageLoader(
-      {required this.processName,
+      {super.key, required this.processName,
       required this.subprocesses, // Initialize subprocesses
       List<String>? subdeltas})
-      : this.subdeltas = subdeltas ?? [];
+      : subdeltas = subdeltas ?? [];
 
   @override
   State<DynamicPageLoader> createState() => _DynamicPageLoaderState();
@@ -42,11 +40,11 @@ class DynamicPageLoader extends StatefulWidget {
 class _DynamicPageLoaderState extends State<DynamicPageLoader> {
   final List<NotificationModel> notifications = [];
   StartUpEntryData startUpEntryData = StartUpEntryData();
-  List<ColumnInfo> _columns = [
+  final List<ColumnInfo> _columns = [
     ColumnInfo(name: 'Equipment')
   ]; // Ensure default column
-  int _numRows = 5;
-  List<List<String>> _tableData = [];
+  final int _numRows = 5;
+  final List<List<String>> _tableData = [];
   @override
   void setState(VoidCallback fn) {
     // TODO: implement setState
@@ -57,15 +55,15 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
 
   DateTime? saveButtonClickTime;
   bool _eventfulShift = false;
-  TextEditingController _eventDescriptionController = TextEditingController();
-  TextEditingController _occurenceDuringShiftController =
+  final TextEditingController _eventDescriptionController = TextEditingController();
+  final TextEditingController _occurenceDuringShiftController =
       TextEditingController();
 
-  Map<String, List<Map<String, dynamic>>> _savedDataMap = {};
+  final Map<String, List<Map<String, dynamic>>> _savedDataMap = {};
   List<TextEditingController> mailingListController = [TextEditingController()];
-  TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   List<String>? subdeltas; // Initialize subdeltas
-  Map<String, dynamic> _savedDeltaDataMap = {};
+  final Map<String, dynamic> _savedDeltaDataMap = {};
   @override
   void initState() {
     super.initState();
@@ -134,7 +132,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AllEquipmentSparesPage()));
+                          builder: (context) => const AllEquipmentSparesPage()));
                 },
                 icon: const Icon(Icons.chrome_reader_mode),
               ),
@@ -182,7 +180,7 @@ class _DynamicPageLoaderState extends State<DynamicPageLoader> {
           } else if (snapshot.hasError) {
             return const Center(child: Text('Error loading page'));
           } else {
-            return snapshot.data ?? Center(child: Text('Page not found'));
+            return snapshot.data ?? const Center(child: Text('Page not found'));
           }
         },
       ),
@@ -820,7 +818,7 @@ Event Description: $eventDescription
                       );
                     }).toList(),
                   );
-                }).toList(),
+                }),
               ],
             ),
           ],
@@ -1189,7 +1187,7 @@ Event Description: $eventDescription
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => UploadScreenCableSchedule()));
+                        builder: (context) => const UploadScreenCableSchedule()));
               },
               child: const Text('Upload New/Update Cable Schedule'))
         ],
@@ -1219,7 +1217,7 @@ Event Description: $eventDescription
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ExistingCodeBasesPage()));
+                        builder: (context) => const ExistingCodeBasesPage()));
               },
               child: const Text('View Existing Code Bases')),
           const SizedBox(
@@ -1229,7 +1227,7 @@ Event Description: $eventDescription
               onPressed: () {
                 Navigator.pop(context); //close the dialog first
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => UploadScreen()));
+                    MaterialPageRoute(builder: (context) => const UploadScreen()));
               },
               child: const Text('Upload New Code Bases'))
         ],

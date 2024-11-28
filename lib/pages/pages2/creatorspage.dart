@@ -9,11 +9,11 @@ class CreatorPage extends StatefulWidget {
   final List<String>? subprocesses;
 
   const CreatorPage({
-    Key? key,
+    super.key,
     required this.processName,
     this.subprocesses,
     // Accept the call back
-  }) : super(key: key);
+  });
 
   @override
   _CreatorPageState createState() => _CreatorPageState();
@@ -22,7 +22,7 @@ class CreatorPage extends StatefulWidget {
 class _CreatorPageState extends State<CreatorPage> {
   late List<String> _subprocesses;
 
-  List<NotificationModel> _notifications = [];
+  final List<NotificationModel> _notifications = [];
   bool _isSaving = false;
 
   @override

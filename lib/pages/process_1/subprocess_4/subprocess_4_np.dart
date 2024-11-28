@@ -99,9 +99,9 @@ class SubProcess4Page1_NP extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Subprocess4DataDisplay()));
+                              builder: (context) => const Subprocess4DataDisplay()));
                     },
-                    child: Text('View saved data')),
+                    child: const Text('View saved data')),
           ]),
         ),
       )

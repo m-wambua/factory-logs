@@ -3,13 +3,9 @@ import 'package:collector/pages/pages2/equipment/spares/spartpartsmodel.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:convert';
 import 'dart:io';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 import 'package:http/http.dart' as http;
 
 class EquipmentSparePartsPage extends StatefulWidget {
@@ -18,11 +14,10 @@ class EquipmentSparePartsPage extends StatefulWidget {
   final String equipmentName;
 
   const EquipmentSparePartsPage(
-      {Key? key,
+      {super.key,
       required this.processName,
       required this.subprocessName,
-      required this.equipmentName})
-      : super(key: key);
+      required this.equipmentName});
 
   @override
   _EquipmentSparePartsPageState createState() =>
@@ -67,7 +62,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                       onPressed: () {
                         _sendEmail(sparePart);
                       },
-                      child: Text('Send Email')),
+                      child: const Text('Send Email')),
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -141,8 +136,8 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Confirm Deletion'),
-            content: SingleChildScrollView(
+            title: const Text('Confirm Deletion'),
+            content: const SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   Text(' Are you sure you want to delete this spare part?'),
@@ -152,13 +147,13 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
-                child: Text('Delete'),
+                child: const Text('Delete'),
                 onPressed: () {
                   _deleteSparePart(index);
                 },
@@ -309,7 +304,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('OK'))
+                      child: const Text('OK'))
                 ],
               ));
     } catch (e) {
@@ -326,7 +321,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('OK'))
+                      child: const Text('OK'))
                 ],
               ));
     }
@@ -352,7 +347,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
             onPressed: () {
               _createNewSpares(widget.equipmentName);
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             tooltip: 'Add Spare Part',
           )
         ],
@@ -361,7 +356,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
         children: [
           Expanded(
             child: spareParts.isEmpty
-                ? Center(
+                ? const Center(
                     child:
                         Text('No spare parts added yet. Add your first one!'),
                   )
@@ -392,12 +387,12 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () => _generatePDF(sparePart),
-                                    child: Text('Print'),
+                                    child: const Text('Print'),
                                   ),
                                   ElevatedButton(
                                     onPressed: () =>
                                         _showSubmitList(context, sparePart),
-                                    child: Text('Email'),
+                                    child: const Text('Email'),
                                   ),
                                 ],
                               ),
@@ -412,8 +407,8 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _createNewSpares(widget.equipmentName),
-        child: Icon(Icons.add),
         tooltip: 'Add Spare Part',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -433,19 +428,19 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                         Expanded(
                           child: TextFormField(
                             controller: _nameController,
-                            decoration: InputDecoration(labelText: 'Name'),
+                            decoration: const InputDecoration(labelText: 'Name'),
                             validator: (value) =>
                                 value!.isEmpty ? 'Please enter a name' : null,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Expanded(
                           child: TextFormField(
                             controller: _partNumberController,
                             decoration:
-                                InputDecoration(labelText: 'Part Number'),
+                                const InputDecoration(labelText: 'Part Number'),
                             validator: (value) => value!.isEmpty
                                 ? 'Please enter a part number'
                                 : null,
@@ -455,7 +450,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                     ),
                     TextFormField(
                       controller: _descriptionController,
-                      decoration: InputDecoration(labelText: 'Description'),
+                      decoration: const InputDecoration(labelText: 'Description'),
                     ),
                     Row(
                       children: [
@@ -463,18 +458,18 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                           child: TextFormField(
                             controller: _minStockController,
                             decoration:
-                                InputDecoration(labelText: 'Minimum Stock'),
+                                const InputDecoration(labelText: 'Minimum Stock'),
                             keyboardType: TextInputType.number,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Expanded(
                           child: TextFormField(
                             controller: _maxStockController,
                             decoration:
-                                InputDecoration(labelText: 'Maximum Stock'),
+                                const InputDecoration(labelText: 'Maximum Stock'),
                             keyboardType: TextInputType.number,
                           ),
                         )
@@ -482,31 +477,31 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                     ),
                     TextFormField(
                       controller: _leadTimeController,
-                      decoration: InputDecoration(labelText: 'Lead Time'),
+                      decoration: const InputDecoration(labelText: 'Lead Time'),
                     ),
                     TextFormField(
                       controller: _supplierInfoController,
                       decoration:
-                          InputDecoration(labelText: 'Supplier Information'),
+                          const InputDecoration(labelText: 'Supplier Information'),
                     ),
                     TextFormField(
                       controller: _criticalityController,
-                      decoration: InputDecoration(labelText: 'Criticality'),
+                      decoration: const InputDecoration(labelText: 'Criticality'),
                     ),
                     TextFormField(
                       controller: _conditionController,
-                      decoration: InputDecoration(labelText: 'Condition'),
+                      decoration: const InputDecoration(labelText: 'Condition'),
                     ),
                     TextFormField(
                       controller: _warrantyController,
                       decoration:
-                          InputDecoration(labelText: 'Warranty Information'),
+                          const InputDecoration(labelText: 'Warranty Information'),
                     ),
                     TextFormField(
                       controller: _usageRateController,
-                      decoration: InputDecoration(labelText: 'Usage Rate'),
+                      decoration: const InputDecoration(labelText: 'Usage Rate'),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                   ],
@@ -520,18 +515,18 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                         onPressed: () {
                           _addSparePart();
                         },
-                        child: Text(
+                        child: const Text(
                           'Save Spare',
                           style: TextStyle(color: Colors.green),
                         )),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text(
+                        child: const Text(
                           'Cancel',
                           style: TextStyle(color: Colors.red),
                         ))
@@ -571,13 +566,13 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
         print('File uploaded successfully');
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('File uploaded successfully')));
+              const SnackBar(content: Text('File uploaded successfully')));
         }
       } else {
         print('Error uploading file');
         if (context.mounted) {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Error uploading file')));
+              .showSnackBar(const SnackBar(content: Text('Error uploading file')));
         }
       }
     } catch (e, stackTrace) {

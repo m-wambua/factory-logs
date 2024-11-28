@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 
 class SparePart {
   final String name;
@@ -65,7 +64,7 @@ class SparePart {
   static Future<void> saveSparePartsList(List<SparePart> spareParts, String equipmentName) async {
     try {
       // Define the base directory
-      final baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
+      const baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
 
       // Sanitize the equipmentName to replace slashes with a safe character (e.g., underscore)
       final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
@@ -96,14 +95,14 @@ class SparePart {
       print("Successfully wrote ${spareParts.length} spare parts to file: $filePath");
     } catch (e) {
       print("Error saving spare parts: $e");
-      throw e; // Re-throw the error for further handling if necessary
+      rethrow; // Re-throw the error for further handling if necessary
     }
   }
 
   static Future<List<SparePart>> loadSparePartsList(String equipmentName) async {
     try {
       // Define the base directory
-      final baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
+      const baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
 
       // Sanitize the equipmentName to replace slashes with a safe character (e.g., underscore)
       final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
@@ -127,7 +126,7 @@ class SparePart {
       }
     } catch (e) {
       print("Error loading spare parts: $e");
-      throw e; // Re-throw the error for further handling if necessary
+      rethrow; // Re-throw the error for further handling if necessary
     }
   }
 
@@ -135,7 +134,7 @@ class SparePart {
   static Future<void> deleteSparePartsEntry(String equipmentName) async {
     try {
       // Define the base directory
-      final baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
+      const baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
 
       // Sanitize the equipmentName to replace slashes with a safe character (e.g., underscore)
       final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
@@ -154,7 +153,7 @@ class SparePart {
       }
     } catch (e) {
       print("Error deleting spare parts entry: $e");
-      throw e; // Re-throw the error for further handling if necessary
+      rethrow; // Re-throw the error for further handling if necessary
     }
   }
 }

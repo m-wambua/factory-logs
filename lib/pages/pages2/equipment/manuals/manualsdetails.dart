@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 class ManualsDetails extends StatelessWidget {
   final String header;
   final String comment;
   final String filePath;
-  ManualsDetails({
+  const ManualsDetails({super.key, 
     required this.header,
     required this.comment,
     required this.filePath,
@@ -18,7 +17,7 @@ class ManualsDetails extends StatelessWidget {
     print(filePath);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Details'),),
+        title: const Text('Details'),),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -26,10 +25,10 @@ class ManualsDetails extends StatelessWidget {
 
             Padding(padding: const EdgeInsets.all(8.0),
             
-           child: Text( header,style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),), ),
+           child: Text( header,style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),), ),
            Padding(padding: const EdgeInsets.all(8.0),
            
-           child:  Text(comment,style: TextStyle(fontSize: 18),),),
+           child:  Text(comment,style: const TextStyle(fontSize: 18),),),
            _buildFilePreview(),
           ]),
     );
@@ -38,7 +37,7 @@ class ManualsDetails extends StatelessWidget {
   Widget _buildFilePreview(){
     return FutureBuilder(future: _loadFile(), builder: (context, snapshot){
       if(snapshot.connectionState==ConnectionState.waiting){
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
 
       } else if (snapshot.hasError){
         return Text('Error: ${snapshot.error}');
@@ -49,18 +48,18 @@ class ManualsDetails extends StatelessWidget {
           case 'pdf':
           return Column(children: [Container(
             alignment: Alignment.center,
-            padding: EdgeInsets.all(20.0),
-            child: Text(
+            padding: const EdgeInsets.all(20.0),
+            child: const Text(
               'Click to Open the PDF',
               style: TextStyle(fontSize: 18.0),
             ),
           ),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           TextButton(onPressed: (){
             //Add code to open PDF using system's PDF viewer
             _openPDF(filePath);
 
-          }, child: Text('Open PDF',style: TextStyle(color: Colors.blue),))
+          }, child: const Text('Open PDF',style: TextStyle(color: Colors.blue),))
           
           ],);
           case 'image':
@@ -71,9 +70,9 @@ class ManualsDetails extends StatelessWidget {
 
           );
           case 'unsupported':
-          return Text('Unsuppoerted file type');
+          return const Text('Unsuppoerted file type');
           default:
-          return SizedBox();// Return empty container if file type is null or unsupported 
+          return const SizedBox();// Return empty container if file type is null or unsupported 
 
 
         }
@@ -82,7 +81,7 @@ class ManualsDetails extends StatelessWidget {
   }
 
   Future<String?> _loadFile() async{
-    if(filePath==null|| filePath.isEmpty){
+    if(filePath.isEmpty){
       return null;
 
     }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:collector/pages/pages2/creatorspage.dart';
 import 'package:collector/pages/pages2/dailydeltas/delltafilemanager.dart';
@@ -7,10 +5,6 @@ import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/pages2/notificationpage.dart';
-import 'package:collector/pages/process_1/process_1.dart';
-import 'package:collector/pages/process_2/process_2.dart';
-import 'package:collector/pages/process_3/process_3.dart';
-import 'package:collector/pages/process_4/process_4.dart';
 import 'package:collector/pages/pages2/logout_page.dart';
 import 'package:collector/pages/pages2/datafortables/file_manager.dart'
     as FileManager;
@@ -18,7 +12,7 @@ import 'package:collector/pages/pages2/datafortables/file_manager.dart'
 class LandingPage extends StatefulWidget {
   final String username;
 
-  const LandingPage({Key? key, required this.username}) : super(key: key);
+  const LandingPage({super.key, required this.username});
 
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -111,7 +105,7 @@ class _LandingPageState extends State<LandingPage> {
         MaterialPageRoute(
           builder: (context) => CreatorPage(
             processName: defaultName,
-            subprocesses: [],
+            subprocesses: const [],
           ),
         ),
       );

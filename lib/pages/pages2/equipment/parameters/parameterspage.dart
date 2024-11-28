@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collector/pages/pages2/equipment/parameters/parameterdetails.dart';
-import 'package:collector/pages/pages2/equipment/parameters/parametersmodel.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ class AddParameterWidget extends StatefulWidget {
   final void Function(
           String header, String description, String? filePath, String fileName)
       onSave;
-  const AddParameterWidget({Key? key, required this.onSave}) : super(key: key);
+  const AddParameterWidget({super.key, required this.onSave});
 
   @override
   _AddParameterWidgetState createState() => _AddParameterWidgetState();
@@ -35,7 +34,7 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
             backgroundColor: Theme.of(context).colorScheme.surface,
             child: Image.asset(AppAssets.deltalogo),
           ),
-          Text('Add Parameter'),
+          const Text('Add Parameter'),
         ],
       ),
       content: Column(
@@ -43,7 +42,7 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
         children: [
           TextField(
             controller: _headerController,
-            decoration: InputDecoration(labelText: 'Header'),
+            decoration: const InputDecoration(labelText: 'Header'),
           ),
           Row(
             children: [
@@ -52,7 +51,7 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
                 controller: _descriptionController,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Description'),
               )),
               IconButton(
                 onPressed: () async {
@@ -70,7 +69,7 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
                     });
                   }
                 },
-                icon: Icon(Icons.attach_file),
+                icon: const Icon(Icons.attach_file),
               ),
               IconButton(
                 onPressed: () async {
@@ -87,7 +86,7 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
                     });
                   }
                 },
-                icon: Icon(Icons.image),
+                icon: const Icon(Icons.image),
               ),
             ],
           ),
@@ -98,15 +97,15 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
         ),
         TextButton(
           onPressed: _clearFields,
-          child: Text('Clear All'),
+          child: const Text('Clear All'),
         ),
         ElevatedButton(
           onPressed: _saveParameter,
-          child: Text('Save Parameter'),
+          child: const Text('Save Parameter'),
         )
       ],
     );
@@ -117,12 +116,12 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Rename File'),
+            title: const Text('Rename File'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  decoration: InputDecoration(labelText: 'New File Name'),
+                  decoration: const InputDecoration(labelText: 'New File Name'),
                   onChanged: (value) {
                     //Update file name when user types in the text field
                     _fileName = value;
@@ -136,13 +135,13 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
                     Navigator.pop(context); //close rename dialog
                     _fileName = null;
                   },
-                  child: Text('Cancel')),
+                  child: const Text('Cancel')),
               ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                     _saveParameter();
                   },
-                  child: Text('Save'))
+                  child: const Text('Save'))
             ],
           );
         });
@@ -175,6 +174,8 @@ class _AddParameterWidgetState extends State<AddParameterWidget> {
 }
 
 class ParameterPage extends StatefulWidget {
+  const ParameterPage({super.key});
+
   @override
   _ParameterPageState createState() => _ParameterPageState();
 }
@@ -203,7 +204,7 @@ class _ParameterPageState extends State<ParameterPage> {
         actions: [
           IconButton(
             onPressed: _deleteAllParameter,
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
           )
         ],
       ),
@@ -230,7 +231,7 @@ class _ParameterPageState extends State<ParameterPage> {
               child: ListTile(
                 title: Text(
                   parameter['header'] ?? '',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text(parameter['description'] ?? ''),
                 trailing: _buildFileTypeStatus(parameter['file_path']),
@@ -243,7 +244,7 @@ class _ParameterPageState extends State<ParameterPage> {
         onPressed: () {
           _showAddParameterDialog(context);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -285,7 +286,7 @@ class _ParameterPageState extends State<ParameterPage> {
   }
 
   Future<String?> _addParameter(String header, String description,
-      String? filePath, String? _fileName) async {
+      String? filePath, String? fileName) async {
     // Save the parameters to the JSON file
     String? copiedFilePath;
 
@@ -312,22 +313,14 @@ class _ParameterPageState extends State<ParameterPage> {
         // Copy the file to the subdirectory
         String fileName = filePath.split('/').last;
 
-        if (_fileName != null) {
-          // if user Provided a new file name , concatenate it with the  original name
-          fileName = _fileName! + '_' + fileName;
-        } else {
-          //If user chose to retain the name , concatenate the header with the original file name
-
-          if (header.isNotEmpty) {
-            fileName = header! + '_' + fileName;
-          }
-        }
-        File originalFile = File(filePath);
+        // if user Provided a new file name , concatenate it with the  original name
+        fileName = '${fileName}_$fileName';
+              File originalFile = File(filePath);
         File copiedFile = await originalFile.copy('${subdir.path}/$fileName');
         copiedFilePath = copiedFile.path;
         filePath = copiedFilePath;
         print('File copied to: ${copiedFile.path}');
-        print('File Path is now ${filePath}');
+        print('File Path is now $filePath');
         Map<String, String> parameter = {
           'header': header,
           'description': description,
@@ -393,7 +386,7 @@ class _ParameterPageState extends State<ParameterPage> {
         color: Colors.blue,
       );
     } else {
-      return SizedBox(); // Return empty container if file path is null
+      return const SizedBox(); // Return empty container if file path is null
     }
   }
 }

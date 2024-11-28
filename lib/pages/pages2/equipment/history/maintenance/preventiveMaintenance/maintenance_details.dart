@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:collector/pages/pages2/equipment/history/maintenance/preventiveMaintenance/maintenance_entry.dart';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class MaintenanceDetails {
   String equipment;
@@ -115,99 +114,66 @@ class ChecklistItem {
 class MaintenanceData {
   List<MaintenanceDetails> maintenanceDetailsList = [];
 
-  Future<void> loadMaintenanceDetails(String subprocess) async {
-    /*
+  static Future<List<MaintenanceDetails>> loadMaintenanceDetails(
+      String equipmentName) async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/$subprocess/maintenance_details.json');
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/preventiveMaintenance/preventivemaintenancestorage';
+
+      final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
+
+      final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
+      final filePath = path.join(equipmentDirPath,
+          '${sanitizedEquipmentName}_maintenancedetails.json');
+      final file = File(filePath);
 
       if (await file.exists()) {
-        print('File exists: ${file.path}');
-        String jsonString = await file.readAsString();
-        print('File content: $jsonString');
-        
-        List<dynamic> jsonData = json.decode(jsonString);
-        maintenanceDetailsList = jsonData
-            .map((item) => MaintenanceDetails.fromJson(item))
-            .toList();
-        print('Loaded maintenance details: $maintenanceDetailsList');
+        final contents = await file.readAsString();
+        final List<dynamic> jsonList = json.decode(contents);
+        final maintenanceList =
+            jsonList.map((json) => MaintenanceDetails.fromJson(json)).toList();
+        print("loaded ${maintenanceList.length} from file");
+        return maintenanceList;
       } else {
-        print('File does not exist: ${file.path}');
+        print("no existing maintenance list found at $filePath");
+        return [];
       }
     } catch (e) {
-      print('Error loading maintenance details: $e');
-    }*/
-
-    try {
-      final directory = await getApplicationCacheDirectory();
-      final file =
-          File('${directory.path}/$subprocess/maintenance_details.json');
-      if (await file.exists()) {
-        String jsonString = await file.readAsString();
-        List<dynamic> jsonData = json.decode(jsonString);
-        maintenanceDetailsList =
-            jsonData.map((item) => MaintenanceDetails.fromJson(item)).toList();
-      }
-    } catch (e) {
-      print('Error Loading Failure details $e');
+      print("Error loading maintenance details");
+      rethrow;
     }
   }
 
-  Future<void> saveMaintenanceDetails(String subprocess) async {
-    /*try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file =
-          File('${directory.path}/$subprocess/maintenance_details.json');
-      if (!await file.exists()) {
-        await file.create(recursive: true);
-      }
+  static Future<void> saveMaintenanceDetails(
+      String equipmentName, List<MaintenanceDetails> maintenanceList) async {
+    try {
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/preventiveMaintenance/preventivemaintenancestorage';
 
-      // Read existing data from file, if any
-      List<MaintenanceDetails> existingDetails = [];
-      if (await file.exists()) {
-        String jsonString = await file.readAsString();
-        List<dynamic> jsonData = json.decode(jsonString);
-        existingDetails =
-            jsonData.map((item) => MaintenanceDetails.fromJson(item)).toList();
-      }
+      final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
 
-      // Merge existing details with current maintenanceDetailsList
-      Set<String> existingEquipments =
-          existingDetails.map((detail) => detail.equipment).toSet();
-      for (var newDetail in maintenanceDetailsList) {
-        if (!existingEquipments.contains(newDetail.equipment)) {
-          existingDetails.add(newDetail); // Add new detail
+      final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
+      final equipmentDir = Directory(equipmentDirPath);
+      if (!await equipmentDir.exists()) {
+        print("creating directory $equipmentDirPath");
+        await equipmentDir.create(recursive: true);
+        if (await equipmentDir.exists()) {
+          print("directory created");
         } else {
-          // Update existing detail
-          int index = existingDetails
-              .indexWhere((detail) => detail.equipment == newDetail.equipment);
-          if (index != -1) {
-            existingDetails[index] = newDetail;
-          }
+          print("directory creation failed");
+          return;
         }
       }
 
-      // Convert all entries to JSON and write to the file with formatting
-      JsonEncoder encoder = JsonEncoder.withIndent('  ');
-      String jsonString = encoder
-          .convert(existingDetails.map((detail) => detail.toJson()).toList());
-      await file.writeAsString(jsonString, mode: FileMode.write, flush: true);
+      final filePath = path.join(equipmentDirPath,
+          '${sanitizedEquipmentName}_maintenancedetails.json');
+      final file = File(filePath);
+      final jsonList = maintenanceList.map((e) => e.toJson()).toList();
+      await file.writeAsString(json.encode(jsonList));
+      print("Successfully wrote ${maintenanceList.length} to file $filePath");
     } catch (e) {
-      print('Error saving maintenance details: $e');
-    }*/
-
-    try {
-      final directory = await getApplicationCacheDirectory();
-      final file =
-          File('${directory.path}/$subprocess/maintenance_details.json');
-      if (!await file.exists()) {
-        await file.create(recursive: true);
-      }
-      String jsonString = json.encode(
-          maintenanceDetailsList.map((detail) => detail.toJson()).toList());
-      await file.writeAsString(jsonString);
-    } catch (e) {
-      print('Error saving Maintenance details (maintenance data) $e');
+      print("Error saving maintenance details");
+      rethrow;
     }
   }
 }

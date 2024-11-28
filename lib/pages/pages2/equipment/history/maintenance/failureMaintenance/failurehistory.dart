@@ -14,8 +14,9 @@ class FailureHistory extends StatefulWidget {
   final String subprocess;
   final String processName;
   final String equipmentName;
-  FailureHistory(
-      {required this.processName,
+  const FailureHistory(
+      {super.key,
+      required this.processName,
       required this.equipmentName,
       required this.subprocess});
   @override
@@ -38,7 +39,7 @@ class _FailureHistoryState extends State<FailureHistory> {
   }
 
   Future<void> _loadFailureDetailsEntries() async {
-    await failureData.loadFailureDetails();
+    await failureData.loadFailureDetails(widget.equipmentName);
     setState(() {
       failureDetailList = failureData.FailureDetailsList;
     });
@@ -66,7 +67,7 @@ class _FailureHistoryState extends State<FailureHistory> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             DataTable(
-              columns: [
+              columns: const [
                 DataColumn(label: Text('Equipment')),
                 DataColumn(label: Text('Maintenance Task')),
                 DataColumn(label: Text('Previuos Occurence')),
@@ -76,10 +77,10 @@ class _FailureHistoryState extends State<FailureHistory> {
               rows: _buildFailureRows(),
               border: TableBorder.all(),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            IconButton(onPressed: _addNewEntry, icon: Icon(Icons.add))
+            IconButton(onPressed: _addNewEntry, icon: const Icon(Icons.add))
           ],
         ),
       ),
@@ -88,7 +89,7 @@ class _FailureHistoryState extends State<FailureHistory> {
 
   List<DataRow> _buildFailureRows() {
     List<DataRow> rows = [];
-    Set<String> uniqueEntries = Set<String>();
+    Set<String> uniqueEntries = <String>{};
 
     failureEntriesEquipment.forEach((equipment, entries) {
       rows.add(DataRow(cells: [
@@ -96,21 +97,25 @@ class _FailureHistoryState extends State<FailureHistory> {
             child: TextButton(
           child: Text(equipment),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => FailureDetailsPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FailureDetailsPage(
+                          equipmentName: widget.equipmentName,
+                        )));
           },
         ))),
-        DataCell(SizedBox()),
-        DataCell(SizedBox()),
-        DataCell(SizedBox()),
-        DataCell(SizedBox())
+        const DataCell(SizedBox()),
+        const DataCell(SizedBox()),
+        const DataCell(SizedBox()),
+        const DataCell(SizedBox())
       ]));
 
       // Add a DataRow for each maintenance entry of this equipment
-      entries.forEach((entry) {
+      for (var entry in entries) {
         rows.add(
           DataRow(cells: [
-            DataCell(SizedBox()), // Empty cell for equipment
+            const DataCell(SizedBox()), // Empty cell for equipment
             DataCell(TextButton(
               onPressed: () {
                 _addProcedure(context, entry);
@@ -138,10 +143,11 @@ class _FailureHistoryState extends State<FailureHistory> {
             )), // Display responsible person
           ]),
         );
-      });
+      }
 
       // Add an empty row as separator
-      rows.add(DataRow(cells: List.generate(5, (_) => DataCell(SizedBox()))));
+      rows.add(
+          DataRow(cells: List.generate(5, (_) => const DataCell(SizedBox()))));
     });
 
     return rows;
@@ -153,13 +159,13 @@ class _FailureHistoryState extends State<FailureHistory> {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
-            title: Text('Add New Entry'),
+            title: const Text('Add New Entry'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
-                  title: Text('Create New Equipment'),
+                  title: const Text('Create New Equipment'),
                   leading: Radio(
                     value: false,
                     groupValue: _updateExisting,
@@ -171,7 +177,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                   ),
                 ),
                 ListTile(
-                  title: Text('Update Existing Existing'),
+                  title: const Text('Update Existing Existing'),
                   leading: Radio(
                     value: true,
                     groupValue: _updateExisting,
@@ -189,7 +195,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () {
@@ -201,7 +207,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                         ''); // Pass an empty string as equipment name
                   }
                 },
-                child: Text('Next'),
+                child: const Text('Next'),
               ),
             ],
           );
@@ -215,7 +221,7 @@ class _FailureHistoryState extends State<FailureHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Entry to Update'),
+          title: const Text('Select Entry to Update'),
           content: SingleChildScrollView(
             child: Column(
               children: failureEntriesEquipment.keys.map((equipment) {
@@ -239,13 +245,13 @@ class _FailureHistoryState extends State<FailureHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Update Task or Add New Task'),
+          title: const Text('Update Task or Add New Task'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                title: Text('Add New Task'),
+                title: const Text('Add New Task'),
                 leading: Radio(
                   value: false,
                   groupValue: _updateExisting,
@@ -257,7 +263,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                 ),
               ),
               ListTile(
-                title: Text('Update Existing Task'),
+                title: const Text('Update Existing Task'),
                 leading: Radio(
                   value: true,
                   groupValue: _updateExisting,
@@ -275,7 +281,7 @@ class _FailureHistoryState extends State<FailureHistory> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -286,7 +292,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                   _showEntryForm(equipment);
                 }
               },
-              child: Text('Next'),
+              child: const Text('Next'),
             ),
           ],
         );
@@ -299,7 +305,7 @@ class _FailureHistoryState extends State<FailureHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Task to Update'),
+          title: const Text('Select Task to Update'),
           content: SingleChildScrollView(
             child: Column(
               children: failureEntriesEquipment[equipment]!.map((entry) {
@@ -336,34 +342,35 @@ class _FailureHistoryState extends State<FailureHistory> {
               children: [
                 if (existingTask == null)
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Equipment'),
+                    decoration: const InputDecoration(labelText: 'Equipment'),
                     initialValue: equipment,
                     onChanged: (value) {
                       equipment = value;
                     },
                   ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Task'),
+                  decoration: const InputDecoration(labelText: 'Task'),
                   initialValue: task,
                   onChanged: (value) {
                     task = value;
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Duration'),
+                  decoration: const InputDecoration(labelText: 'Duration'),
                   onChanged: (value) {
                     duration = value;
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Responsible Person'),
+                  decoration:
+                      const InputDecoration(labelText: 'Responsible Person'),
                   onChanged: (value) {
                     responsiblePerson = value;
                   },
                 ),
                 DropdownButtonFormField<FailureEntry.TaskState>(
                   value: taskState,
-                  decoration: InputDecoration(labelText: 'Task State'),
+                  decoration: const InputDecoration(labelText: 'Task State'),
                   onChanged: (value) {
                     setState(() {
                       taskState = value!;
@@ -385,7 +392,7 @@ class _FailureHistoryState extends State<FailureHistory> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -415,7 +422,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -438,7 +445,7 @@ class _FailureHistoryState extends State<FailureHistory> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('List of Procedures'),
+              title: const Text('List of Procedures'),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -446,7 +453,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                   children: [
                     TextField(
                       controller: situationBeforeController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Situation Before',
                       ),
                     ),
@@ -457,16 +464,16 @@ class _FailureHistoryState extends State<FailureHistory> {
                           labelText: 'Step ${i + 1}',
                         ),
                       ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     TextButton(
                       onPressed: () {
                         setState(() {
                           stepsController.add(TextEditingController());
                         });
                       },
-                      child: Text('Add Step'),
+                      child: const Text('Add Step'),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -476,9 +483,9 @@ class _FailureHistoryState extends State<FailureHistory> {
                               toolsController.add(TextEditingController());
                             });
                           },
-                          icon: Icon(Icons.build_circle),
+                          icon: const Icon(Icons.build_circle),
                         ),
-                        Text('List of Tools Used'),
+                        const Text('List of Tools Used'),
                       ],
                     ),
                     for (int i = 0; i < toolsController.length; i++)
@@ -488,16 +495,16 @@ class _FailureHistoryState extends State<FailureHistory> {
                           labelText: 'Tool ${i + 1}',
                         ),
                       ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     TextButton(
                       onPressed: () {
                         setState(() {
                           toolsController.add(TextEditingController());
                         });
                       },
-                      child: Text('Add Tool'),
+                      child: const Text('Add Tool'),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -509,12 +516,12 @@ class _FailureHistoryState extends State<FailureHistory> {
                             });
                           },
                         ),
-                        Text('Situation Resolved'),
+                        const Text('Situation Resolved'),
                       ],
                     ),
                     TextField(
                       controller: situationAfterController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Situation After',
                       ),
                     ),
@@ -526,7 +533,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                   onPressed: () {
                     Navigator.of(dialogContext).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -559,13 +566,13 @@ class _FailureHistoryState extends State<FailureHistory> {
 
                     details.tasks.add(taskDetails);
 
-                    failureData.saveFailureDetails();
+                    failureData.saveFailureDetails(widget.equipmentName);
 
                     setState(() {});
 
                     Navigator.of(dialogContext).pop();
                   },
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             );
@@ -618,8 +625,8 @@ class _FailureHistoryState extends State<FailureHistory> {
       String equipment, FailureTaskDetails taskDetails) async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file =
-          File('${directory.path}/${widget.equipmentName}/failure_details.json');
+      final file = File(
+          '${directory.path}/${widget.equipmentName}/failure_details.json');
       List<FailureDetails> detailsList = [];
 
       // Load existing data if the file exists
@@ -664,7 +671,7 @@ class _FailureHistoryState extends State<FailureHistory> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: Text('List of Tools and Equipment Used'),
+              title: const Text('List of Tools and Equipment Used'),
               content: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -678,12 +685,13 @@ class _FailureHistoryState extends State<FailureHistory> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                  onPressed: () {}, icon: Icon(Icons.image))
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.image))
                             ],
                           )),
                       onChanged: (value) {},
                     ),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   IconButton(
@@ -692,19 +700,19 @@ class _FailureHistoryState extends State<FailureHistory> {
                           apparatusController.add(TextEditingController());
                         });
                       },
-                      icon: Icon(Icons.add)),
-                  SizedBox(
+                      icon: const Icon(Icons.add)),
+                  const SizedBox(
                     height: 5,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TextButton(onPressed: () {}, child: Text('Save')),
+                      TextButton(onPressed: () {}, child: const Text('Save')),
                       TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text('Cancel'))
+                          child: const Text('Cancel'))
                     ],
                   )
                 ],
@@ -719,8 +727,8 @@ class _FailureHistoryState extends State<FailureHistory> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Approver'),
-          content: SingleChildScrollView(
+          title: const Text('Add Approver'),
+          content: const SingleChildScrollView(
             child: Column(
               children: [
                 // Add your form fields here
@@ -732,7 +740,7 @@ class _FailureHistoryState extends State<FailureHistory> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -741,7 +749,7 @@ class _FailureHistoryState extends State<FailureHistory> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -752,18 +760,19 @@ class _FailureHistoryState extends State<FailureHistory> {
   Widget _getTaskStateIcon(FailureEntry.TaskState taskState) {
     switch (taskState) {
       case FailureEntry.TaskState.unactioned:
-        return Icon(Icons.warning, color: Colors.red);
+        return const Icon(Icons.warning, color: Colors.red);
       case FailureEntry.TaskState.inProgress:
-        return Icon(Icons.work, color: Colors.orange);
+        return const Icon(Icons.work, color: Colors.orange);
       case FailureEntry.TaskState.completed:
-        return Icon(Icons.check_circle, color: Colors.green);
+        return const Icon(Icons.check_circle, color: Colors.green);
     }
   }
 
   Future<void> _loadFailureEntries() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/${widget.equipmentName}/failure.json');
+      final file =
+          File('${directory.path}/${widget.equipmentName}/failure.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);
@@ -773,12 +782,12 @@ class _FailureHistoryState extends State<FailureHistory> {
 
         // Rebuild maintenanceEntriesByEquipment based on loaded maintenanceEntries
         failureEntriesEquipment = {};
-        failureEntries.forEach((entry) {
+        for (var entry in failureEntries) {
           if (!failureEntriesEquipment.containsKey(entry.equipment)) {
             failureEntriesEquipment[entry.equipment] = [];
           }
           failureEntriesEquipment[entry.equipment]!.add(entry);
-        });
+        }
       }
     } catch (e) {
       print('Error loading maintenance entries: $e');
@@ -789,7 +798,8 @@ class _FailureHistoryState extends State<FailureHistory> {
   Future<void> _saveFailureEntries() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/${widget.equipmentName}/failure.json');
+      final file =
+          File('${directory.path}/${widget.equipmentName}/failure.json');
 
       // Update existing task if it exists, otherwise add the new task
       for (var entry in failureEntries) {
@@ -812,12 +822,12 @@ class _FailureHistoryState extends State<FailureHistory> {
 
   void _updateFailureEntriesByEquipment() {
     failureEntriesEquipment.clear();
-    failureEntries.forEach((entry) {
+    for (var entry in failureEntries) {
       if (!failureEntriesEquipment.containsKey(entry.equipment)) {
         failureEntriesEquipment[entry.equipment] = [];
       }
       failureEntriesEquipment[entry.equipment]!.add(entry);
-    });
+    }
   }
 
   void _updateMaintenanceDetailsPage() async {
@@ -835,8 +845,8 @@ class _FailureHistoryState extends State<FailureHistory> {
   Future<void> _loadMaintenanceDetails() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file =
-          File('${directory.path}/${widget.equipmentName}/failure_details.json');
+      final file = File(
+          '${directory.path}/${widget.equipmentName}/failure_details.json');
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);

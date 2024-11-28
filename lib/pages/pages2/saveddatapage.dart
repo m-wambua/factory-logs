@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:collector/pages/pages2/datafortables/lastEntrySaver.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:collector/pages/pages2/subprocesscreator.dart';
@@ -8,8 +7,7 @@ import 'package:path_provider/path_provider.dart';
 class SavedDataPage extends StatefulWidget {
   final String subprocessName;
 
-  const SavedDataPage({Key? key, required this.subprocessName})
-      : super(key: key);
+  const SavedDataPage({super.key, required this.subprocessName});
 
   @override
   _SavedDataPageState createState() => _SavedDataPageState();
@@ -74,7 +72,7 @@ class _SavedDataPageState extends State<SavedDataPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Saved Data'),
+        title: const Text('Saved Data'),
       ),
       body: ListView.builder(
         itemCount: _savedDataList.length,
@@ -105,7 +103,7 @@ class _SavedDataPageState extends State<SavedDataPage> {
             return Card(
               child: ListTile(
                 title: Text('Saved on: $timestamp'),
-                subtitle: Text('No columns available for this entry.'),
+                subtitle: const Text('No columns available for this entry.'),
               ),
             );
           }

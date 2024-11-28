@@ -26,28 +26,28 @@ class ManualServices {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Add New Manual'),
+          title: const Text('Add New Manual'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Enter manual name'),
+                decoration: const InputDecoration(labelText: 'Enter manual name'),
                 onChanged: (value) {
                   manualName = value;
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.attach_file),
+                    icon: const Icon(Icons.attach_file),
                     onPressed: () {
                       _uploadPDF(context, subprocess, manualName);
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.camera_alt),
+                    icon: const Icon(Icons.camera_alt),
                     onPressed: () {
                       _captureImage(context, subprocess, manualName);
                     },
@@ -61,14 +61,14 @@ class ManualServices {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 // Save the manual and close the dialog
                 _saveManual(context, subprocess, manualName);
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -117,8 +117,8 @@ class ManualServices {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Success'),
-        content: Text('Manual saved successfully!'),
+        title: const Text('Success'),
+        content: const Text('Manual saved successfully!'),
         actions: [
           TextButton(
             onPressed: () {
@@ -126,7 +126,7 @@ class ManualServices {
 
               // Close the success dialog
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           )
         ],
       ),
@@ -139,7 +139,7 @@ class ManualServices {
     showDialog(
       context: context,
       barrierDismissible: false, // Prevent dismissing the dialog
-      builder: (context) => AlertDialog(
+      builder: (context) => const AlertDialog(
         title: Text('Uploading'),
         content: CircularProgressIndicator(),
       ),
@@ -147,7 +147,7 @@ class ManualServices {
 
     try {
       // Simulate uploading delay
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       // Move file to the desired directory
       String newPath = 'services/manuals_and_images/$subprocess/$manualName';
       await file.copy(newPath);
@@ -159,14 +159,14 @@ class ManualServices {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Success'),
-          content: Text('File uploaded successfully!'),
+          title: const Text('Success'),
+          content: const Text('File uploaded successfully!'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the success dialog box
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             )
           ],
         ),
@@ -179,14 +179,14 @@ class ManualServices {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Failed to upload file. Please try again.'),
+          title: const Text('Error'),
+          content: const Text('Failed to upload file. Please try again.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the error dialog box
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),

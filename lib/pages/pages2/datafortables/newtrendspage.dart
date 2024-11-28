@@ -4,8 +4,6 @@ import 'package:collector/pages/pages2/subprocesscreator.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 
@@ -25,7 +23,7 @@ class ChartData {
 class TrendsPage2 extends StatefulWidget {
   final String subprocessName;
 
-  const TrendsPage2({Key? key, required this.subprocessName}) : super(key: key);
+  const TrendsPage2({super.key, required this.subprocessName});
 
   @override
   _TrendsPage2State createState() => _TrendsPage2State();
@@ -85,7 +83,7 @@ class _TrendsPage2State extends State<TrendsPage2> {
   Future<void> _loadTableFromFile() async {
     final tableFileName = '${widget.subprocessName}_table.json';
     final documentsDir = await getApplicationDocumentsDirectory();
-    final tableFile = File(documentsDir.path + '/$tableFileName');
+    final tableFile = File('${documentsDir.path}/$tableFileName');
 
     if (await tableFile.exists()) {
       try {
@@ -105,7 +103,7 @@ class _TrendsPage2State extends State<TrendsPage2> {
       }
     } else {
       // Handle case where no JSON file is found
-      Center(child: Text('No Table was Found')); // Default initialization
+      const Center(child: Text('No Table was Found')); // Default initialization
     }
 
     setState(() {});
@@ -114,7 +112,7 @@ class _TrendsPage2State extends State<TrendsPage2> {
   Widget _buildDummyTable() {
     List<List<String>> groupedData = extractAndGroupDataByTimestamps();
     if (_columns.isEmpty) {
-      return Center(child: Text('No data available for dummy table.'));
+      return const Center(child: Text('No data available for dummy table.'));
     }
 
     // Extract headers from the first column of the original table
@@ -450,7 +448,7 @@ class _TrendsPage2State extends State<TrendsPage2> {
                     isCurved: false,
                     color: lineColors[seriesIndex % lineColors.length],
                     barWidth: 2,
-                    dotData: FlDotData(show: true),
+                    dotData: const FlDotData(show: true),
                     belowBarData: BarAreaData(
                       show: true,
                       color: lineColors[seriesIndex % lineColors.length]
@@ -494,14 +492,14 @@ class _TrendsPage2State extends State<TrendsPage2> {
                       },
                     ),
                   ),
-                  topTitles: AxisTitles(
+                  topTitles: const AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
-                  rightTitles: AxisTitles(
+                  rightTitles: const AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
                 ),
-                gridData: FlGridData(show: true),
+                gridData: const FlGridData(show: true),
                 borderData: FlBorderData(
                   show: true,
                   border: Border.all(color: Colors.grey.withOpacity(0.3)),

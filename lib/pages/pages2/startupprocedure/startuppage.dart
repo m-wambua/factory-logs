@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class StartUpEntriesPage extends StatefulWidget {
   final String processName;
-  const StartUpEntriesPage({Key? key, required this.processName});
+  const StartUpEntriesPage({super.key, required this.processName});
   @override
   _StartupEntriesPageState createState() => _StartupEntriesPageState();
 }
@@ -36,7 +36,7 @@ class _StartupEntriesPageState extends State<StartUpEntriesPage> {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: Image.asset(AppAssets.deltalogo),
               ),
-              Text('StartUp Entries'),
+              const Text('StartUp Entries'),
             ],
           ),
         
@@ -64,7 +64,7 @@ class _StartupEntriesPageState extends State<StartUpEntriesPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(' Start Up Procedure Details Details'),
+            title: const Text(' Start Up Procedure Details Details'),
             content: SingleChildScrollView(
               child: ListBody(
                 children: entry.startupStep.map((step) => Text(step)).toList(),
@@ -75,7 +75,7 @@ class _StartupEntriesPageState extends State<StartUpEntriesPage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'))
+                  child: const Text('Close'))
             ],
           );
         });

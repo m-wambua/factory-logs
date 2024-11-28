@@ -1,20 +1,18 @@
 import 'package:collector/pages/pages2/dailydeltas/delltafilemanager.dart';
-import 'package:collector/pages/pages2/datafortables/file_manager.dart';
 import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/pages2/dailydeltas/subdeltacreatorpage.dart';
 import 'package:collector/widgets/appassets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DailyDeltaCreator extends StatefulWidget {
   final String processName;
   final List<String>? subdeltas;
   const DailyDeltaCreator({
-    Key? key,
+    super.key,
     required this.processName,
     this.subdeltas,
     //Accept the call back
-  }) : super(key: key);
+  });
   @override
   _DailyDeltaCreatorState createState() => _DailyDeltaCreatorState();
 }
@@ -22,7 +20,7 @@ class DailyDeltaCreator extends StatefulWidget {
 class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
   late List<String> _subdeltas;
 
-  List<NotificationModel> _notifications = [];
+  final List<NotificationModel> _notifications = [];
   bool _isSaving = false;
 
   @override
@@ -60,7 +58,7 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
                 // Save functionality if needed
                 _saveDeltaAndSubdeltas();
               },
-              icon: Icon(Icons.save)),
+              icon: const Icon(Icons.save)),
         ],
       ),
       body: SingleChildScrollView(
@@ -71,14 +69,14 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
             children: [
               for (int index = 0; index < _subdeltas.length; index++)
                 Card(
-                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListTile(
                     title: Text(_subdeltas[index]),
                     trailing: IconButton(
                       onPressed: () {
                         _deleteSubdelta(index);
                       },
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                     ),
                     onTap: () {
                       Navigator.push(
@@ -92,14 +90,14 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
                     },
                   ),
                 ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               ElevatedButton(
                   onPressed: () {
                     _createNewSubdelta();
                   },
-                  child: Text(' Add New SubDelta'))
+                  child: const Text(' Add New SubDelta'))
             ],
           ),
         ),
@@ -114,9 +112,9 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
         builder: (context) {
           String tempSubdelta = '';
           return AlertDialog(
-            title: Text('Create New SubDelta'),
+            title: const Text('Create New SubDelta'),
             content: TextField(
-              decoration: InputDecoration(labelText: 'SubDelta Name'),
+              decoration: const InputDecoration(labelText: 'SubDelta Name'),
               onChanged: (value) {
                 tempSubdelta = value.trim();
               },
@@ -127,7 +125,7 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
                     Navigator.pop(
                         context, tempSubdelta.isEmpty ? null : tempSubdelta);
                   },
-                  child: Text('Create'))
+                  child: const Text('Create'))
             ],
           );
         });
@@ -151,9 +149,9 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
       builder: (context) {
         String tempSubDeltaName = '';
         return AlertDialog(
-          title: Text('Rename Subdelta'),
+          title: const Text('Rename Subdelta'),
           content: TextField(
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: ' New Name',
             ),
             onChanged: (value) {
@@ -165,18 +163,18 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Cancel')),
+                child: const Text('Cancel')),
             TextButton(
                 onPressed: () {
                   Navigator.pop(context, '');
                 },
-                child: Text('Clear')),
+                child: const Text('Clear')),
             ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context,
                       tempSubDeltaName.isEmpty ? null : tempSubDeltaName);
                 },
-                child: Text('Rename'))
+                child: const Text('Rename'))
           ],
         );
       },
@@ -205,7 +203,7 @@ class _DailyDeltaCreatorState extends State<DailyDeltaCreator> {
       await DeltaFileManager.saveDeltas(existingDeltas);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Process and SubDeltas saved successfully')),
+        const SnackBar(content: Text('Process and SubDeltas saved successfully')),
       );
 
       // Navigate back to the landing page

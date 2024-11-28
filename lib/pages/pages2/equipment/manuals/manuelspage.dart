@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 class AddManualWidget extends StatefulWidget {
   final void Function(
       String header, String comment, String? filePath, String fileName) onSave;
-  const AddManualWidget({Key? key, required this.onSave}) : super(key: key);
+  const AddManualWidget({super.key, required this.onSave});
   @override
   _AddManualWidgetState createState() => _AddManualWidgetState();
 }
@@ -26,13 +26,13 @@ class _AddManualWidgetState extends State<AddManualWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Add Manual'),
+      title: const Text('Add Manual'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _headerController,
-            decoration: InputDecoration(labelText: 'Header'),
+            decoration: const InputDecoration(labelText: 'Header'),
           ),
           Row(
             children: [
@@ -41,7 +41,7 @@ class _AddManualWidgetState extends State<AddManualWidget> {
                 controller: _commentController,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(labelText: 'Comment'),
+                decoration: const InputDecoration(labelText: 'Comment'),
               )),
               IconButton(
                   onPressed: () async {
@@ -56,7 +56,7 @@ class _AddManualWidgetState extends State<AddManualWidget> {
                       });
                     }
                   },
-                  icon: Icon(Icons.attach_file)),
+                  icon: const Icon(Icons.attach_file)),
               IconButton(
                   onPressed: () async {
                     //Handle picture action for images
@@ -72,7 +72,7 @@ class _AddManualWidgetState extends State<AddManualWidget> {
                       });
                     }
                   },
-                  icon: Icon(Icons.image))
+                  icon: const Icon(Icons.image))
             ],
           )
         ],
@@ -82,8 +82,8 @@ class _AddManualWidgetState extends State<AddManualWidget> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: Icon(Icons.close)),
-        TextButton(onPressed: _saveManual, child: Text('Save Manual'))
+            icon: const Icon(Icons.close)),
+        TextButton(onPressed: _saveManual, child: const Text('Save Manual'))
       ],
     );
   }
@@ -93,12 +93,12 @@ class _AddManualWidgetState extends State<AddManualWidget> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Renam File'),
+            title: const Text('Renam File'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  decoration: InputDecoration(labelText: 'New File Name'),
+                  decoration: const InputDecoration(labelText: 'New File Name'),
                   onChanged: (value) {
                     //Update file name when  user types in the text field
                     _fileName = value;
@@ -112,13 +112,13 @@ class _AddManualWidgetState extends State<AddManualWidget> {
                     Navigator.pop(context);
                     _fileName = null;
                   },
-                  child: Text('Cancel')),
+                  child: const Text('Cancel')),
               ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                     _saveManual();
                   },
-                  child: Text('Save'))
+                  child: const Text('Save'))
             ],
           );
         });
@@ -143,6 +143,8 @@ class _AddManualWidgetState extends State<AddManualWidget> {
 }
 
 class ManualsPage extends StatefulWidget {
+  const ManualsPage({super.key});
+
   
   @override
   State<ManualsPage> createState() => _ManualsPageState();
@@ -168,16 +170,16 @@ class _ManualsPageState extends State<ManualsPage> {
               backgroundColor: Theme.of(context).colorScheme.surface,
               child: Image.asset(AppAssets.deltalogo),
             ),
-            Text('Manuals for ${_subprocess}'),
+            Text('Manuals for $_subprocess'),
             IconButton(
                 onPressed: () {
                   handleUpload();
                 },
-                icon: Icon(Icons.upload))
+                icon: const Icon(Icons.upload))
           ],
         ),
         actions: [
-          IconButton(onPressed: _deleteAllManuals, icon: Icon(Icons.delete))
+          IconButton(onPressed: _deleteAllManuals, icon: const Icon(Icons.delete))
         ],
       ),
       body: ListView.builder(
@@ -200,7 +202,7 @@ class _ManualsPageState extends State<ManualsPage> {
               child: ListTile(
                 title: Text(
                   manual['header'] ?? '',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text(manual['comment'] ?? ''),
                 trailing: _buildFileTypeStatus(manual['file_path']),
@@ -213,7 +215,7 @@ class _ManualsPageState extends State<ManualsPage> {
         onPressed: () {
           _showAddManualDialog(context);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -249,7 +251,7 @@ class _ManualsPageState extends State<ManualsPage> {
   }
 
   Future<String?> _addManual(String header, String comment, String? filePath,
-      String? _fileName) async {
+      String? fileName) async {
     // Save the parameters to the JSON File
     String? copiedFilePath;
     await _saveManuals();
@@ -271,21 +273,14 @@ class _ManualsPageState extends State<ManualsPage> {
 
         // copy the file to the subdirectory
         String fileName = filePath.split('/').last;
-        if (_fileName != null) {
-          //if user provided a new file name, concatenate it with the original name
-          fileName = _fileName! + '_' + fileName;
-        } else {
-          // if user chose to retain the name, concatenate the header with the original file name
-          if (header.isNotEmpty) {
-            fileName = header! + '_' + fileName;
-          }
-        }
-        File originalFile = File(filePath);
+        //if user provided a new file name, concatenate it with the original name
+        fileName = '${fileName}_$fileName';
+              File originalFile = File(filePath);
         File copiedFile = await originalFile.copy('${subdir.path}/$fileName');
         copiedFilePath = copiedFile.path;
         filePath = copiedFilePath;
         print(' FIle is copied to ${copiedFile.path}');
-        print('File path is now${filePath}');
+        print('File path is now$filePath');
         Map<String, String> manual = {
           'header': header,
           'comment': comment,
@@ -346,7 +341,7 @@ class _ManualsPageState extends State<ManualsPage> {
         color: Colors.blue,
       );
     } else {
-      return SizedBox(); // Return empty container if file path is null
+      return const SizedBox(); // Return empty container if file path is null
     }
   }
 

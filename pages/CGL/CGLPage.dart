@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class CGLPage extends StatelessWidget {
+  const CGLPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CGL'),
+        title: const Text('CGL'),
         
       ),
       body: ListView(
@@ -18,16 +20,16 @@ class CGLPage extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/CGL/' + subprocess + '_p');
+                      Navigator.pushNamed(context, '/CGL/${subprocess}_p');
                     },
-                    child: Text('Production'),
+                    child: const Text('Production'),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/CGL/' + subprocess + '_np');
+                      Navigator.pushNamed(context, '/CGL/${subprocess}_np');
                     },
-                    child: Text('No Production'),
+                    child: const Text('No Production'),
                   ),
                 ],
               ),

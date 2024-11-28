@@ -34,7 +34,7 @@ class StartUpEntryData {
   Future<void> savingStartUpEntry(StartUpEntry newEntry, String processName) async {
     try {
       final directory = 'pages/models/$processName/start_up';
-      final file = File('${directory}/startup.json');
+      final file = File('$directory/startup.json');
       if (!await file.exists()) {
         await file.create(recursive: true);
       }

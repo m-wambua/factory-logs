@@ -34,8 +34,7 @@ class ColumnInfo {
 
 class SubprocessCreatorPage extends StatefulWidget {
   final String subprocessName;
-  const SubprocessCreatorPage({Key? key, required this.subprocessName})
-      : super(key: key);
+  const SubprocessCreatorPage({super.key, required this.subprocessName});
 
   @override
   _SubprocessCreatorPageState createState() => _SubprocessCreatorPageState();
@@ -62,7 +61,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
  Future<void> _saveTableTemplate() async {
   final tableFileName = '${widget.subprocessName}_table.json';
   final documentsDir = await getApplicationDocumentsDirectory();
-  final tableFile = File(documentsDir.path + '/$tableFileName');
+  final tableFile = File('${documentsDir.path}/$tableFileName');
 
   // Check if the file exists, create it if not
   if (!await tableFile.exists()) {
@@ -79,11 +78,11 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
   try {
     await tableFile.writeAsString(json.encode(tableJson));
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Template saved!')));
+        .showSnackBar(const SnackBar(content: Text('Template saved!')));
   } catch (error) {
     print('Error saving table to file: $error');
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error saving template!')),
+      const SnackBar(content: Text('Error saving template!')),
     );
   }
 }
@@ -92,7 +91,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
 Future<void> _loadTableTemplate() async {
   final tableFileName = '${widget.subprocessName}_table.json';
   final documentsDir = await getApplicationDocumentsDirectory();
-  final tableFile = File(documentsDir.path + '/$tableFileName');
+  final tableFile = File('${documentsDir.path}/$tableFileName');
 
   if (await tableFile.exists()) {
     try {
@@ -175,7 +174,7 @@ Future<void> _loadTableTemplate() async {
 
   Widget _buildDataTable() {
     if (_columns.isEmpty) {
-      return Center(child: Text('No columns available.'));
+      return const Center(child: Text('No columns available.'));
     }
 
     return DataTable(
@@ -232,10 +231,10 @@ Future<void> _loadTableTemplate() async {
       builder: (context) {
         int numRows = _numRows;
         return AlertDialog(
-          title: Text('Set Number of Rows'),
+          title: const Text('Set Number of Rows'),
           content: TextField(
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter number of rows'),
+            decoration: const InputDecoration(hintText: 'Enter number of rows'),
             onChanged: (value) {
               numRows = int.tryParse(value) ?? _numRows;
             },
@@ -245,7 +244,7 @@ Future<void> _loadTableTemplate() async {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -255,7 +254,7 @@ Future<void> _loadTableTemplate() async {
                 });
                 Navigator.pop(context);
               },
-              child: Text('Set'),
+              child: const Text('Set'),
             ),
           ],
         );
@@ -278,7 +277,7 @@ Future<void> _loadTableTemplate() async {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              title: Row(
+              title: const Row(
                 children: [
                   Icon(Icons.add, color: Colors.blueAccent),
                   SizedBox(width: 8),
@@ -297,7 +296,7 @@ Future<void> _loadTableTemplate() async {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Enter column name',
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.text_fields),
@@ -306,10 +305,10 @@ Future<void> _loadTableTemplate() async {
                       newColumnName = value;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   DropdownButtonFormField<ColumnDataType>(
                     value: selectedDataType,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Select Data Type',
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.data_usage),
@@ -328,11 +327,11 @@ Future<void> _loadTableTemplate() async {
                       });
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   if (selectedDataType == ColumnDataType.integer)
                     TextField(
                       controller: unitController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Enter unit (optional)',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.straighten),
@@ -345,7 +344,7 @@ Future<void> _loadTableTemplate() async {
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the dialog
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -369,7 +368,7 @@ Future<void> _loadTableTemplate() async {
                       Navigator.of(context).pop(); // Close the dialog
                     }
                   },
-                  child: Text('Add'),
+                  child: const Text('Add'),
                 ),
               ],
             );
@@ -389,10 +388,10 @@ Future<void> _loadTableTemplate() async {
       builder: (context) {
         String columnNameToDelete = '';
         return AlertDialog(
-          title: Text('Delete Column'),
+          title: const Text('Delete Column'),
           content: DropdownButtonFormField<String>(
             value: columnNameToDelete.isNotEmpty ? columnNameToDelete : null,
-            hint: Text('Select column to delete'),
+            hint: const Text('Select column to delete'),
             items: _columns
                 .where((column) => column.name != 'Equipment')
                 .map((column) {
@@ -410,7 +409,7 @@ Future<void> _loadTableTemplate() async {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -428,7 +427,7 @@ Future<void> _loadTableTemplate() async {
                   Navigator.pop(context);
                 }
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -443,17 +442,17 @@ Future<void> _loadTableTemplate() async {
         TextEditingController controller =
             TextEditingController(text: column.name);
         return AlertDialog(
-          title: Text('Rename Column'),
+          title: const Text('Rename Column'),
           content: TextField(
             controller: controller,
-            decoration: InputDecoration(hintText: 'Enter new column name'),
+            decoration: const InputDecoration(hintText: 'Enter new column name'),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -462,7 +461,7 @@ Future<void> _loadTableTemplate() async {
                 });
                 Navigator.pop(context);
               },
-              child: Text('Rename'),
+              child: const Text('Rename'),
             ),
           ],
         );
@@ -481,7 +480,7 @@ Future<void> _loadTableTemplate() async {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Mark Column as Fixed/User-Fillable'),
+              title: const Text('Mark Column as Fixed/User-Fillable'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: _columns.asMap().entries.map((entry) {
@@ -511,7 +510,7 @@ Future<void> _loadTableTemplate() async {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
               ],
             );

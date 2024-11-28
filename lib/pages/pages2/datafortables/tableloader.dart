@@ -3,10 +3,8 @@ import 'package:collector/pages/models/notification.dart';
 import 'package:collector/pages/pages2/datafortables/newtrendspage.dart';
 import 'package:collector/pages/pages2/datafortables/saveddatapage.dart';
 import 'package:collector/pages/pages2/subprocesscreator.dart';
-import 'package:collector/pages/trends/trendspage.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -16,11 +14,10 @@ class TableLoaderPage extends StatefulWidget {
   final String subprocessName;
   final Function(NotificationModel) onNotificationAdded;
   const TableLoaderPage(
-      {Key? key,
+      {super.key,
       required this.processName,
       required this.subprocessName,
-      required this.onNotificationAdded})
-      : super(key: key);
+      required this.onNotificationAdded});
 
   @override
   _TableLoaderPageState createState() => _TableLoaderPageState();
@@ -31,7 +28,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
 
   List<List<String>> _tableData = [];
   int _numRows = 0;
-  List<List<String>> _additionalRows = [];
+  final List<List<String>> _additionalRows = [];
   List<Map<String, dynamic>> _savedDataList = [];
 
   @override
@@ -82,7 +79,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
   Future<void> _loadTableFromFile() async {
     final tableFileName = '${widget.subprocessName}_table.json';
     final documentsDir = await getApplicationDocumentsDirectory();
-    final tableFile = File(documentsDir.path + '/$tableFileName');
+    final tableFile = File('${documentsDir.path}/$tableFileName');
 
     if (await tableFile.exists()) {
       try {
@@ -102,7 +99,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
       }
     } else {
       // Handle case where no JSON file is found
-      Center(child: Text('No Table was Found')); // Default initialization
+      const Center(child: Text('No Table was Found')); // Default initialization
     }
 
     setState(() {});
@@ -134,12 +131,12 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
     try {
       await File(fileName).writeAsString(json.encode(tableJson));
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Draft saved successfully!')),
+        const SnackBar(content: Text('Draft saved successfully!')),
       );
     } catch (error) {
       print('Error saving table as draft: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving draft!')),
+        const SnackBar(content: Text('Error saving draft!')),
       );
     }
   }
@@ -170,13 +167,13 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
     try {
       await File(fileName).writeAsString(json.encode(tableJson));
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Data saved successfully!')),
+        const SnackBar(content: Text('Data saved successfully!')),
       );
       _viewSubmittedData(); // Navigate to trends screen
     } catch (error) {
       print('Error saving table data: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving data!')),
+        const SnackBar(content: Text('Error saving data!')),
       );
     }
     final newNotification = NotificationModel(
@@ -241,7 +238,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                         textAlign: TextAlign.center,
                         initialValue: _tableData[rowindex][colindex],
                         decoration:
-                            InputDecoration(border: OutlineInputBorder()),
+                            const InputDecoration(border: OutlineInputBorder()),
                         onChanged: (value) {
                           setState(() {
                             _tableData[rowindex][colindex] = value;
@@ -268,7 +265,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
       ),
       child: Text(
         _tableData[rowIndex][0],
-        style: TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black),
       ),
     );
   }
@@ -296,27 +293,27 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
             _buildColumnsLabelRow(),
             _buildDataTable2(),
             //_buildDataTable(),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: _saveTableAsDraft,
-                  child: Text('Save as Draft'),
+                  child: const Text('Save as Draft'),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: _viewSubmittedData,
-                  child: Text('View Saved Data'),
+                  child: const Text('View Saved Data'),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: _saveAndNavigateToTrends,
-                  child: Text('Save and Submit'),
+                  child: const Text('Save and Submit'),
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // _buildDummyTable(), // Add dummy table below the main table
           ],
         ),
@@ -343,7 +340,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
 
   Widget _buildDataTable() {
     if (_columns.isEmpty) {
-      return Center(child: Text('No columns available.'));
+      return const Center(child: Text('No columns available.'));
     }
 
     return Row(
@@ -368,7 +365,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                       return DataCell(TextButton(
                         style: TextButton.styleFrom(
                             backgroundColor: Colors.grey[200],
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 12),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30))),
@@ -377,7 +374,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                         },
                         child: Text(
                           _tableData[index][colIndex],
-                          style: TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ));
                     } else {
@@ -404,7 +401,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
             },
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         //_buildDummyTable()
@@ -419,7 +416,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Equipment/ Apparatus Options'),
+            title: const Text('Equipment/ Apparatus Options'),
             content: Text('You Clickec on ${_tableData[index][0]}'),
             actions: [
               TextButton(
@@ -438,7 +435,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Cancel')),
+                  child: const Text('Cancel')),
             ],
           );
         });
@@ -448,7 +445,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
   Widget _buildDummyTable() {
     List<List<String>> groupedData = extractAndGroupDataByTimestamps();
     if (_columns.isEmpty) {
-      return Center(child: Text('No data available for dummy table.'));
+      return const Center(child: Text('No data available for dummy table.'));
     }
 
     // Extract headers from the first column of the original table

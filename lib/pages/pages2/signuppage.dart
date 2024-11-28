@@ -2,6 +2,8 @@ import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -15,8 +17,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String _phoneNumber = '';
   String _password = '';
   String _confirmPassword = '';
-  bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
+  final bool _isPasswordVisible = false;
+  final bool _isConfirmPasswordVisible = false;
 
   bool _hasEightChars = false;
   bool _hasSpecialChar = false;

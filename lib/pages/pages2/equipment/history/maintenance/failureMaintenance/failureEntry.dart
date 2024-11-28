@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:collector/pages/pages2/equipment/history/maintenance/preventiveMaintenance/maintenance_details.dart';
-import 'package:collector/pages/pages2/equipment/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
 
 class MaintenanceEntry {
   String equipment;

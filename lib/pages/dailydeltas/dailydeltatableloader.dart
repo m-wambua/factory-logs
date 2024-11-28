@@ -18,11 +18,11 @@ class DeltaTableLoaderPage extends StatefulWidget {
   final Function(NotificationModel) onNotificationAdded;
 
   const DeltaTableLoaderPage({
-    Key? key,
+    super.key,
     required this.processName,
     required this.subDeltaName,
     required this.onNotificationAdded,
-  }) : super(key: key);
+  });
 
   @override
   _DeltaTableLoaderState createState() => _DeltaTableLoaderState();
@@ -175,7 +175,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
                                   : '',
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 8),
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                         ),
                         onChanged: (value) {
                           if (colIndex == 1 || colIndex == 2) {
@@ -417,7 +417,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
   }
 
   Future<void> _loadDummyData() async {
-    List<Map<String, dynamic>> _savedTables = [];
+    List<Map<String, dynamic>> savedTables = [];
     final savedDataDir = await getApplicationDocumentsDirectory();
     final savedDataFile =
         File('${savedDataDir.path}/ ${widget.subDeltaName}_snapshots.json');
@@ -426,7 +426,7 @@ class _DeltaTableLoaderState extends State<DeltaTableLoaderPage> {
       final jsonString = await savedDataFile.readAsString();
       final List<dynamic> snapshots = json.decode(jsonString) as List<dynamic>;
       setState(() {
-        _savedTables = snapshots.cast<Map<String, dynamic>>();
+        savedTables = snapshots.cast<Map<String, dynamic>>();
       });
       //process the loaded data
     }

@@ -4,12 +4,14 @@ import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 
 class UploadScreen extends StatefulWidget {
+  const UploadScreen({super.key});
+
   @override
   _UploadScreenState createState() => _UploadScreenState();
 }
 
 class _UploadScreenState extends State<UploadScreen> {
-  List<File> _uploadedFiles = [];
+  final List<File> _uploadedFiles = [];
   bool _uploadComplete = false;
 
   void _handleFileUpload(List<File> files) {
@@ -30,14 +32,14 @@ class _UploadScreenState extends State<UploadScreen> {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 child: Image.asset(AppAssets.deltalogo),
               ),
-              Text('Upload Code Base'),
+              const Text('Upload Code Base'),
             ],
           ),
         
         
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -71,17 +73,17 @@ class _UploadScreenState extends State<UploadScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.folder,
                           size: 80,
                           color: Colors.blue,
                         ),
                         onPressed: () {},
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
-                      Text(
+                      const Text(
                         'Upload Files and FOlders',
                         style: TextStyle(color: Colors.blue),
                       )
@@ -89,18 +91,18 @@ class _UploadScreenState extends State<UploadScreen> {
               ],
             ),
 
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             // Progress Indicator or Check Mark based on upload status
             _uploadComplete
-                ? Icon(Icons.check_circle, color: Colors.green, size: 30.0)
-                : CircularProgressIndicator(),
-            SizedBox(height: 20.0),
+                ? const Icon(Icons.check_circle, color: Colors.green, size: 30.0)
+                : const CircularProgressIndicator(),
+            const SizedBox(height: 20.0),
             // Text Editor for Notes Entry
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Notes Entry',
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () {
                     // Handle adding entries
                   },
@@ -110,7 +112,7 @@ class _UploadScreenState extends State<UploadScreen> {
               keyboardType: TextInputType.multiline,
               // Implement logic for adding entries
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
                 // Implement save logic: check if upload and compression are complete
@@ -120,14 +122,14 @@ class _UploadScreenState extends State<UploadScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Save Successful'),
-                        content: Text('Upload and compression complete.'),
+                        title: const Text('Save Successful'),
+                        content: const Text('Upload and compression complete.'),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('OK'),
+                            child: const Text('OK'),
                           ),
                         ],
                       );
@@ -139,15 +141,15 @@ class _UploadScreenState extends State<UploadScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Upload or Compression Incomplete'),
-                        content: Text(
+                        title: const Text('Upload or Compression Incomplete'),
+                        content: const Text(
                             'Please wait for upload and compression to complete.'),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('OK'),
+                            child: const Text('OK'),
                           ),
                         ],
                       );
@@ -155,7 +157,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   );
                 }
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         ),

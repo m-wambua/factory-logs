@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class FailureDetails {
   String equipment;
@@ -80,25 +80,51 @@ class FailureTaskDetails {
 class FailureData {
   List<FailureDetails> FailureDetailsList = [];
 
-  Future<void> loadFailureDetails() async {
+  Future<void> loadFailureDetails(String equipmentName) async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/failure_details.json');
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/failureMaintenance/failureeventstorage';
+
+      final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
+      final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
+      final filePath =
+          path.join(equipmentDirPath, '${sanitizedEquipmentName}_failure.json');
+
+      final file = File(filePath);
       if (await file.exists()) {
         String jsonString = await file.readAsString();
         List<dynamic> jsonData = json.decode(jsonString);
-        FailureDetailsList = jsonData.map((item) => FailureDetails.fromJson(item)).toList();
+        FailureDetailsList =
+            jsonData.map((item) => FailureDetails.fromJson(item)).toList();
       }
     } catch (e) {
       print('Error loading Failure details: $e');
     }
   }
 
-  Future<void> saveFailureDetails() async {
+  Future<void> saveFailureDetails(String equipmentName) async {
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/failure_details.json');
-      String jsonString = json.encode(FailureDetailsList.map((detail) => detail.toJson()).toList());
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/failureMaintenance/failureeventstorage';
+
+      final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
+      final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
+      final equipmentDir = Directory(equipmentDirPath);
+      if (!await equipmentDir.exists()) {
+        await equipmentDir.create(recursive: true);
+      }
+      if (await equipmentDir.exists()) {
+        print("Created Equipment folder: $equipmentDirPath");
+      } else {
+        print("Equipment folder already exists: $equipmentDirPath");
+        return;
+      }
+
+      final filePath =
+          path.join(equipmentDirPath, '${sanitizedEquipmentName}_failure.json');
+      final file = File(filePath);
+      String jsonString = json
+          .encode(FailureDetailsList.map((detail) => detail.toJson()).toList());
       await file.writeAsString(jsonString);
     } catch (e) {
       print('Error saving Failure details: $e');

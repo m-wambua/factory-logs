@@ -14,18 +14,13 @@ class EmailSender {
       List<TextEditingController> mailingListController,
       Map<String, dynamic> pdfData,
       EmailType emailType) async {
-    if (mailingListController == null || mailingListController.isEmpty) {
+    if (mailingListController.isEmpty) {
       print('No mailing list controllers provided.');
       return;
     }
 
-    if (pdfData == null || pdfData.isEmpty) {
+    if (pdfData.isEmpty) {
       print('No PDF data provided.');
-      return;
-    }
-
-    if (emailType == null) {
-      print('No email type provided.');
       return;
     }
 
@@ -58,7 +53,7 @@ class EmailSender {
             headers: {'Content-Type': 'application/json'},
             body: json.encode(payload),
           )
-          .timeout(Duration(seconds: 60));
+          .timeout(const Duration(seconds: 60));
 
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -80,7 +75,7 @@ class EmailSender {
       } else {
         print('Error sending email: $e');
       }
-      throw e;
+      rethrow;
     }
   }
 

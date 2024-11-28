@@ -21,8 +21,7 @@ class ColumnInfo {
 
 class SubprocessCreatorPage extends StatefulWidget {
   final String subprocessName;
-  const SubprocessCreatorPage({Key? key, required this.subprocessName})
-      : super(key: key);
+  const SubprocessCreatorPage({super.key, required this.subprocessName});
 
   @override
   _SubprocessCreatorPageState createState() => _SubprocessCreatorPageState();
@@ -73,7 +72,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
     print('Saved JSON: $tableJsonString');
 
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Template saved!')));
+        .showSnackBar(const SnackBar(content: Text('Template saved!')));
   }
 
   Future<void> _loadTableTemplate() async {
@@ -168,7 +167,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
 
   Widget _buildDataTable() {
     if (_columns.isEmpty) {
-      return Center(child: Text('No columns available.'));
+      return const Center(child: Text('No columns available.'));
     }
 
     return DataTable(
@@ -225,10 +224,10 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
       builder: (context) {
         int numRows = _numRows;
         return AlertDialog(
-          title: Text('Set Number of Rows'),
+          title: const Text('Set Number of Rows'),
           content: TextField(
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(hintText: 'Enter number of rows'),
+            decoration: const InputDecoration(hintText: 'Enter number of rows'),
             onChanged: (value) {
               numRows = int.tryParse(value) ?? _numRows;
             },
@@ -238,7 +237,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -248,7 +247,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                 });
                 Navigator.pop(context);
               },
-              child: Text('Set'),
+              child: const Text('Set'),
             ),
           ],
         );
@@ -272,7 +271,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              title: Row(
+              title: const Row(
                 children: [
                   Icon(Icons.add, color: Colors.blueAccent),
                   SizedBox(width: 8),
@@ -291,7 +290,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Enter column name',
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.text_fields),
@@ -300,10 +299,10 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                       newColumnName = value;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   DropdownButtonFormField<ColumnDataType>(
                     value: selectedDataType,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Select Data Type',
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.data_usage),
@@ -322,11 +321,11 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                       });
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   if (selectedDataType == ColumnDataType.integer)
                     TextField(
                       controller: unitController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Enter unit (optional)',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.straighten),
@@ -339,7 +338,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the dialog
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -363,7 +362,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                       Navigator.of(context).pop(); // Close the dialog
                     }
                   },
-                  child: Text('Add'),
+                  child: const Text('Add'),
                 ),
               ],
             );
@@ -379,10 +378,10 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
       builder: (context) {
         String columnNameToDelete = '';
         return AlertDialog(
-          title: Text('Delete Column'),
+          title: const Text('Delete Column'),
           content: DropdownButtonFormField<String>(
             value: columnNameToDelete.isNotEmpty ? columnNameToDelete : null,
-            hint: Text('Select column to delete'),
+            hint: const Text('Select column to delete'),
             items: _columns
                 .where((column) => column.name != 'Equipment')
                 .map((column) {
@@ -400,7 +399,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -418,7 +417,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                   Navigator.pop(context);
                 }
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -433,17 +432,17 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
         TextEditingController controller =
             TextEditingController(text: column.name);
         return AlertDialog(
-          title: Text('Rename Column'),
+          title: const Text('Rename Column'),
           content: TextField(
             controller: controller,
-            decoration: InputDecoration(hintText: 'Enter new column name'),
+            decoration: const InputDecoration(hintText: 'Enter new column name'),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -452,7 +451,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                 });
                 Navigator.pop(context);
               },
-              child: Text('Rename'),
+              child: const Text('Rename'),
             ),
           ],
         );
@@ -466,10 +465,10 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
       builder: (context) {
         String columnNameToMark = '';
         return AlertDialog(
-          title: Text('Mark Column as Fixed/User-Fillable'),
+          title: const Text('Mark Column as Fixed/User-Fillable'),
           content: DropdownButtonFormField<String>(
             value: columnNameToMark.isNotEmpty ? columnNameToMark : null,
-            hint: Text('Select column'),
+            hint: const Text('Select column'),
             items: _columns.map((column) {
               return DropdownMenuItem<String>(
                 value: column.name,
@@ -485,7 +484,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -500,7 +499,7 @@ class _SubprocessCreatorPageState extends State<SubprocessCreatorPage> {
                   Navigator.pop(context);
                 }
               },
-              child: Text('Toggle Fixed'),
+              child: const Text('Toggle Fixed'),
             ),
           ],
         );

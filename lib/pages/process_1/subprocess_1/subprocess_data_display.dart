@@ -1,8 +1,5 @@
 import 'package:collector/pages/process_1/subprocess_1/subprocess1Data.dart';
-import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:open_file/open_file.dart';
 //import 'package:your_package_name_here/process1_data.dart'; // Import your Process1eData class
 
 /*
@@ -68,10 +65,9 @@ class _SubProcessDataDisplayState extends State<SubProcessDataDisplay> {
 }
 */
 
-import 'package:flutter/material.dart';
 
 class SubProcessDataDisplay extends StatefulWidget {
-  const SubProcessDataDisplay({Key? key}) : super(key: key);
+  const SubProcessDataDisplay({super.key});
 
   @override
   _SubProcessDataDisplayState createState() => _SubProcessDataDisplayState();
@@ -105,7 +101,7 @@ class _SubProcessDataDisplayState extends State<SubProcessDataDisplay> {
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: [
-                  DataColumn(label: Text('Date')),
+                  const DataColumn(label: Text('Date')),
                   for (var category
                       in process1Data.process1DataList.first.categories)
                     DataColumn(label: Text('${category.name} Current')),
@@ -117,7 +113,7 @@ class _SubProcessDataDisplayState extends State<SubProcessDataDisplay> {
                   return DataRow(cells: [
                     DataCell(Text(entry.lastUpdate.toString())),
                     for (var category in entry.categories)
-                      DataCell(Text('${category.current.toString()}')),
+                      DataCell(Text(category.current.toString())),
                     // Optionally include remark cells here
                     // for (var category in entry.categories)
                     //   DataCell(Text(category.remark)),

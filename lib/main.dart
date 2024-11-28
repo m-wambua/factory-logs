@@ -8,9 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-import 'package:collector/pages/trends/trendspage.dart';
-import 'package:collector/pages/pages2/equipment/manuals/manuelspage.dart';
-import 'package:collector/pages/pages2/equipment/parameters/parameterspage.dart';
 import 'package:collector/pages/pages2/welcome_page.dart';
 
 void main() async {

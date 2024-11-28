@@ -1,8 +1,8 @@
-import 'dart:convert';
-import 'package:collector/pages/pages2/equipment/history/maintenance/preventiveMaintenance/maintenance_details.dart';
-import 'package:collector/pages/pages2/equipment/history/maintenance/preventiveMaintenance/maintenancehistory.dart';
+import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:collector/pages/pages2/equipment/history/maintenance/preventiveMaintenance/maintenance_details.dart';
+import 'package:path/path.dart' as path;
+import 'dart:convert';
 
 class MaintenanceEntry {
   String equipment;
@@ -51,6 +51,95 @@ class MaintenanceEntry {
       'taskState': taskState.index,
       'checklistItems': checklistItems.map((item) => item.toJson()).toList(),
     };
+  }
+
+  static Future<void> saveMaintenanceEntry(
+      List<MaintenanceEntry> maintenanceEntry, String equipmentName) async {
+    try {
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/preventiveMaintenance/preventivemaintenancestorage';
+
+      final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
+
+      final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
+      final equipmentDir = Directory(equipmentDirPath);
+
+      if (!await equipmentDir.exists()) {
+        print("Creating equipment folder at: $equipmentDirPath");
+
+        await equipmentDir.create(recursive: true);
+        if (await equipmentDir.exists()) {
+          print("Equipment folder created successfully");
+        } else {
+          print("Failed to create equipment folder");
+          return;
+        }
+      }
+
+      final filePath = path.join(
+          equipmentDirPath, '${sanitizedEquipmentName}_preventive.json');
+      final file = File(filePath);
+
+      final jsonList = maintenanceEntry.map((me) => me.toJson()).toList();
+
+      await file.writeAsString(json.encode(jsonList));
+      print('Successfully wrote maintenance entry to: $filePath');
+    } catch (e) {
+      print('Error saving maintenance entry: $e');
+      rethrow;
+    }
+  }
+
+  static Future<List<MaintenanceEntry>> loadMaintenanceEntry(
+      String equipmentName) async {
+    try {
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/preventiveMaintenance/preventivemaintenancestorage';
+
+      final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
+
+      final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
+      final filePath = path.join(
+          equipmentDirPath, '${sanitizedEquipmentName}_preventive.json');
+      final file = File(filePath);
+
+      if (await file.exists()) {
+        final contents = await file.readAsString();
+
+        final List<dynamic> jsonList = json.decode(contents);
+        final maintenanceEntry =
+            jsonList.map((me) => MaintenanceEntry.fromJson(me)).toList();
+        print("loaded ${maintenanceEntry.length} from file");
+        return maintenanceEntry;
+      } else {
+        print("No existing maintenance file found at: $filePath");
+        return [];
+      }
+    } catch (e) {
+      print("Error loading maintenance entry: $e");
+      rethrow;
+    }
+  }
+
+  static Future<void> deleteMaintenanceEntry(String equipmentName) async {
+    try {
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/preventiveMaintenance/preventivemaintenancestorage';
+      final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
+
+      final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
+      final equipmentDir = Directory(equipmentDirPath);
+
+      if (await equipmentDir.exists()) {
+        await equipmentDir.delete(recursive: true);
+        print("Successfully deleted equipment folder: $equipmentDirPath");
+      } else {
+        print("Equipment folder does not exist: $equipmentDirPath");
+      }
+    } catch (e) {
+      print("Error deleting maintenance entry: $e");
+      rethrow;
+    }
   }
 }
 

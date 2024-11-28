@@ -1,153 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:collector/pages/pages2/equipment/parameters/parameterdetails.dart';
 import 'package:collector/pages/pages2/equipment/parameters/parametersmodel.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
-import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-
-class AddParameterWidget extends StatefulWidget {
-  final void Function(
-          String header, String description, String? filePath, String fileName)
-      onSave;
-  const AddParameterWidget({Key? key, required this.onSave}) : super(key: key);
-  @override
-  _AddParameterWidgetState createState() => _AddParameterWidgetState();
-}
-
-class _AddParameterWidgetState extends State<AddParameterWidget> {
-  final _headerController = TextEditingController();
-  final _descriptionController = TextEditingController();
-
-  String? _filePath;
-  String? _fileName;
-  List<Map<String, String>> _parameters = [];
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Add Parameter'),
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _headerController,
-            decoration: InputDecoration(labelText: 'Header'),
-          ),
-          Row(
-            children: [
-              Expanded(
-                  child: TextField(
-                controller: _descriptionController,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(labelText: 'Decoration'),
-              )),
-              IconButton(
-                  onPressed: () async {
-                    // Handle Attachement action for PDF files
-                    FilePickerResult? result = await FilePicker.platform
-                        .pickFiles(
-                            type: FileType.custom, allowedExtensions: ['pdf']);
-                    if (result != null) {
-                      //File selected
-                      setState(() {
-                        _filePath = result.files.single.path!;
-                        _showRenameDialog(context);
-                      });
-                    }
-                  },
-                  icon: Icon(Icons.attach_file)),
-              IconButton(
-                  onPressed: () async {
-                    // Handle picture action for images
-                    final picker = ImagePicker();
-                    final XFile? image =
-                        await picker.pickImage(source: ImageSource.gallery);
-                    if (image != null) {
-                      // Image captured
-                      setState(() {
-                        _filePath = image.path;
-                        _showRenameDialog(context);
-                      });
-                    }
-                  },
-                  icon: Icon(Icons.image))
-            ],
-          )
-        ],
-      ),
-      actions: [
-        IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(Icons.close)),
-        TextButton(onPressed: _clearFields, child: Text('Clear All')),
-        ElevatedButton(onPressed: _saveParameter, child: Text('Save Parameter'))
-      ],
-    );
-  }
-
-  void _showRenameDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Rename File'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: InputDecoration(labelText: 'New File Name'),
-                  onChanged: (value) {
-                    //update file name when users types in the Text field
-                    _fileName = value;
-                  },
-                )
-              ],
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel')),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _saveParameter();
-                  },
-                  child: Text('Save'))
-            ],
-          );
-        });
-  }
-
-  void _clearFields() {
-    setState(() {
-      _headerController.clear();
-      _descriptionController.clear();
-      _fileName = null;
-      _filePath = null;
-    });
-  }
-
-  void _saveParameter() {
-    final header = _headerController.text;
-    final description = _descriptionController.text;
-    final fileName = _fileName ?? '';
-    widget.onSave(header, description, _filePath, fileName);
-    _clearFields();
-  }
-}
 
 class DynamicParametersPage extends StatefulWidget {
   final String processName;
@@ -164,29 +22,49 @@ class DynamicParametersPage extends StatefulWidget {
 }
 
 class _DynamicParametersPageState extends State<DynamicParametersPage> {
-  List<Map<String, String>> _parameters = [];
+  final List<Map<String, String>> _parameters = [];
   List<ParameterStorage> _parameterStorage = [];
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  bool _isDropdownOpen = false;
+  File? _selectedFile;
+  FileType? _selectedFileType;
+  bool _isLoading = true;
+  void _toggleDropdown() {
+    setState(() {
+      _isDropdownOpen = !_isDropdownOpen;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _loadParameters();
   }
 
-  @override
   Future<void> _loadParameters() async {
     try {
       final loadParameters =
           await ParameterStorage.loadParameterList(widget.equipmentName);
-      setState(() {
-        _parameterStorage = loadParameters;
-      });
+
+      // Only update state if the widget is still mounted
+      if (mounted) {
+        setState(() {
+          _parameterStorage = loadParameters;
+          _isLoading = false; // Set loading to false
+        });
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading spare parts: $e')));
+      // Only show snackbar if widget is mounted
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error loading spare parts: $e')));
+        setState(() {
+          _isLoading = false; // Set loading to false even on error
+        });
+      }
     }
   }
 
@@ -212,7 +90,7 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Confirm Deletion'),
+            title: const Text('Confirm Deletion'),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -220,12 +98,12 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text('Cancel')),
+                      child: const Text('Cancel')),
                   TextButton(
                     onPressed: () {
                       _deleteParameterList(index);
                     },
-                    child: Text('Delete'),
+                    child: const Text('Delete'),
                   )
                 ],
               ),
@@ -234,9 +112,8 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
         });
   }
 
+  @override
   Widget build(BuildContext context) {
-    _createApparatusFolder(widget.equipmentName);
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -255,40 +132,44 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
             onPressed: () {
               handleUpload(context);
             },
-            icon: Icon(Icons.upload),
+            icon: const Icon(Icons.upload),
           ),
-          IconButton(onPressed: _deleteAllParameters, icon: Icon(Icons.delete))
+          IconButton(onPressed: () {}, icon: const Icon(Icons.delete))
         ],
       ),
-      body: ListView.builder(
-          itemCount: _parameters.length,
-          itemBuilder: (context, index) {
-            final parameter = _parameters[index];
-            return GestureDetector(
-              onTap: () async {
-                // Check if file path ends with .pdf
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DetailsPage(
-                            header: parameter['header'] ?? '',
-                            description: parameter['description'] ?? '',
-                            filePath: parameter['copiedFilePath'] ?? '')));
-              },
-              child: Card(
-                  child: ListTile(
-                title: Text(parameter['header'] ?? '',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(parameter['description'] ?? ''),
-                trailing: _buildFileTypeStatus(parameter['file_path']),
-              )),
-            );
-          }),
+      body: Column(
+        children: [
+          Expanded(
+            child: _parameterStorage.isEmpty
+                ? const Center(
+                    child: Text('No Parameters added yet. Add yout First one!'),
+                  )
+                : ListView.builder(
+                    itemCount: _parameterStorage.length,
+                    itemBuilder: (context, index) {
+                      final parameter = _parameterStorage[index];
+                      return GestureDetector(
+                        onTap: () async {
+                          // Check if file path ends with .pdf
+                        },
+                        onLongPress: () => _deleteParameterList(index),
+                        child: Card(
+                            child: ListTile(
+                          title: Text(parameter.name,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text(parameter.description),
+                        )),
+                      );
+                    }),
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _createNewParameters(widget.equipmentName);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -316,7 +197,7 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
         context: context,
         builder: (context) => AlertDialog(
               scrollable: true,
-              title: Text('Create new parameters'),
+              title: const Text('Create new parameters'),
               content: Form(
                 key: _formKey,
                 child: Column(
@@ -326,31 +207,49 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
                         Expanded(
                             child: TextFormField(
                           controller: _nameController,
-                          decoration: InputDecoration(labelText: 'Name'),
+                          decoration: const InputDecoration(labelText: 'Name'),
                           validator: (value) =>
                               value!.isEmpty ? 'Please enter a name' : null,
                         )),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Expanded(
                             child: TextFormField(
                           controller: _descriptionController,
-                          decoration: InputDecoration(labelText: 'Description'),
+                          decoration:
+                              const InputDecoration(labelText: 'Description'),
                           validator: (value) => value!.isEmpty
                               ? 'Please enter a description'
                               : null,
                         )),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     IconButton(
                         onPressed: () {
-                          handleUpload(context);
+                          _toggleDropdown();
+                          if (_isDropdownOpen) {
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                    onPressed: () => handleUpload(context),
+                                    icon: const Icon(Icons.picture_as_pdf)),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.image),
+                                  onPressed: () => handleUpload(context),
+                                )
+                              ],
+                            );
+                          }
                         },
-                        icon: Icon(Icons.attach_file))
+                        icon: const Icon(Icons.attach_file))
                   ],
                 ),
               ),
@@ -362,18 +261,18 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
                         onPressed: () {
                           _addParameters();
                         },
-                        child: Text(
+                        child: const Text(
                           'Save Parameter',
                           style: TextStyle(color: Colors.green),
                         )),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text(
+                      child: const Text(
                         'Cancel',
                         style: TextStyle(color: Colors.red),
                       ),
@@ -382,123 +281,6 @@ class _DynamicParametersPageState extends State<DynamicParametersPage> {
                 )
               ],
             ));
-  }
-
-  void _showAddParameterDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AddParameterWidget(
-                onSave: (header, description, filePath, fileName) {
-              _addParameter(header, description, filePath, fileName);
-            }));
-  }
-
-  void _createApparatusFolder(String equipmentName) async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    String folderPath = 'services/parameters/files_and_folders/$equipmentName';
-    Directory parameterDirectory = Directory(folderPath);
-    bool exists = parameterDirectory.existsSync();
-
-    if (!exists) {
-      parameterDirectory.createSync(recursive: true);
-
-      // Create subdirectories for files and images
-      Directory filesDirectory = Directory('${parameterDirectory.path}/files');
-      Directory imagesDirectory =
-          Directory('${parameterDirectory.path}/images');
-      filesDirectory.createSync();
-      imagesDirectory.createSync();
-    }
-  }
-
-  void _deleteAllParameters() {
-    setState(() {
-      _parameters.clear();
-    });
-    _saveParameters();
-    print('Deleting all parameters....');
-  }
-
-  Future<String?> _addParameter(String header, String description,
-      String? filePath, String? _fileName) async {
-    // Save the parameters to the Json file
-    String? copiedFilePath;
-
-    await _saveParameters();
-
-    print('Adding a parameter');
-
-    if (filePath != null) {
-      try {
-        // Get the directory where the Json file is stored
-        String folderPath =
-            'servives/parameters/files_and_folders/${widget.equipmentName}';
-        Directory targetDir = Directory(folderPath);
-
-        // Determine the subdirectory based on the file type
-        String subDir = filePath.endsWith('.pdf') ? 'files' : 'images';
-
-        Directory subdir = Directory('${targetDir.path}/$subDir');
-
-        // Create the subdirectorry if it doesn't exist
-
-        if (!await subdir.exists()) {
-          subdir.createSync(recursive: true);
-        }
-
-        // Get the filename from the file path
-
-        // Copy the file to the subdirectory
-
-        String fileName = filePath.split('/').last;
-
-        if (_fileName != null) {
-          //if the user provided a new file name, concatenate it with the original name
-          fileName = fileName! + '_' + fileName;
-        } else {
-          // if  use chose to retain the nam, concatenate the header with the original filename
-          if (header.isNotEmpty) {
-            fileName = header! + '_' + fileName;
-          }
-        }
-        File originalFile = File(filePath);
-        File copiedFile = await originalFile.copy('${subdir.path}/$fileName');
-        copiedFilePath = copiedFile.path;
-        filePath = copiedFilePath;
-        print('File copied to:${copiedFile.path}');
-        print('File path is now${filePath}');
-
-        Map<String, String> parameter = {
-          'header': header,
-          'description': description,
-          'file_path': copiedFilePath ?? '',
-          'copiedFilePath': copiedFilePath ?? ''
-        };
-
-        setState(() {
-          _parameters.add(
-              // Save the file path in the JSON file
-              parameter);
-        });
-        await _saveParameters();
-      } catch (e) {
-        print('Error copying file $e');
-      }
-    }
-    return copiedFilePath;
-  }
-
-  // Function to build file types status widget
-  Widget _buildFileTypeStatus(String? filePath) {
-    if (filePath != null) {
-      return Icon(
-        filePath.endsWith('.pdf') ? Icons.picture_as_pdf : Icons.image,
-        color: Colors.blue,
-      );
-    } else {
-      return SizedBox();
-    }
   }
 
   Future<File?> pickPDFFile() async {
