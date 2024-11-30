@@ -72,7 +72,10 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
                   ],
                   rows: _maintenanceData.map((data) {
                     return DataRow(cells: [
-                      DataCell(Text(data['task'])),
+                      DataCell(TextButton(
+                        child: Text(data['task']),
+                        onPressed: () {},
+                      )),
                       DataCell(Text(data['status'])),
                       DataCell(Text(data['lastUpdate'])),
                       DataCell(Text(data['duration'])),
@@ -104,41 +107,277 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
   }
 
   void _showUpdateDialog(Map<String, dynamic> data) {
+    List<TextEditingController> stepsController = [TextEditingController()];
+    List<TextEditingController> toolsController = [TextEditingController()];
+    TextEditingController situationBeforeController = TextEditingController();
+    TextEditingController situationAfterController = TextEditingController();
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Update Maintenance Task'),
-          content: Text('Implement update logic for: ${data['task']}'),
-          actions: [
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Update Maintenance Task'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      maxLines: 5,
+                      maxLength: 200,
+                      controller: situationBeforeController,
+                      decoration: InputDecoration(
+                          labelText: "Situation Before/Reason",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                            20,
+                          )),
+                          filled: true,
+                          fillColor: Colors.grey[200]),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Last Update"),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    for (int i = 0; i < stepsController.length; i++)
+                      TextFormField(
+                        decoration:
+                            InputDecoration(labelText: "Steps ${i + 1}"),
+                      ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (stepsController.length > 1) {
+                                  stepsController.removeLast();
+                                }
+                              });
+                            },
+                            icon: Icon(Icons.remove)),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                stepsController.add(TextEditingController());
+                              });
+                            },
+                            icon: Icon(Icons.add)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    for (int j = 0; j < toolsController.length; j++)
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Tools Used"),
+                      ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (toolsController.length > 1) {
+                                  toolsController.removeLast();
+                                }
+                              });
+                            },
+                            icon: Icon(Icons.remove)),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                toolsController.add(TextEditingController());
+                              });
+                            },
+                            icon: Icon(Icons.add)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: "Status"),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      maxLines: 5,
+                      maxLength: 200,
+                      decoration: InputDecoration(
+                          labelText: "Situation After",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          filled: true,
+                          fillColor: Colors.grey[200]),
+                    )
+                  ],
+                ),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Save',
+                          style: TextStyle(color: Colors.green),
+                        )),
+                    TextButton(
+                      child: Text(
+                        'Close',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                )
+              ],
+            );
+          });
+        });
   }
 
   void _addNewMaintenanceTask() {
+    bool addCheckList = false;
+    List<TextEditingController> checklistitemsController = [
+      TextEditingController()
+    ];
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add New Maintenance Task'),
-          content: Text('Implement add new task logic here'),
-          actions: [
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Add New Maintenance Task'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // Add this to control column size
+                children: [
+                  TextFormField(
+                      decoration: InputDecoration(
+                        labelText: "Equipment/Maintenance Task",
+                        border: OutlineInputBorder(), // Add border
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter equipment/maintenance task';
+                        }
+                      }),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: "Responsible",
+                      border: OutlineInputBorder(), // Add border
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        "Add Checklist?",
+                      ),
+                      Checkbox(
+                          value: addCheckList,
+                          onChanged: (value) {
+                            setState(() {
+                              addCheckList = value ?? false;
+                            });
+                          }),
+                    ],
+                  ),
+                  if (addCheckList == true) ...[
+                    // Wrap the dynamic checklist items in a SizedBox or Flexible
+                    SizedBox(
+                      width: double.infinity, // Provide width constraint
+                      child: Column(
+                        children: List.generate(
+                          checklistitemsController.length, 
+                          (i) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: TextFormField(
+                              controller: checklistitemsController[i],
+                              decoration: InputDecoration(
+                                labelText: "Add Checklist Item",
+                                border: OutlineInputBorder(), // Add border
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (checklistitemsController.length > 1) {
+                                  checklistitemsController.removeLast();
+                                }
+                              });
+                            },
+                            icon: Icon(Icons.remove)),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                checklistitemsController
+                                    .add(TextEditingController());
+                              });
+                            },
+                            icon: Icon(Icons.add)),
+                      ],
+                    ),
+                  ]
+                ],
+              ),
             ),
-          ],
-        );
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'Save',
+                        style: TextStyle(color: Colors.green),
+                      )),
+                  TextButton(
+                    child: Text(
+                      'Close',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              )
+            ],
+          );
+        });
       },
     );
   }

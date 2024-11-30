@@ -4,3 +4,4 @@
 4.Writing a serve function that converts to pdf and then saves it on our backend(26/11/2024)
 5.Ensure the data for all the equipmentmenu is saved well
 6.redoing the maintenance history both for failure and preventive but i think they should be merged for simplicity
+7.Remove memory leaks/ audit of the whole code
