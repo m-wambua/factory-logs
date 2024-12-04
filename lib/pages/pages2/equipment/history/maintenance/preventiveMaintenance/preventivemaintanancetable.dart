@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as path;
 
 class MaintenanceTask {
   String task;
@@ -20,14 +24,53 @@ class MaintenanceTask {
     DateTime? lastUpdate,
     Duration? elapsedTime,
     this.responsible = '',
-    this.checklist = const [],
+    List<ChecklistItem>? checklist,
     this.checklistStatus = 'not uploaded',
     this.situationBefore = '',
-    this.stepsTaken = const [],
-    this.toolsUsed = const [],
+    List<String>? stepsTaken,
+    List<String>? toolsUsed,
     this.situationAfter = '',
   })  : lastUpdate = lastUpdate ?? DateTime.now(),
-        elapsedTime = elapsedTime ?? Duration.zero;
+        elapsedTime = elapsedTime ?? Duration.zero,
+        checklist = checklist ?? [],
+        stepsTaken = stepsTaken ?? [],
+        toolsUsed = toolsUsed ?? [];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'task': task,
+      'status': status,
+      'lastUpdate': lastUpdate.toIso8601String(),
+      'elapsedTime': elapsedTime.inSeconds.toString(),
+      'responsible': responsible,
+      'checklist': checklist.map((e) => e.toJson()).toList(),
+      'checklistStatus': checklistStatus,
+      'situationBefore': situationBefore,
+      'stepsTaken': stepsTaken,
+      'toolsUsed': toolsUsed,
+      'situationAfter': situationAfter,
+    };
+  }
+
+  factory MaintenanceTask.fromJson(Map<String, dynamic> json) {
+    return MaintenanceTask(
+      task: json['task'],
+      status: json['status'] ?? 'incomplete',
+      lastUpdate: DateTime.parse(json['lastUpdate']),
+      elapsedTime: Duration(seconds: int.parse(json['elapsedTime'] ?? 0)),
+      responsible: json['responsible'] ?? '',
+      checklist: (json['checklist'] as List?)
+              ?.map((e) => ChecklistItem.fromJson(e))
+              .toList() ??
+          [],
+      checklistStatus: json['checklistStatus'] ?? 'not uploaded',
+      situationBefore: json['situationBefore'] ?? '',
+      stepsTaken: List<String>.from(json['stepsTaken'] ?? []),
+      toolsUsed: List<String>.from(json['toolsUsed'] ?? []),
+      situationAfter: json['situationAfter'] ?? '',
+    );
+  }
+
   void updateStatus(String newStatus) {
     status = newStatus;
     lastUpdate = DateTime.now();
@@ -46,6 +89,89 @@ class MaintenanceTask {
       checklistStatus = 'incomplete';
     }
   }
+
+  static Future<void> saveMaintenanceList(
+      List<MaintenanceTask> maintenanceTasks, String equipmentName) async {
+    try {
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/preventiveMaintenance/preventivemaintenancestorage';
+      final santizedEquipmentName = equipmentName.replaceAll('/', '_');
+
+      final equipmentDirPath = path.join(baseDir, santizedEquipmentName);
+      final equipmentDir = Directory(equipmentDirPath);
+
+      if (!await equipmentDir.exists()) {
+        print("Creating equipment folder at: $equipmentDirPath");
+        await equipmentDir.create(recursive: true);
+        if (await equipmentDir.exists()) {
+          print("Created equipment folder: $equipmentDirPath");
+        } else {
+          print("FAiled to create equipment folder.");
+          return;
+        }
+      }
+
+      final filePath = path.join(equipmentDirPath,
+          '${santizedEquipmentName}_preventivemaintenance.json');
+      final file = File(filePath);
+      final jsonList = maintenanceTasks.map((mt) => mt.toJson()).toList();
+      await file.writeAsString(json.encode(jsonList));
+      print(
+          "Successfully wroet ${maintenanceTasks.length} maintenance tasks to file: $filePath");
+    } catch (e) {
+      print("Error saving maintenance task: $e");
+      rethrow;
+    }
+  }
+
+  static Future<List<MaintenanceTask>> loadMaintenanceList(
+      String equipmentName) async {
+    try {
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/preventiveMaintenance/preventivemaintenancestorage';
+      final santizedEquipmentName = equipmentName.replaceAll('/', '_');
+      final equipmentDirPath = path.join(baseDir, santizedEquipmentName);
+
+      final filePath = path.join(equipmentDirPath,
+          '${santizedEquipmentName}_preventivemaintenance.json');
+
+      final file = File(filePath);
+      if (await file.exists()) {
+        final contents = await file.readAsString();
+        final List<dynamic> jsonList = json.decode(contents);
+        final maintenanceList =
+            jsonList.map((json) => MaintenanceTask.fromJson(json)).toList();
+        print("Loaded ${maintenanceList.length} mainteance list from file");
+        return maintenanceList;
+      } else {
+        print("No maintenance list found for equipment: $filePath");
+        return [];
+      }
+    } catch (e) {
+      print("Error loading maintenance list: $e");
+      rethrow;
+    }
+  }
+
+  static Future<void> deleteMaintenanceList(String equipmentName) async {
+    try {
+      const baseDir =
+          '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/pages2/equipment/history/maintenance/preventiveMaintenance/preventivemaintenancestorage';
+      final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
+
+      final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
+      final equipmentDir = Directory(equipmentDirPath);
+      if (await equipmentDir.exists()) {
+        await equipmentDir.delete(recursive: true);
+        print("Successfully deleted equipment folder: $equipmentDirPath");
+      } else {
+        print("Equipment folder does not exist: $equipmentDirPath");
+      }
+    } catch (e) {
+      print("Error deleting maintenance list: $e");
+      rethrow;
+    }
+  }
 }
 
 class ChecklistItem {
@@ -58,12 +184,24 @@ class ChecklistItem {
     this.isCompleted = false,
     this.reason,
   });
+
+  Map<String, dynamic> toJson() {
+    return {'item': item, 'isCompleted': isCompleted, 'reason': reason};
+  }
+
+  factory ChecklistItem.fromJson(Map<String, dynamic> json) {
+    return ChecklistItem(
+        item: json['item'],
+        isCompleted: json['isCompleted'] ?? false,
+        reason: json['reason']);
+  }
 }
 
 class MaintenanceTaskDetailsPage extends StatelessWidget {
   final MaintenanceTask task;
   const MaintenanceTaskDetailsPage({Key? key, required this.task})
       : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,7 +313,9 @@ class MaintenanceTaskDetailsPage extends StatelessWidget {
 }
 
 class MaintenanceTablePage extends StatefulWidget {
-  const MaintenanceTablePage({Key? key}) : super(key: key);
+  final String equipmentName;
+  const MaintenanceTablePage({Key? key, required this.equipmentName})
+      : super(key: key);
 
   @override
   _MaintenanceTablePageState createState() => _MaintenanceTablePageState();
@@ -184,6 +324,34 @@ class MaintenanceTablePage extends StatefulWidget {
 class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
   // Sample data - you'll replace this with your actual data source
   List<MaintenanceTask> _maintenanceData = [];
+  @override
+  void initState() {
+    super.initState();
+    _loadMaintenanceList();
+  }
+
+  Future<void> _loadMaintenanceList() async {
+    try {
+      final loadMaintenanceList =
+          await MaintenanceTask.loadMaintenanceList(widget.equipmentName);
+      setState(() {
+        _maintenanceData = loadMaintenanceList;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading maintenance task: $e')));
+    }
+  }
+
+  Future<void> _saveMaintenanceList() async {
+    try {
+      await MaintenanceTask.saveMaintenanceList(
+          _maintenanceData, widget.equipmentName);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving maintenance task: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -471,7 +639,11 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
                               .toList();
 
                           task.updateChecklistStatus();
-                          setState(() {});
+                          setState(() {
+                            _saveMaintenanceList().then((_) {
+                              _loadMaintenanceList();
+                            });
+                          });
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -620,6 +792,12 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
                             task: taskController.text,
                             responsible: responsibleController.text,
                             checklist: checklist);
+                        setState(() {
+                          _maintenanceData.add(newTask);
+                          _saveMaintenanceList().then((value) {
+                            _loadMaintenanceList();
+                          });
+                        });
                         Navigator.of(context).pop();
                       },
                       child: Text(
