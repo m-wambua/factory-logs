@@ -78,7 +78,8 @@ class _DynamicHistoryPageState extends State<DynamicHistoryPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MaintenanceTablePage(equipmentName: widget.equipmentName,)));
+                            builder: (context) => MaintenanceTablePage(equipmentName: widget.equipmentName,
+                            subprocessName:widget.subprocessName, processName: widget.processName)));
                   },
                   child: Text("Preventive Maintenance (2)"))
             ],

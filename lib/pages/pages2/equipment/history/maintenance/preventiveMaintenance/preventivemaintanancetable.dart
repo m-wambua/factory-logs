@@ -314,7 +314,9 @@ class MaintenanceTaskDetailsPage extends StatelessWidget {
 
 class MaintenanceTablePage extends StatefulWidget {
   final String equipmentName;
-  const MaintenanceTablePage({Key? key, required this.equipmentName})
+  final String processName;
+  final String subprocessName;
+  const MaintenanceTablePage({Key? key, required this.equipmentName, required this.processName,required this.subprocessName})
       : super(key: key);
 
   @override
@@ -361,6 +363,7 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
         centerTitle: true,
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
             child: SingleChildScrollView(
@@ -368,6 +371,7 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
+                  border: TableBorder.all(),
                   columnSpacing: 20,
                   columns: [
                     DataColumn(

@@ -49,7 +49,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const SignUpPage()));
               },
-              child: const Text('Don\' have an account? Sign up'))
+              child: const Text('Don\'t have an account? Sign up'))
         ],
       )),
     );
