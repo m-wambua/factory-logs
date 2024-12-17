@@ -417,7 +417,7 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
         builder: (context) {
           return AlertDialog(
             title: const Text('Equipment/ Apparatus Options'),
-            content: Text('You Clickec on ${_tableData[index][0]}'),
+            content: Text('You Clicked on ${_tableData[index][0]}'),
             actions: [
               TextButton(
                   onPressed: () {
@@ -425,8 +425,8 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => EquipmentMenu(
-                              processName: widget.processName,
-                              subprocessName: widget.subprocessName,
+                                processName: widget.processName,
+                                subprocessName: widget.subprocessName,
                                 equipmentName: _tableData[index][0])));
                   },
                   child:

@@ -61,10 +61,12 @@ class SparePart {
     );
   }
 
-  static Future<void> saveSparePartsList(List<SparePart> spareParts, String equipmentName) async {
+  static Future<void> saveSparePartsList(
+      List<SparePart> spareParts, String equipmentName) async {
     try {
       // Define the base directory
-      const baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
+      const baseDir =
+          'lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
 
       // Sanitize the equipmentName to replace slashes with a safe character (e.g., underscore)
       final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
@@ -86,30 +88,35 @@ class SparePart {
       }
 
       // Define the file path for saving spare parts list
-      final filePath = path.join(equipmentDirPath, '${sanitizedEquipmentName}_spares.json');
+      final filePath =
+          path.join(equipmentDirPath, '${sanitizedEquipmentName}_spares.json');
       final file = File(filePath);
 
       // Convert the spare parts list to JSON and save to the file
       final jsonList = spareParts.map((sp) => sp.toJson()).toList();
       await file.writeAsString(json.encode(jsonList));
-      print("Successfully wrote ${spareParts.length} spare parts to file: $filePath");
+      print(
+          "Successfully wrote ${spareParts.length} spare parts to file: $filePath");
     } catch (e) {
       print("Error saving spare parts: $e");
       rethrow; // Re-throw the error for further handling if necessary
     }
   }
 
-  static Future<List<SparePart>> loadSparePartsList(String equipmentName) async {
+  static Future<List<SparePart>> loadSparePartsList(
+      String equipmentName) async {
     try {
       // Define the base directory
-      const baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
+      const baseDir =
+          'lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
 
       // Sanitize the equipmentName to replace slashes with a safe character (e.g., underscore)
       final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');
 
       // Create the full file path to load the spare parts
       final equipmentDirPath = path.join(baseDir, sanitizedEquipmentName);
-      final filePath = path.join(equipmentDirPath, '${sanitizedEquipmentName}_spares.json');
+      final filePath =
+          path.join(equipmentDirPath, '${sanitizedEquipmentName}_spares.json');
       final file = File(filePath);
 
       // Check if the file exists
@@ -117,7 +124,8 @@ class SparePart {
         // Read the file contents and convert to list of SparePart objects
         final contents = await file.readAsString();
         final List<dynamic> jsonList = json.decode(contents);
-        final spareParts = jsonList.map((json) => SparePart.fromJson(json)).toList();
+        final spareParts =
+            jsonList.map((json) => SparePart.fromJson(json)).toList();
         print("Loaded ${spareParts.length} spare parts from file");
         return spareParts;
       } else {
@@ -134,7 +142,8 @@ class SparePart {
   static Future<void> deleteSparePartsEntry(String equipmentName) async {
     try {
       // Define the base directory
-      const baseDir = '/home/wambua/mike/Python/FactoryLogs/collector/lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
+      const baseDir =
+          'lib/pages/welcomePage/homepage/collapsiblesidebar/dynamicpage/equipment/spares/sparesstorage';
 
       // Sanitize the equipmentName to replace slashes with a safe character (e.g., underscore)
       final sanitizedEquipmentName = equipmentName.replaceAll('/', '_');

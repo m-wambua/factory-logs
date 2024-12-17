@@ -316,7 +316,11 @@ class MaintenanceTablePage extends StatefulWidget {
   final String equipmentName;
   final String processName;
   final String subprocessName;
-  const MaintenanceTablePage({Key? key, required this.equipmentName, required this.processName,required this.subprocessName})
+  const MaintenanceTablePage(
+      {Key? key,
+      required this.equipmentName,
+      required this.processName,
+      required this.subprocessName})
       : super(key: key);
 
   @override
@@ -363,73 +367,10 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
         centerTitle: true,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  border: TableBorder.all(),
-                  columnSpacing: 20,
-                  columns: [
-                    DataColumn(
-                        label: Text('Equipment\nMaintenance Task',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                      label: Text(
-                        'Status',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    DataColumn(
-                        label: Text('Last\nUpdate',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Duration\nof Task',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Responsible',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Task\nChecklist',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Actions',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                  ],
-                  rows: _maintenanceData.map((task) {
-                    return DataRow(cells: [
-                      DataCell(TextButton(
-                        child: Text(task.task),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      MaintenanceTaskDetailsPage(task: task)));
-                        },
-                      )),
-                      DataCell(Text(task.status)),
-                      DataCell(Text(DateFormat('yyyy-MM-dd HH:mm')
-                          .format(task.lastUpdate))),
-                      DataCell(Text(
-                          '${task.elapsedTime.inHours} hrs ${task.elapsedTime.inMinutes % 60} mins}')),
-                      DataCell(Text(task.responsible)),
-                      DataCell(Text(task.checklistStatus)),
-                      DataCell(IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          // TODO: Implement update logic
-                          _showUpdateDialog(task);
-                        },
-                      )),
-                    ]);
-                  }).toList(),
-                ),
-              ),
-            ),
+          _buildMaintenanceDataTable(),
+          SizedBox(
+            height: 30,
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -669,6 +610,226 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
             );
           });
         });
+  }
+
+  Widget _buildColumnsLabelRow() {
+    return Container(
+      color: Colors.grey[200],
+      child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                  child: Container(
+                padding: const EdgeInsets.all(8.0),
+                alignment: Alignment.center,
+                child: Text('Equipment \n Maintenance Task '),
+              )),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  alignment: Alignment.center,
+                  child: Text('Status'),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  alignment: Alignment.center,
+                  child: Text('Last Updated'),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  alignment: Alignment.center,
+                  child: Text('Duration of Task'),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  alignment: Alignment.center,
+                  child: Text('Responsible'),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  alignment: Alignment.center,
+                  child: Text('Task CheckList'),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  alignment: Alignment.center,
+                  child: Text('Actions'),
+                ),
+              )
+            ],
+          )),
+    );
+  }
+
+  Widget _buildMaintenanceDataTable() {
+    return Table(
+      border: TableBorder.all(),
+      columnWidths: const {
+        0: FlexColumnWidth(2),
+        1: FlexColumnWidth(1),
+        2: FlexColumnWidth(2),
+        3: FlexColumnWidth(2),
+        4: FlexColumnWidth(2),
+        5: FlexColumnWidth(2),
+        6: FlexColumnWidth(1),
+      },
+      children: [
+        // Header row
+        TableRow(
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            border: Border(
+              bottom: BorderSide(
+                  color: Colors.grey), // Horizontal line under header
+            ),
+          ),
+          children: _buildTableHeaders([
+            'Equipment \n Maintenance Task',
+            'Status',
+            'Last Updated',
+            'Elapsed Time',
+            'Responsible',
+            'Checklist Status',
+            'Actions',
+          ]),
+        ),
+
+        // Rows from data
+        for (var task in _maintenanceData)
+          TableRow(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                    color: Colors.grey), // Horizontal line above each row
+              ),
+            ),
+            children: [
+              _buildTableCell(
+                child: TextButton(
+                  child: Text(
+                    task.task,
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            MaintenanceTaskDetailsPage(task: task),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              _buildTableCell(
+                child: Text(
+                  task.status,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              _buildTableCell(
+                child: Text(
+                  DateFormat('yyyy-MM-dd HH:mm').format(task.lastUpdate),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              _buildTableCell(
+                child: Text(
+                  '${task.elapsedTime.inHours} hrs ${task.elapsedTime.inMinutes % 60} mins',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              _buildTableCell(
+                child: Text(
+                  task.responsible,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              _buildTableCell(
+                child: Text(
+                  task.checklistStatus,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              _buildTableCell(
+                child: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    _showUpdateDialog(task);
+                  },
+                ),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  /// Reusable TableCell builder
+  Widget _buildTableCell({required Widget child}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(child: child),
+    );
+  }
+
+  /// Builds header cells for the Table widget
+  List<Widget> _buildTableHeaders(List<String> headers) {
+    return headers.map((header) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: Text(
+            header,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  Widget _buildColumnsLabelRows2() {
+    List<String> columnLabels = [
+      'Equipment \n Maintenance Task',
+      'Status',
+      'Last Updated',
+      'Duration of Task',
+      'Responsible',
+      'Task CheckList',
+      'Actions'
+    ];
+    return Container(
+      color: Colors.grey[200],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: columnLabels.map((label) {
+            return Expanded(
+                child: Container(
+              padding: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              child: Text(
+                label,
+                style: TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ));
+          }).toList(),
+        ),
+      ),
+    );
   }
 
   void _addNewMaintenanceTask() {

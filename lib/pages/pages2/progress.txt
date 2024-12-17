@@ -8,4 +8,4 @@
 8.Add the benefit of having multiple ways of displaying the data and a filter for how wide the data to be extracted from.
 9. change the button settings for daily delta and add graphs as well
 10. Embark on the transferring data to the back end databases
-
+11. There needs to be  a place for the media sharing in the spares models
