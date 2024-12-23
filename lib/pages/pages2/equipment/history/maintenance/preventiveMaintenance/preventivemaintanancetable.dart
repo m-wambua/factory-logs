@@ -717,9 +717,16 @@ class _MaintenanceTablePageState extends State<MaintenanceTablePage> {
             children: [
               _buildTableCell(
                 child: TextButton(
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.grey[300],
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30))),
                   child: Text(
                     task.task,
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black),
                   ),
                   onPressed: () {
                     Navigator.push(

@@ -1,7 +1,9 @@
 import 'package:collector/pages/pages2/emaiandstorage/emailsender.dart';
 import 'package:collector/pages/pages2/equipment/spares/spartpartsmodel.dart';
 import 'package:collector/widgets/appassets.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:pdf/widgets.dart' as pw;
@@ -381,6 +383,24 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                               ListTile(
                                   title: Text(
                                       'Condition: ${sparePart.condition}')),
+                              ListTile(
+                                title: Text('Lead Time: ${sparePart.leadTime}'),
+                              ),
+                              ListTile(
+                                title: Text(
+                                    'Supplier Info: ${sparePart.supplierInfo}'),
+                              ),
+                              ListTile(
+                                title: Text(
+                                    'Criticality: ${sparePart.criticality}'),
+                              ),
+                              ListTile(
+                                title: Text('Warranty: ${sparePart.warranty}'),
+                              ),
+                              ListTile(
+                                title:
+                                    Text('Usage Rate: ${sparePart.usageRate}'),
+                              ),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -428,7 +448,8 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                         Expanded(
                           child: TextFormField(
                             controller: _nameController,
-                            decoration: const InputDecoration(labelText: 'Name'),
+                            decoration:
+                                const InputDecoration(labelText: 'Name'),
                             validator: (value) =>
                                 value!.isEmpty ? 'Please enter a name' : null,
                           ),
@@ -439,8 +460,31 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                         Expanded(
                           child: TextFormField(
                             controller: _partNumberController,
-                            decoration:
-                                const InputDecoration(labelText: 'Part Number'),
+                            decoration: InputDecoration(
+                                labelText: 'Part Number',
+                                suffixIcon: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          _pickImage();
+                                          print('Gallery Icon clicked');
+                                        },
+                                        icon: Icon(
+                                          Icons.image,
+                                          color: Colors.blue,
+                                        )),
+                                    IconButton(
+                                        onPressed: () {
+                                          _pickFile();
+                                          print('File Icon clicked');
+                                        },
+                                        icon: Icon(
+                                          Icons.attach_file,
+                                          color: Colors.blue,
+                                        ))
+                                  ],
+                                )),
                             validator: (value) => value!.isEmpty
                                 ? 'Please enter a part number'
                                 : null,
@@ -450,15 +494,16 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                     ),
                     TextFormField(
                       controller: _descriptionController,
-                      decoration: const InputDecoration(labelText: 'Description'),
+                      decoration:
+                          const InputDecoration(labelText: 'Description'),
                     ),
                     Row(
                       children: [
                         Expanded(
                           child: TextFormField(
                             controller: _minStockController,
-                            decoration:
-                                const InputDecoration(labelText: 'Minimum Stock'),
+                            decoration: const InputDecoration(
+                                labelText: 'Minimum Stock'),
                             keyboardType: TextInputType.number,
                           ),
                         ),
@@ -468,8 +513,8 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                         Expanded(
                           child: TextFormField(
                             controller: _maxStockController,
-                            decoration:
-                                const InputDecoration(labelText: 'Maximum Stock'),
+                            decoration: const InputDecoration(
+                                labelText: 'Maximum Stock'),
                             keyboardType: TextInputType.number,
                           ),
                         )
@@ -481,25 +526,97 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                     ),
                     TextFormField(
                       controller: _supplierInfoController,
-                      decoration:
-                          const InputDecoration(labelText: 'Supplier Information'),
+                      decoration: InputDecoration(
+                          labelText: 'Supplier Information',
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    _pickImage();
+                                    print('Gallery Icon clicked');
+                                  },
+                                  icon: Icon(
+                                    Icons.image,
+                                    color: Colors.blue,
+                                  )),
+                              IconButton(
+                                  onPressed: () {
+                                    _pickFile();
+                                    print('File Icon clicked');
+                                  },
+                                  icon: Icon(
+                                    Icons.attach_file,
+                                    color: Colors.blue,
+                                  ))
+                            ],
+                          )),
                     ),
                     TextFormField(
                       controller: _criticalityController,
-                      decoration: const InputDecoration(labelText: 'Criticality'),
+                      decoration:
+                          const InputDecoration(labelText: 'Criticality'),
                     ),
                     TextFormField(
                       controller: _conditionController,
-                      decoration: const InputDecoration(labelText: 'Condition'),
+                      decoration: InputDecoration(
+                          labelText: 'Condition',
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    _pickImage();
+                                    print('Gallery Icon clicked');
+                                  },
+                                  icon: Icon(
+                                    Icons.image,
+                                    color: Colors.blue,
+                                  )),
+                              IconButton(
+                                  onPressed: () {
+                                    _pickFile();
+                                    print('File Icon clicked');
+                                  },
+                                  icon: Icon(
+                                    Icons.attach_file,
+                                    color: Colors.blue,
+                                  ))
+                            ],
+                          )),
                     ),
                     TextFormField(
                       controller: _warrantyController,
-                      decoration:
-                          const InputDecoration(labelText: 'Warranty Information'),
+                      decoration: InputDecoration(
+                          labelText: 'Warranty Information',
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    _pickImage();
+                                    print('Gallery Icon clicked');
+                                  },
+                                  icon: Icon(
+                                    Icons.image,
+                                    color: Colors.blue,
+                                  )),
+                              IconButton(
+                                  onPressed: () {
+                                    _pickFile();
+                                    print('File Icon clicked');
+                                  },
+                                  icon: Icon(
+                                    Icons.attach_file,
+                                    color: Colors.blue,
+                                  ))
+                            ],
+                          )),
                     ),
                     TextFormField(
                       controller: _usageRateController,
-                      decoration: const InputDecoration(labelText: 'Usage Rate'),
+                      decoration:
+                          const InputDecoration(labelText: 'Usage Rate'),
                     ),
                     const SizedBox(
                       height: 10,
@@ -571,8 +688,8 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
       } else {
         print('Error uploading file');
         if (context.mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('Error uploading file')));
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Error uploading file')));
         }
       }
     } catch (e, stackTrace) {
@@ -593,5 +710,24 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Error: $e')));
     }
+  }
+
+  static Future<File?> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      return null;
+    }
+    return File(pickedFile.path);
+  }
+
+  static Future<File?> _pickFile() async {
+    final file = await FilePicker.platform.pickFiles();
+
+    if (file != null) {
+      return File(file.files.single.path!);
+    }
+    return null;
   }
 }

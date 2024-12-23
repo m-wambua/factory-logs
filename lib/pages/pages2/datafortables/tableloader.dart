@@ -5,6 +5,7 @@ import 'package:collector/pages/pages2/datafortables/saveddatapage.dart';
 import 'package:collector/pages/pages2/subprocesscreator.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -588,5 +589,23 @@ class _TableLoaderPageState extends State<TableLoaderPage> {
     for (var row in groupedData) {
       print(row);
     }
+  }
+
+  static Future<File?> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      return null;
+    }
+    return File(pickedFile.path);
+  }
+
+  static Future<File?> _pickFile() async{
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      return null;
+    }
+    return File(pickedFile.path);
   }
 }
