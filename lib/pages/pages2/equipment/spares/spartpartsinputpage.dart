@@ -1,4 +1,5 @@
 import 'package:collector/pages/pages2/emaiandstorage/emailsender.dart';
+import 'package:collector/pages/pages2/equipment/parameters/parametersmodel.dart';
 import 'package:collector/pages/pages2/equipment/spares/spartpartsmodel.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:file_picker/file_picker.dart';
@@ -9,6 +10,7 @@ import 'dart:io';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:http/http.dart' as http;
+import 'package:win32/win32.dart';
 
 class EquipmentSparePartsPage extends StatefulWidget {
   final String processName;
@@ -42,6 +44,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
   final _warrantyController = TextEditingController();
   final _usageRateController = TextEditingController();
   List<TextEditingController> mailingListController = [TextEditingController()];
+  List<File> selectedFiles = [];
 
   @override
   void initState() {
@@ -179,6 +182,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
   void _addSparePart() {
     if (_formKey.currentState!.validate()) {
       final newSparePart = SparePart(
+        equipmentName: widget.equipmentName,
         name: _nameController.text,
         partNumber: _partNumberController.text,
         description: _descriptionController.text,
@@ -433,6 +437,38 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
     );
   }
 
+  Widget _buildSelectedFilesList() {
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: selectedFiles.map((file) {
+          return ListTile(
+            leading: Icon(file.path.endsWith('.pdf')
+                ? Icons.picture_as_pdf
+                : Icons.image),
+            title: Text(file.path.split('/').last),
+            trailing: IconButton(
+                onPressed: () {
+                  setState(() {
+                    selectedFiles.remove(file);
+                  });
+                },
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                )),
+          );
+        }).toList());
+  }
+
+  Future<void> _uploadAllFiles(BuildContext context) async {
+    for (var file in selectedFiles) {
+      await uploadPDf(file);
+    }
+    setState(() {
+      selectedFiles.clear();
+    });
+  }
+
   void _createNewSpares(String equipmentName) async {
     await showDialog(
         context: context,
@@ -467,7 +503,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                                   children: [
                                     IconButton(
                                         onPressed: () {
-                                          _pickImage();
+                                          _pickImage("Part Number");
                                           print('Gallery Icon clicked');
                                         },
                                         icon: Icon(
@@ -476,7 +512,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                                         )),
                                     IconButton(
                                         onPressed: () {
-                                          _pickFile();
+                                          _pickFile("Part Number");
                                           print('File Icon clicked');
                                         },
                                         icon: Icon(
@@ -533,7 +569,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                             children: [
                               IconButton(
                                   onPressed: () {
-                                    _pickImage();
+                                    _pickImage("Supplier Information");
                                     print('Gallery Icon clicked');
                                   },
                                   icon: Icon(
@@ -542,7 +578,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                                   )),
                               IconButton(
                                   onPressed: () {
-                                    _pickFile();
+                                    _pickFile("Supplier Information");
                                     print('File Icon clicked');
                                   },
                                   icon: Icon(
@@ -566,7 +602,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                             children: [
                               IconButton(
                                   onPressed: () {
-                                    _pickImage();
+                                    _pickImage("Condition");
                                     print('Gallery Icon clicked');
                                   },
                                   icon: Icon(
@@ -575,7 +611,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                                   )),
                               IconButton(
                                   onPressed: () {
-                                    _pickFile();
+                                    _pickFile("Condition");
                                     print('File Icon clicked');
                                   },
                                   icon: Icon(
@@ -594,7 +630,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                             children: [
                               IconButton(
                                   onPressed: () {
-                                    _pickImage();
+                                    _pickImage("Waranty Information");
                                     print('Gallery Icon clicked');
                                   },
                                   icon: Icon(
@@ -603,7 +639,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                                   )),
                               IconButton(
                                   onPressed: () {
-                                    _pickFile();
+                                    _pickFile("Warranty Information");
                                     print('File Icon clicked');
                                   },
                                   icon: Icon(
@@ -621,6 +657,7 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                     const SizedBox(
                       height: 10,
                     ),
+                    _buildSelectedFilesList(),
                   ],
                 ),
               ),
@@ -629,8 +666,14 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                        onPressed: () {
-                          _addSparePart();
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            await _uploadAllFiles(context);
+                            _addSparePart();
+                            Navigator.pop(context);
+                          }
+
+                          // _submitForm();
                         },
                         child: const Text(
                           'Save Spare',
@@ -712,22 +755,152 @@ class _EquipmentSparePartsPageState extends State<EquipmentSparePartsPage> {
     }
   }
 
-  static Future<File?> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) {
-      return null;
+  Future<void> _pickImage(String fieldName) async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      await _saveFileToFolder(pickedFile.path, fieldName);
     }
-    return File(pickedFile.path);
   }
 
-  static Future<File?> _pickFile() async {
-    final file = await FilePicker.platform.pickFiles();
-
-    if (file != null) {
-      return File(file.files.single.path!);
+  Future<void> _pickFile(String fieldName) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      String filePath = result.files.single.path!;
+      await _saveFileToFolder(filePath, fieldName);
     }
-    return null;
+  }
+
+  Future<void> _saveFileToFolder(String filePath, String fieldName) async {
+    // Define your custom storage path
+    String baseStoragePath = "lib/pages/pages2/equipment/spares/sparesstorage";
+
+    // Define folder structure
+    String equipmentFolderPath = '$baseStoragePath/equipment_folder';
+    String fieldFolderPath = '$equipmentFolderPath/$fieldName';
+
+    // Ensure the folders exist
+    Directory(fieldFolderPath).createSync(recursive: true);
+
+    // Copy file to the appropriate subfolder
+    File file = File(filePath);
+    String newFilePath = '$fieldFolderPath/${file.uri.pathSegments.last}';
+    await file.copy(newFilePath);
+
+    print('File saved to: $newFilePath');
+  }
+
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        final sparePart = SparePart(
+          equipmentName: widget.equipmentName,
+          name: _nameController.text,
+          partNumber: _partNumberController.text,
+          description: _descriptionController.text,
+          minimumStock: int.tryParse(_minStockController.text) ?? 0,
+          maximumStock: int.tryParse(_maxStockController.text) ?? 0,
+          leadTime: _leadTimeController.text,
+          supplierInfo: _supplierInfoController.text,
+          criticality: _criticalityController.text,
+          condition: _conditionController.text,
+          warranty: _warrantyController.text,
+          usageRate: _usageRateController.text,
+        );
+        final SparePartsService _service = SparePartsService();
+        await _service.createSparePart(sparePart);
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Spare Part Created Succuessfully")));
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Error creating Spare Part: $e")));
+      }
+    }
+  }
+
+  Future<void> uploadPDF(File pdfFile, BuildContext context) async {
+    print('Starting upload process...');
+    final url = Uri.parse('http://0.0.0.0:8000/pdf-transfer');
+    try {
+      var request = http.MultipartRequest('POST', url);
+
+      request.fields['filemenu'] = 'Spares' ?? '';
+      request.fields['process_name'] = widget.processName ?? '';
+      request.fields['subprocess_name'] = widget.subprocessName ?? '';
+      request.fields['equipment_name'] = widget.equipmentName ?? '';
+
+      var stream = http.ByteStream(pdfFile.openRead());
+      var length = await pdfFile.length();
+      var multipartFile = http.MultipartFile('file', stream, length,
+          filename: pdfFile.path.split('/').last);
+      request.files.add(multipartFile);
+
+      print("Sending request...");
+      var response = await request.send();
+      print("Response status code: ${response.statusCode}");
+
+      final responseBody = await response.stream.bytesToString();
+      print("Response body: $responseBody");
+
+      if (response.statusCode == 200) {
+        print("File uploaded successfully");
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('File uploaded successfully')));
+        }
+      }
+    } catch (e, stackTrace) {
+      print("Error Uploading file: $e");
+      print("Stack trace: $stackTrace");
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Error uploading: PDF: e")));
+      }
+    }
+  }
+
+  Future<void> handleUpload(BuildContext context) async {
+    print("Handle upload Started...");
+    try {
+      final file = await pickPDFFile();
+      if (file != null) {
+        print("File Picked, starting upload...");
+        await uploadPDF(file, context);
+      } else {
+        print("No file selected in handleUpload");
+        if (context.mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("No file selected")));
+        }
+      }
+    } catch (e) {
+      print("Error in handleUpload: $e");
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Error: $e")));
+      }
+    }
+  }
+
+  Future<File?> pickPDFFile() async {
+    print("Sarting file picker...");
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+      print('FilePicker result: ${result?.files.length ?? "null"}');
+
+      if (result != null && result.files.isNotEmpty) {
+        print("File Selected: ${result.files.single.path}");
+        return File(result.files.single.path!);
+      }
+      print("No file selected");
+      return null;
+    } catch (e) {
+      print("Error in pickPDFFile: $e");
+      return null;
+    }
   }
 }

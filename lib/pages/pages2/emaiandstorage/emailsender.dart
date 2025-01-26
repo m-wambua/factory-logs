@@ -6,6 +6,7 @@ import 'dart:convert';
 enum EmailType {
   productionSummary,
   sparePartsDetails,
+  sparePartsStorage,
   // more can be added here
 }
 

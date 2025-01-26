@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collector/pages/pages2/equipment/spares/spartpartsmodel.dart';
 import 'package:path/path.dart' as path;
+import 'package:http/http.dart' as http;
 
 class ParameterStorage {
   final String name;
@@ -102,6 +104,55 @@ class ParameterStorage {
     } catch (e) {
       print("Error deleting parameter list: $e");
       rethrow;
+    }
+  }
+}
+
+class SparePartsService{
+  final String baseUrl='http://0.0.0.0:8000';
+
+  Future<SparePart> createSparePart(SparePart sparePart) async{
+    final response=await http.post(
+      Uri.parse('$baseUrl/spare-parts/'),
+      headers: {'Content-Type':'application/json'},
+      body: json.encode(sparePart.toJson())
+    );
+    if(response.statusCode==200){
+      return SparePart.fromJson(json.decode(response.body));
+
+    }else{
+      throw Exception('Failed to create spare part: ${response.statusCode}');
+    }
+  }
+
+  Future<List<SparePart>> getSparePartsByEquipment(String equipmentName) async{
+    final response= await http.get(Uri.parse('$baseUrl/spare-parts/$equipmentName'));
+
+    if(response.statusCode==200){
+      final List<dynamic> body=json.decode(response.body);
+      return body.map((dynamic item)=>SparePart.fromJson(item)).toList();
+  }else{
+    throw Exception('Failed to load spare parts: ${response.statusCode}');
+  }
+  }
+
+  Future<void> deleteSparePart(String id) async{
+    final response=await http.delete(Uri.parse('$baseUrl/spare-parts/$id'));
+
+    if(response.statusCode!=200){
+      throw Exception('Failed to delete spare part: ${response.statusCode}');
+    }
+  }
+  Future<SparePart> updateSparePart(SparePart sparePart, String partNumber) async{
+    final response=await http.put(
+      Uri.parse('$baseUrl/spare-parts/${partNumber}'),
+      headers: {'Content-Type':'application/json'},
+      body: json.encode(sparePart.toJson())
+    );
+    if(response.statusCode==200){
+      return SparePart.fromJson(json.decode(response.body));
+    }else{
+      throw Exception('Failed to update spare part: ${response.statusCode}');
     }
   }
 }

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 class SparePart {
+  final int? id;
+  final String equipmentName;
   final String name;
   final String partNumber;
   final String description;
@@ -16,6 +18,8 @@ class SparePart {
   final String usageRate;
 
   SparePart({
+    this.id,
+    required this.equipmentName,
     required this.name,
     required this.partNumber,
     required this.description,
@@ -31,6 +35,8 @@ class SparePart {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
+      'equipmentName':equipmentName,
       'name': name,
       'partNumber': partNumber,
       'description': description,
@@ -47,6 +53,8 @@ class SparePart {
 
   static SparePart fromJson(Map<String, dynamic> json) {
     return SparePart(
+      id: json['id'],
+      equipmentName: json['equipmentName'],
       name: json['name'],
       partNumber: json['partNumber'],
       description: json['description'],
