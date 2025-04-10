@@ -9,7 +9,9 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'package:collector/pages/pages2/welcome_page.dart';
-
+const String ADMIN_USERNAME_KEY = 'admin_username';
+const String ADMIN_PASSWORD_KEY = 'Summerday1998';
+const String IS_FIRST_RUN_KEY = 'is_first_run';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
