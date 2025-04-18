@@ -1,6 +1,10 @@
-
+import 'package:collector/admindash.dart';
+import 'package:collector/pages/authorization.dart';
 import 'package:collector/pages/pages2/creatorspage.dart';
 import 'package:collector/pages/pages2/dailydeltas/delltafilemanager.dart';
+import 'package:collector/pages/pages2/trial-supabase.dart';
+import 'package:collector/pages/protectedroutes.dart';
+import 'package:collector/pages/users.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:collector/pages/models/notification.dart';
@@ -129,7 +133,14 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.home)),
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePageSupabase()));
+              },
+              icon: const Icon(Icons.home)),
           const SizedBox(width: 15),
           IconButton(
               onPressed: _createNewProcess3, icon: const Icon(Icons.add)),
@@ -177,7 +188,18 @@ class _LandingPageState extends State<LandingPage> {
             ],
           ),
           const SizedBox(width: 15),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.list)),
+          ProtectedNavigationButton(
+              text: "Admin Dashboard",
+              allowedRoles: [UserRole.admin],
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdminDashBoard(),
+                  ),
+                );
+              }),
+          LogoutButton()
         ],
       ),
       body: Row(
@@ -212,7 +234,8 @@ class _LandingPageState extends State<LandingPage> {
                     case '/':
                       return const Placeholder();
                     case 'Log Out':
-                      return LogoutPage(currentUser: widget.username);
+                      return LogoutButton();
+
                     default:
                       throw Exception('Invalid route: ${settings.name}');
                   }

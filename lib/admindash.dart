@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collector/pages/authorization.dart';
 import 'package:collector/pages/protectedroutes.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AdminDashBoard extends StatefulWidget {
   const AdminDashBoard({super.key});
@@ -36,47 +38,45 @@ class _AdminDashBoardState extends State<AdminDashBoard>
 
   @override
   Widget build(BuildContext context) {
-    return Protectedroutes(
-        allowedRoles: const [UserRole.admin],
-        child: Scaffold(
-          appBar: AppBar(
-            title: Row(
-              children: [
-                const Text("Admin Dashboard"),
-                ElevatedButton(
-                  onPressed: () async {
-                    await Provider.of<AuthProvider>(context, listen: false)
-                        .debugPrintStoredData();
-                  },
-                  child: const Text('Debug: Print Stored Data'),
-                )
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            const Text("Admin Dashboard"),
+            ElevatedButton(
+              onPressed: () async {
+                await Provider.of<AuthProvider>(context, listen: false)
+                    .debugPrintStoredData();
+              },
+              child: const Text('Debug: Print Stored Data'),
             ),
-            bottom: TabBar(controller: _tabController, tabs: const [
-              Tab(
-                text: "Pending Applications",
-              ),
-              Tab(
-                text: "Active Users",
-              ),
-              Tab(
-                text: "User Activity",
-              ),
-              Tab(
-                text: "Users",
-              )
-            ]),
+          ],
+        ),
+        bottom: TabBar(controller: _tabController, tabs: const [
+          Tab(
+            text: "Pending Applications",
           ),
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              const PendingApplicationsTab(),
-              ActiveUsersTab(),
-              const UserActivityTab(),
-              const UserTab()
-            ],
+          Tab(
+            text: "Active Users",
           ),
-        ));
+          Tab(
+            text: "User Activity",
+          ),
+          Tab(
+            text: "Users",
+          )
+        ]),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          const PendingApplicationsTab(),
+          ActiveUsersTab(),
+          const UserActivityTab(),
+          const UserTab()
+        ],
+      ),
+    );
   }
 }
 
@@ -450,7 +450,8 @@ class ActiveUsersTab extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
               title: const Text("Delete Account"),
-              content: const Text("Are you sure you want to delete your account?"),
+              content:
+                  const Text("Are you sure you want to delete your account?"),
               actions: [
                 TextButton(
                     onPressed: () async {
@@ -459,7 +460,8 @@ class ActiveUsersTab extends StatelessWidget {
                     },
                     child: const Text("Yes")),
                 TextButton(
-                    onPressed: () => Navigator.pop(context), child: const Text("No")),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("No")),
               ],
             ));
   }
@@ -580,7 +582,8 @@ class UserActivityTab extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final activity = activities[index];
                     return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       child: ListTile(
                         leading: CircleAvatar(
                           backgroundColor: _getActionColor(activity.actionType)
@@ -595,7 +598,8 @@ class UserActivityTab extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 activity.username,
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                             Text(
@@ -645,21 +649,35 @@ class UserActivity {
       actionType: json['actionType']);
 
   static Future<void> saveActivities(List<UserActivity> activities) async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonActivities =
-        activities.map((activity) => activity.toJson()).toList();
-    await prefs.setStringList('user_activities',
-        jsonActivities.map((activity) => json.encode(activity)).toList());
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/user_activities.json');
+      final jsonActivities =
+          activities.map((activity) => activity.toJson()).toList();
+      await file.writeAsString(json.encode(jsonActivities));
+      print("Static method: Saved ${activities.length} activities");
+    } catch (e) {
+      print("Error in static saveActivities: $e");
+    }
   }
 
   static Future<List<UserActivity>> loadActivities() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedActivities = prefs.getStringList('user_activities') ?? [];
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/user_activities.json');
 
-    return savedActivities.map((jsonString) {
-      final Map<String, dynamic> jsonMap = json.decode(jsonString);
-      return UserActivity.fromJson(jsonMap);
-    }).toList();
+      if (await file.exists()) {
+        final jsonString = await file.readAsString();
+        if (jsonString.isNotEmpty) {
+          final List<dynamic> jsonList = json.decode(jsonString);
+          return jsonList.map((json) => UserActivity.fromJson(json)).toList();
+        }
+      }
+      return [];
+    } catch (e) {
+      print("Error in static loadActivities: $e");
+      return [];
+    }
   }
 
   static Future<void> maintainActivityLog(List<UserActivity> activities,
@@ -734,7 +752,8 @@ class UserTab extends StatelessWidget {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text("Send Password Reset Email?"),
+                                      title: const Text(
+                                          "Send Password Reset Email?"),
                                       content: Text(
                                           "This will send a password reset link to ${user.email}. Continue?"),
                                       actions: [

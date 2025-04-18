@@ -2,6 +2,7 @@ import 'package:collector/admindash.dart';
 import 'package:collector/main.dart';
 import 'package:collector/pages/apis/apis.dart';
 import 'package:collector/pages/pages2/login_page.dart';
+import 'package:collector/pages/pages2/welcome_page.dart';
 import 'package:collector/pages/users.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -13,7 +14,6 @@ import 'package:provider/provider.dart'; // Added import for Provider
 
 import 'package:http/http.dart' as http;
 
-
 class AuthProvider with ChangeNotifier {
   User? _currentUser;
   List<UserActivity> _userActivities = [];
@@ -21,6 +21,12 @@ class AuthProvider with ChangeNotifier {
   List<UserApplication> _pendingApplications = [];
   List<UserApplication> _acceptedApplications = [];
   List<UserApplication> _rejectedApplications = [];
+
+  Map<String, dynamic> _appStatus = {
+    'lastOpened': DateTime.now().toIso8601String(),
+    'lastClosed': DateTime.now().toIso8601String(),
+    'normalShutdown': true,
+  };
 
   // Getters
   User? get currentUser => _currentUser;
@@ -36,11 +42,92 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> _initializeData() async {
-    await Future.wait([
-      _loadUsers(),
-      _loadUserActivities(),
-      _loadApplications(),
-    ]);
+    try {
+      await _ensureDirectoriesExist();
+      await _loadAppStatus(); // Make sure app status is loaded first
+
+      // Wait for all data to be loaded before continuing
+      await Future.wait([
+        _loadUsers(),
+        _loadUserActivities(),
+        _loadApplications(),
+      ]);
+      print("Data initialization complete"); // Add debug logging
+    } catch (e) {
+      print("Error initializing data: $e");
+      // Initialize with empty data as fallback
+      _users = [];
+      _userActivities = [];
+      _pendingApplications = [];
+    }
+    notifyListeners(); // Notify listeners after all data is loaded
+  }
+
+  Future<void> _ensureDirectoriesExist() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final paths = [
+      _pendingApplicationsPath,
+      _acceptedApplicationsPath,
+      _rejectedApplicationsPath,
+      _usersFilePath,
+      _activitiesFilePath,
+      _appStatusFilePath,
+    ];
+
+    final resolvedPaths = await Future.wait(paths);
+
+    for (final path in resolvedPaths) {
+      final file = File(path);
+      if (!await file.exists()) {
+        await file.create(recursive: true);
+      }
+    }
+  }
+
+  Future<String> get _appStatusFilePath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return '${directory.path}/app_status.json';
+  }
+
+  Future<void> _loadAppStatus() async {
+    try {
+      final file = File(await _appStatusFilePath);
+      if (await file.exists()) {
+        final jsonString = await file.readAsString();
+        _appStatus = json.decode(jsonString);
+        _appStatus['lastOpened'] = DateTime.now().toIso8601String();
+        _appStatus['normalShutdown'] = false;
+        await _saveAppStatus();
+      } else {
+        await _saveAppStatus();
+      }
+    } catch (e) {
+      print("Error loading app status: $e");
+      _appStatus = {
+        'lastOpened': DateTime.now().toIso8601String(),
+        'lastClosed': DateTime.now().toIso8601String(),
+        'normalShutdown': true,
+      };
+    }
+  }
+
+  Future<void> _saveAppStatus() async {
+    try {
+      final file = File(await _appStatusFilePath);
+      await file.writeAsString(json.encode(_appStatus));
+    } catch (e) {
+      print("Error saving app status: $e");
+    }
+  }
+
+  Future<void> recordNormalShutdown() async {
+    try {
+      _appStatus['lastClosed'] = DateTime.now().toIso8601String();
+      _appStatus['normalShutdown'] = true;
+      await _saveAppStatus();
+    } catch (e) {
+      print("Error recording normal shutdown: $e");
+    }
   }
 
   // File paths
@@ -135,14 +222,22 @@ class AuthProvider with ChangeNotifier {
       final file = File(await _activitiesFilePath);
       if (await file.exists()) {
         final jsonString = await file.readAsString();
-        final List<dynamic> jsonList = json.decode(jsonString);
-        _userActivities =
-            jsonList.map((json) => UserActivity.fromJson(json)).toList();
+        if (jsonString.isNotEmpty) {
+          // Check for empty files
+          final List<dynamic> jsonList = json.decode(jsonString);
+          _userActivities =
+              jsonList.map((json) => UserActivity.fromJson(json)).toList();
+          print("Loaded ${_userActivities.length} user activities");
+        } else {
+          _userActivities = [];
+          print("Activities file exists but is empty");
+        }
       } else {
         _userActivities = [];
+        print("Activities file doesn't exist yet");
       }
     } catch (e) {
-      print("Error Loading user activities: $e");
+      print("Error loading user activities: $e");
       _userActivities = [];
     }
   }
@@ -152,15 +247,20 @@ class AuthProvider with ChangeNotifier {
       final file = File(await _usersFilePath);
       if (await file.exists()) {
         final jsonString = await file.readAsString();
-        final List<dynamic> jsonList = json.decode(jsonString);
-
-        // Ensure each item in the list is a Map<String, dynamic>
-        _users = jsonList
-            .whereType<Map<String, dynamic>>()
-            .map((json) => User.fromJson(json))
-            .toList();
+        if (jsonString.isNotEmpty) {
+          final List<dynamic> jsonList = json.decode(jsonString);
+          _users = jsonList
+              .whereType<Map<String, dynamic>>()
+              .map((json) => User.fromJson(json))
+              .toList();
+          print("Loaded ${_users.length} users");
+        } else {
+          _users = [];
+          print("Users file exists but is empty");
+        }
       } else {
         _users = [];
+        print("Users file doesn't exist yet");
       }
     } catch (e) {
       print("Error loading users: $e");
@@ -174,6 +274,7 @@ class AuthProvider with ChangeNotifier {
       final file = File(await _usersFilePath);
       final jsonList = _users.map((user) => user.toJson()).toList();
       await file.writeAsString(json.encode(jsonList));
+      print("Saved ${_users.length} users to file");
     } catch (e) {
       print("Error saving users: $e");
     }
@@ -184,7 +285,8 @@ class AuthProvider with ChangeNotifier {
       final file = File(await _activitiesFilePath);
       final jsonList =
           _userActivities.map((activity) => activity.toJson()).toList();
-      await file.writeAsString((json.encode(jsonList)));
+      await file.writeAsString(json.encode(jsonList));
+      print("Saved ${_userActivities.length} activities to file");
     } catch (e) {
       print("Error saving activities: $e");
     }
@@ -193,28 +295,29 @@ class AuthProvider with ChangeNotifier {
   Future<bool> signIn(
       String identifier, String password, SignInMethod method) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final adminUsername = prefs.getString('admin_username');
-      final adminPassowrd = prefs.getString("Summerday1998");
+      // Get admin credentials from the admin config file
+      final adminConfigFile = File(await _adminConfigFilePath);
+      if (await adminConfigFile.exists()) {
+        final adminConfig = json.decode(await adminConfigFile.readAsString());
+        final adminUsername = adminConfig['admin_username'];
+        final adminPassword = adminConfig['admin_password'];
 
-      if ((method == SignInMethod.username && identifier == adminUsername) ||
-          (method == SignInMethod.email && identifier == adminUsername)) {
-        if (password == adminPassowrd) {
-          _currentUser = User(
-              id: 'admin',
-              role: UserRole.admin,
-              password: adminPassowrd ?? '',
-              email: adminUsername,
-              username: adminUsername);
-          logUserActivity(adminUsername!, 'Login');
+        if ((method == SignInMethod.username && identifier == adminUsername) ||
+            (method == SignInMethod.email && identifier == adminUsername)) {
+          if (password == adminPassword) {
+            _currentUser = User(
+                id: 'admin',
+                role: UserRole.admin,
+                password: adminPassword,
+                email: adminUsername,
+                username: adminUsername);
+            logUserActivity(adminUsername, 'Login');
 
-          notifyListeners();
-          return true;
+            notifyListeners();
+            return true;
+          }
         }
       }
-
-      //  final usersJson = prefs.getStringList('users') ?? [];
-      //  final users = usersJson.map((json) => User.fromJson(json)).toList();
 
       final matchingUser = _users.firstWhere(
         (user) {
@@ -235,6 +338,7 @@ class AuthProvider with ChangeNotifier {
             email: '',
             phoneNumber: ''),
       );
+
       if (matchingUser.id.isNotEmpty) {
         if (matchingUser.password == password) {
           _currentUser = matchingUser;
@@ -246,7 +350,54 @@ class AuthProvider with ChangeNotifier {
       }
       return false;
     } catch (e) {
-      print("Error during sign in : $e");
+      print("Error during sign in: $e");
+      return false;
+    }
+  }
+
+  Future<String> get _adminConfigFilePath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return '${directory.path}/admin_config.json';
+  }
+
+  Future<void> initializeAdmin({
+    required String username,
+    required String password,
+  }) async {
+    _currentUser = User(
+        id: 'admin',
+        username: username,
+        role: UserRole.admin,
+        password: password);
+
+    // Store admin credentials in a JSON file
+    final adminConfig = {
+      'admin_username': username,
+      'admin_password': password,
+      'created_at': DateTime.now().toIso8601String(),
+    };
+
+    final file = File(await _adminConfigFilePath);
+    await file.writeAsString(json.encode(adminConfig));
+
+    notifyListeners();
+  }
+
+// Add this method to validate admin credentials from JSON file
+  Future<bool> validateAdminCredentials(
+      String username, String password) async {
+    try {
+      final file = File(await _adminConfigFilePath);
+      if (await file.exists()) {
+        final adminConfig = json.decode(await file.readAsString());
+        final storedUsername = adminConfig['admin_username'];
+        final storedPassword = adminConfig['admin_password'];
+
+        return username == storedUsername && password == storedPassword;
+      }
+      return false;
+    } catch (e) {
+      print("Error validating admin credentials: $e");
       return false;
     }
   }
@@ -328,36 +479,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> initializeAdmin({
-    required String username,
-    required String password,
-  }) async {
-    // Initialize admin user in your storage system
-    // This could be a local database, API call, etc.
-    _currentUser = User(
-        id: 'admin',
-        username: username,
-        role: UserRole.admin,
-        password: ADMIN_PASSWORD_KEY);
-
-    // Store admin credentials securely
-    // In a real app, you'd want to hash the password
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(ADMIN_USERNAME_KEY, username);
-    await prefs.setString(ADMIN_PASSWORD_KEY, password);
-
-    notifyListeners();
-  }
-
   // Add this method to validate admin credentials
-  Future<bool> validateAdminCredentials(
-      String username, String password) async {
-    final prefs = await SharedPreferences.getInstance();
-    final storedUsername = prefs.getString(ADMIN_USERNAME_KEY);
-    final storedPassword = prefs.getString(ADMIN_PASSWORD_KEY);
-
-    return username == storedUsername && password == storedPassword;
-  }
 
   Future<void> sendPassWordResetEmail(String email) async {
     try {
@@ -391,7 +513,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<String> getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
-   // final storedToken = prefs.getString(AUTH_TOKEN_KEY) ?? '';
+    // final storedToken = prefs.getString(AUTH_TOKEN_KEY) ?? '';
     return '';
   }
 
@@ -451,10 +573,15 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  void addUserActivity(UserActivity activity) async {
-    userActivities.add(activity);
-    await UserActivity.saveActivities(userActivities);
-    notifyListeners();
+  Future<void> addUserActivity(UserActivity activity) async {
+    try {
+      _userActivities.add(activity);
+      await _saveActivities(); // Use the class method for consistency
+      print("Added activity: ${activity.actionType} for ${activity.username}");
+      notifyListeners();
+    } catch (e) {
+      print("Error adding user activity: $e");
+    }
   }
 
   Future<void> addPendingApplication(UserApplication application) async {
@@ -583,7 +710,7 @@ class LogoutButton extends StatelessWidget {
       Navigator.of(context).pop();
 
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const LoginPage()));
+          .push(MaterialPageRoute(builder: (context) => const WelcomePage()));
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Successfully loged out"),

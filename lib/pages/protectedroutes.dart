@@ -3,6 +3,20 @@ import 'package:collector/pages/users.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+class ProtectedRoutes {
+  static final Map<String, List<UserRole>> routePermissions = {
+    '/': [UserRole.admin, UserRole.user],
+    '/home': [UserRole.admin, UserRole.user],
+    '/logout': [UserRole.admin, UserRole.user],
+    '/creatorspage': [UserRole.admin, UserRole.user],
+    '/dailydeltas': [UserRole.admin, UserRole.user],
+    '/notificationpage': [UserRole.admin, UserRole.user],
+    '/filemanager': [UserRole.admin, UserRole.user],
+    '/trial-supabase': [UserRole.admin, UserRole.user],
+    '/admin': [UserRole.admin]
+  };
+}
+
 class ProtectedNavigationButton extends StatelessWidget {
   final String text;
   final List<UserRole> allowedRoles;
@@ -71,7 +85,7 @@ class Protectedroutes extends StatelessWidget {
           ),
         );
       } else {
-        return child!;
+        return child ?? const SizedBox.shrink();
       }
     });
   }

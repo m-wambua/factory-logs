@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:collector/pages/authorization.dart';
 import 'package:collector/pages/pages2/dynamicpage.dart';
 import 'package:collector/pages/pages2/equipment/history/maintenance/dynamichistorypage.dart';
@@ -12,29 +14,66 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:collector/pages/pages2/welcome_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-const String ADMIN_USERNAME_KEY = 'admin_username';
+const String ADMIN_USERNAME_KEY = 'admin_factorylogs';
 const String ADMIN_PASSWORD_KEY = 'Summerday1998';
 const String IS_FIRST_RUN_KEY = 'is_first_run';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
-  Hive.init(appDocumentDir.path);
+  bool isFirstRun = true;
+  try {
+    final directory = await path_provider.getApplicationDocumentsDirectory();
+    final adminConfigFile = File('${directory.path}/admin_config.json');
+    isFirstRun = !(await adminConfigFile.exists());
+  } catch (e) {
+    print("Error checking admin config: $e");
+    isFirstRun = true;
+  }
 
-  final prefs = await SharedPreferences.getInstance();
-  final isFirstRun = prefs.getBool(IS_FIRST_RUN_KEY) ?? true;
-  AuthProvider();
-  runApp(MyApp(isFirstRun: isFirstRun));
+  // Create AuthProvider to initialize data
+  final authProvider = AuthProvider();
+
+  // Register a shutdown hook for clean app closure if possible
+  // Note: This depends on platform capabilities and may not be ideal
+  // Consider alternative approaches for production
+  WidgetsBinding.instance.addObserver(AppLifecycleObserver(authProvider));
+
+  runApp(MyApp(isFirstRun: isFirstRun, authProvider: authProvider));
+  
+  await Supabase.initialize(
+      url: 'https://jqboxiqvoujgjaxzxtlv.supabase.co',
+      anonKey:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxYm94aXF2b3VqZ2pheHp4dGx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTY5MDgsImV4cCI6MjA2MDEzMjkwOH0.l5e56UM-3f5uPVY9UG5bV67ya1x_RaMEltDRG7EOBL0');
+
+ 
+}
+class AppLifecycleObserver extends WidgetsBindingObserver {
+  final AuthProvider authProvider;
+
+  AppLifecycleObserver(this.authProvider);
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached ||
+        state == AppLifecycleState.paused) {
+      authProvider.recordNormalShutdown();
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
   final bool isFirstRun;
-  const MyApp({super.key, required this.isFirstRun});
+  final AuthProvider authProvider;
+  const MyApp({super.key, required this.isFirstRun, required this.authProvider});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthProvider())],
+      providers: [
+      
+       ChangeNotifierProvider.value(value: authProvider),
+      ],
       child: MaterialApp(
         onGenerateRoute: (settings) {
           final routeName = settings.name;

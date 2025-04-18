@@ -1,3 +1,4 @@
+import 'package:collector/main.dart';
 import 'package:collector/pages/authorization.dart';
 import 'package:collector/pages/pages2/homepage.dart';
 import 'package:collector/pages/pages2/login_page.dart';
@@ -6,6 +7,7 @@ import 'package:collector/pages/users.dart';
 import 'package:collector/widgets/appassets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -129,6 +131,10 @@ class _WelcomePageState extends State<WelcomePage> {
                   ),
                   ElevatedButton(
                       onPressed: () async {
+                        /*
+                        SharedPreferences.getInstance().then((prefs) => print(
+                            'SharedPreferences content: ${prefs.getKeys().map((key) => '$key: ${prefs.get(key)}').toList()}'));
+*/
                         if (_formKey.currentState!.validate()) {
                           final success = await context
                               .read<AuthProvider>()
@@ -160,6 +166,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                 builder: (context) => const SignUpPage()));
                       },
                       child: const Text("Don't have an account? Sign up")),
+                  // Add this button somewhere in your WelcomePage widget
                 ],
               ),
             )));
@@ -195,3 +202,27 @@ class _WelcomePageState extends State<WelcomePage> {
         });
   }
 }
+
+
+
+// Exercie caution when using this!!
+
+
+/*
+ElevatedButton(
+  onPressed: () async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('App data reset successfully. App will restart.')),
+    );
+    // Optional: Force app restart or navigation to initial setup
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const AdminSetupPage()),
+      (route) => false,
+    );
+  },
+  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+  child: const Text("RESET APP (Emergency Use Only)"),
+)
+*/
